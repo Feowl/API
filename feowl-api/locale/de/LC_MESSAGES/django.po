@@ -2,20 +2,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-17 15:38+0200\n"
+"POT-Creation-Date: 2012-08-07 16:24+0200\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: \n"
 "X-Translated-Using: django-rosetta 0.6.8\n"
 
 #: feowl/admin.py:46
@@ -50,13 +50,28 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: templates/email.html:4 templates/email.txt:4
+#: templates/email.html:4
 msgid "Hello"
 msgstr "Hallo"
 
-#: templates/email.html:6
-msgid "Do you have in last time a power cut?"
+#: templates/email.html:6 templates/email.txt:6
+msgid ""
+"I’m a Feowl, and I help provide a better monitor electricity supply in "
+"Douala thanks to your contribution."
+msgstr ""
+
+#: templates/email.html:7 templates/email.txt:7
+#, fuzzy
+msgid "Did you experience a power cut today? "
 msgstr "Hatten sie in letzter Zeit einen Stromausfall?"
+
+#: templates/email.html:9 templates/email.txt:9
+msgid "Many Thanks"
+msgstr ""
+
+#: templates/email.txt:4
+msgid "Hey"
+msgstr ""
 
 #~ msgid "Hallo"
 #~ msgstr "Hallo"

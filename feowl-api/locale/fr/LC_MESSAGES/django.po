@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-17 15:38+0200\n"
+"POT-Creation-Date: 2012-08-07 16:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,10 +50,24 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: templates/email.html:4 templates/email.txt:4
+#: templates/email.html:4
 msgid "Hello"
 msgstr ""
 
-#: templates/email.html:6
-msgid "Do you have in last time a power cut?"
+#: templates/email.html:6 templates/email.txt:6
+msgid ""
+"I’m a Feowl, and I help provide a better monitor electricity supply in "
+"Douala thanks to your contribution."
+msgstr ""
+
+#: templates/email.html:7 templates/email.txt:7
+msgid "Did you experience a power cut today? "
+msgstr ""
+
+#: templates/email.html:9 templates/email.txt:9
+msgid "Many Thanks"
+msgstr ""
+
+#: templates/email.txt:4
+msgid "Hey"
 msgstr ""

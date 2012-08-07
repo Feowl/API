@@ -14,6 +14,16 @@ def get_sentinel_user():
 
 class Contributor(models.Model):
     """Model for a contributor"""
+    OFF = 0
+    DAILY = 1
+    WEEKLY = 2
+    MONTHLY = 3
+    FREQUENCY_CHOICES = (
+        (OFF, 'Off'),
+        (DAILY, 'Daily'),
+        (WEEKLY, 'Weekly'),
+        (MONTHLY, 'Monthly'),
+    )
 
     name = models.CharField('name', max_length=30, unique=True,
         help_text='Required. 30 characters or fewer. Letters, numbers and '
@@ -24,6 +34,7 @@ class Contributor(models.Model):
     credibility = models.DecimalField(max_digits=3, decimal_places=2, default='1.00', blank=True)
     language = models.CharField(max_length=5, default="EN")
     enquiry = models.DateField(null=True, blank=True)
+    frequency = models.PositiveIntegerField(choices=FREQUENCY_CHOICES, default=DAILY, blank=True)
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)

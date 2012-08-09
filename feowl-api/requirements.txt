@@ -1,5 +1,5 @@
-Django==1.4
-South==0.7.5
+Django==1.4.1
+South==0.7.6
 Werkzeug==0.8.3
 argparse==1.2.1
 django-extensions==0.9

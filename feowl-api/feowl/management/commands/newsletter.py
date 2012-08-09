@@ -22,8 +22,8 @@ class Command(BaseCommand):
 
         contributors = Contributor.objects.exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
         messages = []
-        plaintext = get_template('newsletter.txt')
-        html = get_template('newsletter.html')
+        plaintext = get_template('email/newsletter.txt')
+        html = get_template('email/newsletter.html')
         subject = 'hello'
         connection = get_connection()
         connection.open()

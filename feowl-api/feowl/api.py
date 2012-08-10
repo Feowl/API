@@ -274,7 +274,7 @@ class PowerCutDurations(Resource):
         return self.dispatch_list(request, **kwargs)
 
     def obj_get_list(self, request=None, **kwargs):
-        #tastypie method override
+        # Tastypie method override
         obj_list = PowerReportResource().obj_get_list(request, **kwargs)
         return self.aggregate_distribution(obj_list)
 
@@ -282,12 +282,14 @@ class PowerCutDurations(Resource):
         from django.db.models import Max, Min
         from math import ceil
 
+        getcontext().prec = 2
+
         result = []
         buckets = 5
         upper_bound = 0
 
-        min_duration = filtered_objects.aggregate(Min('duration')).values()[0]
-        max_duration = filtered_objects.aggregate(Max('duration')).values()[0]
+        min_duration = Decimal(filtered_objects.aggregate(Min('duration')).values()[0])
+        max_duration = Decimal(filtered_objects.aggregate(Max('duration')).values()[0])
 
         width = ceil((max_duration - min_duration) / buckets)
         powercuts = len(filtered_objects)
@@ -298,10 +300,11 @@ class PowerCutDurations(Resource):
 
             contributions = 0
             for powercut in filtered_objects:
-                if (lower_bound < powercut.duration < upper_bound):
+                if (lower_bound < powercut.duration <= upper_bound):
                     contributions += 1
 
-            proportion = contributions / powercuts
-            #create aggregate object
-            result.append(GenericResponseObject({'upper_bound': upper_bound, 'lower_bound': lower_bound, 'contributions': contributions, 'proportion': proportion, 'quintile': quintile}))
+            proportion = Decimal(contributions) / powercuts
+
+            # create aggregate object
+            result.append(GenericResponseObject({'upper_bound': upper_bound, 'lower_bound': lower_bound, 'contributions': contributions, 'proportion': proportion, 'quintile': quintile + 1}))
         return result

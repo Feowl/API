@@ -245,9 +245,11 @@ class PowerReportAggregatedResource(Resource):
 
 
 class PowerCutDurations(Resource):
-    area = fields.ForeignKey(AreaResource, 'area', help_text="The area the data is about")
-    avg_duration = fields.DecimalField('avg_duration', help_text="Average duration of a power cut over all power cuts")
-    pos_neg_ratio = fields.DecimalField('pos_neg_ratio', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+    quintile = fields.IntegerField('quintile', help_text="Average duration of a power cut over all power cuts")
+    lower_bound = fields.IntegerField('lower_bound', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+    upper_bound = fields.IntegerField('upper_bound', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+    contributions = fields.IntegerField('contributions', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+    proportion = fields.DecimalField('proportion', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
 
     class Meta:
         resource_name = 'aggregation'
@@ -271,40 +273,35 @@ class PowerCutDurations(Resource):
     def dispatch_list_aggregated(self, request, resource_name, **kwargs):
         return self.dispatch_list(request, **kwargs)
 
-#    def obj_get(self, request=None, **kwargs):
-#        #tastypie method override
-#        return PowerReportResource().obj_get(request, **kwargs)
-
     def obj_get_list(self, request=None, **kwargs):
         #tastypie method override
         obj_list = PowerReportResource().obj_get_list(request, **kwargs)
-        return self.aggregate_reports(obj_list)
+        return self.aggregate_distribution(obj_list)
 
-    def aggregate_reports(self, filtered_objects):
+    def aggregate_distribution(self, filtered_objects):
+        from django.db.models import Max, Min
+        from math import ceil
+
         result = []
+        buckets = 5
+        upper_bound = 0
 
-        #get all areas
-        areas = Area.objects.all()
+        min_duration = filtered_objects.aggregate(Min('duration')).values()[0]
+        max_duration = filtered_objects.aggregate(Max('duration')).values()[0]
 
-        getcontext().prec = 2
+        width = ceil((max_duration - min_duration) / buckets)
+        powercuts = len(filtered_objects)
 
-        for area in areas:
-            #get reports in each area
-            area_reports = filtered_objects.filter(area=area.id)
-            actual_powercut_reports = filtered_objects.filter(area=area.id, has_experienced_outage=True)
+        for quintile in range(buckets):
+            lower_bound = upper_bound
+            upper_bound = lower_bound + width
 
-            #average power cut duration
-            avg_duration = 0
-            if len(actual_powercut_reports):
-                for r in actual_powercut_reports:
-                    avg_duration += r.duration
-                avg_duration = Decimal(avg_duration) / Decimal(len(actual_powercut_reports))
+            contributions = 0
+            for powercut in filtered_objects:
+                if (lower_bound < powercut.duration < upper_bound):
+                    contributions += 1
 
-            #ratio of power cut to non-power cut reports
-            pos_neg_ratio = 0
-            if len(area_reports) and len(actual_powercut_reports):
-                pos_neg_ratio = Decimal(len(actual_powercut_reports)) / Decimal(len(area_reports))
-
+            proportion = contributions / powercuts
             #create aggregate object
-            result.append(GenericResponseObject({'area': area, 'avg_duration': avg_duration, 'pos_neg_ratio': pos_neg_ratio}))
+            result.append(GenericResponseObject({'upper_bound': upper_bound, 'lower_bound': lower_bound, 'contributions': contributions, 'proportion': proportion, 'quintile': quintile}))
         return result

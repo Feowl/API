@@ -242,3 +242,69 @@ class PowerReportAggregatedResource(Resource):
             #create aggregate object
             result.append(GenericResponseObject({'area': area, 'avg_duration': avg_duration, 'pos_neg_ratio': pos_neg_ratio}))
         return result
+
+
+class PowerCutDurations(Resource):
+    area = fields.ForeignKey(AreaResource, 'area', help_text="The area the data is about")
+    avg_duration = fields.DecimalField('avg_duration', help_text="Average duration of a power cut over all power cuts")
+    pos_neg_ratio = fields.DecimalField('pos_neg_ratio', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+
+    class Meta:
+        resource_name = 'aggregation'
+        object_class = GenericResponseObject
+        include_resource_uri = False
+
+        list_allowed_methods = ['get']
+        detail_allowed_methods = []
+
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
+
+        #TODO: we need a custom validation class for this as there is no model...
+
+    def base_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/distribution/$" % self._meta.resource_name, self.wrap_view('dispatch_list_aggregated'), name="api_dispatch_list_aggregated"),
+            url(r"^(?P<resource_name>%s)/distribution/schema/$" % self._meta.resource_name, self.wrap_view('get_schema'), name='api_get_schema')
+        ]
+
+    def dispatch_list_aggregated(self, request, resource_name, **kwargs):
+        return self.dispatch_list(request, **kwargs)
+
+#    def obj_get(self, request=None, **kwargs):
+#        #tastypie method override
+#        return PowerReportResource().obj_get(request, **kwargs)
+
+    def obj_get_list(self, request=None, **kwargs):
+        #tastypie method override
+        obj_list = PowerReportResource().obj_get_list(request, **kwargs)
+        return self.aggregate_reports(obj_list)
+
+    def aggregate_reports(self, filtered_objects):
+        result = []
+
+        #get all areas
+        areas = Area.objects.all()
+
+        getcontext().prec = 2
+
+        for area in areas:
+            #get reports in each area
+            area_reports = filtered_objects.filter(area=area.id)
+            actual_powercut_reports = filtered_objects.filter(area=area.id, has_experienced_outage=True)
+
+            #average power cut duration
+            avg_duration = 0
+            if len(actual_powercut_reports):
+                for r in actual_powercut_reports:
+                    avg_duration += r.duration
+                avg_duration = Decimal(avg_duration) / Decimal(len(actual_powercut_reports))
+
+            #ratio of power cut to non-power cut reports
+            pos_neg_ratio = 0
+            if len(area_reports) and len(actual_powercut_reports):
+                pos_neg_ratio = Decimal(len(actual_powercut_reports)) / Decimal(len(area_reports))
+
+            #create aggregate object
+            result.append(GenericResponseObject({'area': area, 'avg_duration': avg_duration, 'pos_neg_ratio': pos_neg_ratio}))
+        return result

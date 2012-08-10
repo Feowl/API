@@ -242,3 +242,69 @@ class PowerReportAggregatedResource(Resource):
             #create aggregate object
             result.append(GenericResponseObject({'area': area, 'avg_duration': avg_duration, 'pos_neg_ratio': pos_neg_ratio}))
         return result
+
+
+class PowerCutDurations(Resource):
+    quintile = fields.IntegerField('quintile', help_text="Average duration of a power cut over all power cuts")
+    lower_bound = fields.IntegerField('lower_bound', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+    upper_bound = fields.IntegerField('upper_bound', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+    contributions = fields.IntegerField('contributions', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+    proportion = fields.DecimalField('proportion', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
+
+    class Meta:
+        resource_name = 'aggregation'
+        object_class = GenericResponseObject
+        include_resource_uri = False
+
+        list_allowed_methods = ['get']
+        detail_allowed_methods = []
+
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
+
+        #TODO: we need a custom validation class for this as there is no model...
+
+    def base_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/distribution/$" % self._meta.resource_name, self.wrap_view('dispatch_list_aggregated'), name="api_dispatch_list_aggregated"),
+            url(r"^(?P<resource_name>%s)/distribution/schema/$" % self._meta.resource_name, self.wrap_view('get_schema'), name='api_get_schema')
+        ]
+
+    def dispatch_list_aggregated(self, request, resource_name, **kwargs):
+        return self.dispatch_list(request, **kwargs)
+
+    def obj_get_list(self, request=None, **kwargs):
+        # Tastypie method override
+        obj_list = PowerReportResource().obj_get_list(request, **kwargs)
+        return self.aggregate_distribution(obj_list)
+
+    def aggregate_distribution(self, filtered_objects):
+        from django.db.models import Max, Min
+        from math import ceil
+
+        getcontext().prec = 2
+
+        result = []
+        buckets = 5
+        upper_bound = 0
+
+        min_duration = Decimal(filtered_objects.aggregate(Min('duration')).values()[0])
+        max_duration = Decimal(filtered_objects.aggregate(Max('duration')).values()[0])
+
+        width = ceil((max_duration - min_duration) / buckets)
+        powercuts = len(filtered_objects)
+
+        for quintile in range(buckets):
+            lower_bound = upper_bound
+            upper_bound = lower_bound + width
+
+            contributions = 0
+            for powercut in filtered_objects:
+                if (lower_bound < powercut.duration <= upper_bound):
+                    contributions += 1
+
+            proportion = Decimal(contributions) / powercuts
+
+            # create aggregate object
+            result.append(GenericResponseObject({'upper_bound': upper_bound, 'lower_bound': lower_bound, 'contributions': contributions, 'proportion': proportion, 'quintile': quintile + 1}))
+        return result

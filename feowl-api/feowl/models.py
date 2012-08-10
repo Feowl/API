@@ -101,6 +101,6 @@ class PowerReport(models.Model):
 
     def __unicode__(self):
         if self.contributor:
-            return "%s at %s" % (self.contributor, self.happened_at)
+            return "{0} at {1}".format(self.contributor, self.happened_at)
         else:
-            return "%s" % self.happened_at
+            return "{0}".format(self.happened_at)

@@ -22,7 +22,14 @@ class Contributor(models.Model):
         (OFF, 'Off'),
         (DAILY, 'Daily'),
         (WEEKLY, 'Weekly'),
-        (MONTHLY, 'Monthly'),
+        (MONTHLY, 'Monthly')
+    )
+
+    SMS = 0
+    EMAIL = 1
+    CHANNEL_CHOICES = (
+        (SMS, "SMS"),
+        (EMAIL, "Email")
     )
 
     name = models.CharField('name', max_length=30, unique=True,
@@ -35,6 +42,7 @@ class Contributor(models.Model):
     language = models.CharField(max_length=5, default="EN", blank=True)
     enquiry = models.DateField(null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCY_CHOICES, default=DAILY, blank=True)
+    channel = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL, blank=True)
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)

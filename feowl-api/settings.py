@@ -12,7 +12,7 @@ TASTYPIE_FULL_DEBUG = DEBUG
 
 ADMINS = (
      ('Alexander Slabiak', 'alex@tesobe.com'),
-     ('Tim Kleinschmidt', 'timk@tesobe.com')
+     ('Tim Kleinschmidt', 'tim@tesobe.com')
 )
 
 MANAGERS = ADMINS

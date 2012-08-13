@@ -32,7 +32,7 @@ class Contributor(models.Model):
     email = models.EmailField('e-mail address', blank=True, unique=True)
 
     credibility = models.DecimalField(max_digits=3, decimal_places=2, default='1.00', blank=True)
-    language = models.CharField(max_length=5, default="EN")
+    language = models.CharField(max_length=5, default="EN", blank=True)
     enquiry = models.DateField(null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCY_CHOICES, default=DAILY, blank=True)
 
@@ -41,6 +41,29 @@ class Contributor(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def save(self):
+        # Check if it already exist
+        created = self.id is not None
+        super(Contributor, self).save()
+        # Send an email if this are a new contributor
+        if not created:
+            from django.core.mail import EmailMultiAlternatives
+            from django.template import Context
+            from django.template.loader import get_template
+            from django.utils.translation import ugettext_lazy as _
+
+            plaintext = get_template('email/registration_confirmation.txt')
+            html = get_template('email/registration_confirmation.html')
+            subject = _('Welcome to Feowl')
+
+            d = Context({'name': self.name, 'email_language': self.language})
+            text_content = plaintext.render(d)
+            html_content = html.render(d)
+
+            msg = EmailMultiAlternatives(subject, text_content, settings.REGISTRATION_FROM, [self.email])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
 
 
 class Device(models.Model):

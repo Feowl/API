@@ -12,7 +12,7 @@ TASTYPIE_FULL_DEBUG = DEBUG
 
 ADMINS = (
      ('Alexander Slabiak', 'alex@tesobe.com'),
-     ('Tim Kleinschmidt', 'timk@tesobe.com')
+     ('Tim Kleinschmidt', 'tim@tesobe.com')
 )
 
 MANAGERS = ADMINS
@@ -232,3 +232,4 @@ DUMMY_PASSWORD = u'✌ & ♥'           # peace and love, yo!
 ANONYMOUS_USER_NAME = "Anonymous"
 ANONYMOUS_EMAIL = "anonymous@feowl.com"
 NEWSLETTER_FROM = "newsletter@feowl.com"
+REGISTRATION_FROM = "registration@feowl.com"

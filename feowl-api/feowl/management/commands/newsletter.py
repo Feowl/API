@@ -6,6 +6,7 @@ from optparse import make_option
 from feowl.models import Contributor
 import settings
 from datetime import datetime
+from django.utils.translation import ugettext_lazy as _
 
 
 class Command(BaseCommand):
@@ -24,7 +25,7 @@ class Command(BaseCommand):
         messages = []
         plaintext = get_template('email/newsletter.txt')
         html = get_template('email/newsletter.html')
-        subject = 'hello'
+        subject = _('Hello from Feowl')
         connection = get_connection()
         connection.open()
 

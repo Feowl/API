@@ -5,7 +5,7 @@
 
 {% trans "I’m a Feowl, and I help provide a better monitor electricity supply in Douala thanks to your contribution." %}
 {% trans "Did you experience a power cut today? " %}
-{% trans "Please let us know by following this link http://feowl.com/contribute" %}
+{% trans "Please let us know by following this link" %}http://feowl.com/contribute
 {% trans "Many Thanks"%}
 Feowl
 {% endlanguage %}

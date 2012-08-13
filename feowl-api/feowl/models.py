@@ -32,7 +32,7 @@ class Contributor(models.Model):
     email = models.EmailField('e-mail address', blank=True, unique=True)
 
     credibility = models.DecimalField(max_digits=3, decimal_places=2, default='1.00', blank=True)
-    language = models.CharField(max_length=5, default="EN")
+    language = models.CharField(max_length=5, default="EN", blank=True)
     enquiry = models.DateField(null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCY_CHOICES, default=DAILY, blank=True)
 

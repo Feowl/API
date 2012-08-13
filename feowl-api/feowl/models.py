@@ -42,6 +42,16 @@ class Contributor(models.Model):
     def __unicode__(self):
         return self.name
 
+    def save(self):
+        # Check if it already exist
+        created = self.id is not None
+        super(Contributor, self).save()
+        # Send an email if this are a new contributor
+        if not created:
+            from django.core.mail import send_mail
+            send_mail('Subject here', 'Here is the message.', 'from@example.com',
+                [self.email], fail_silently=False)
+
 
 class Device(models.Model):
     """Model for the Device"""

@@ -45,6 +45,5 @@ def parse(message):
         pass
 
 
-
 def read_message(message):
     parse(message)

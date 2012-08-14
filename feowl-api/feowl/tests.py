@@ -1,11 +1,15 @@
-from django.test.client import Client
-from models import PowerReport, Area, Contributor, Device
-from django.contrib.auth.models import User, Permission
-from tastypie_test import ResourceTestCase
-from django.db import models
-from tastypie.models import create_api_key
-import json
 from django.conf import settings
+from django.contrib.auth.models import User, Permission
+from django.db import models
+from django.test.client import Client
+
+from tastypie.models import create_api_key
+from tastypie_test import ResourceTestCase
+
+from models import PowerReport, Area, Contributor, Device
+
+import json
+import unittest
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
@@ -470,3 +474,7 @@ class DeviceResourceTest(ResourceTestCase):
         self.assertEqual(Device.objects.count(), 1)
         self.assertHttpAccepted(self.c.delete(self.detail_url, self.get_credentials()))
         self.assertEqual(Device.objects.count(), 0)
+
+
+class MessagingTestCase(unittest.TestCase):
+    pass

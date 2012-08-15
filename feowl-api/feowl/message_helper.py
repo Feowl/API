@@ -25,6 +25,8 @@ def send_message(users, message, channel):
                 msg.attach_alternative(html_content, "text/html")
                 email_messages.append(msg)
         elif user.channel == "SMS":
+            # Make sure that we have an phone number before sending an SMS
+            # If no phone number then send an Email
             pass
         user.enquiry = datetime.today().date()
         user.save()
@@ -40,11 +42,11 @@ def register(message_array):
     from feowl.models import Contributor
     from pwgen import pwgen
     pwd = pwgen(10, no_symbols=True)
-    mobile_number = pwd  # We get it later from the meta data
+    mobile_number = pwd  # We get it as a second parameter
     try:
         contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=pwd)
         contributor.save()
-        msg = "Your password {0}".format(pwd)
+        msg = "Congratulations, you are now registered on FEOWL, Your password is {0}".format(pwd)
         channel = ""
         send_message([contributor], msg, channel)
     except IntegrityError, e:
@@ -75,7 +77,7 @@ def read_message(message):
         register(message_array)
     elif keyword == "unregister":
         pass
-    elif keyword == "poll":
+    elif keyword == "poll": #doesn't exist - should be deleted
         pass
     elif index == -1:  # Should send an error messages and maybe plus help
         pass

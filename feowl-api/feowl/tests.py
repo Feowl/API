@@ -9,7 +9,7 @@ from tastypie_test import ResourceTestCase
 from models import PowerReport, Area, Contributor, Device
 
 import json
-import unittest
+from django.utils import unittest
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
@@ -477,4 +477,10 @@ class DeviceResourceTest(ResourceTestCase):
 
 
 class MessagingTestCase(unittest.TestCase):
-    pass
+    def test_basic_stuff(self):
+        a = ['larry', 'curly', 'moe']
+        self.assertEqual(a[0], 'larry')
+        self.assertEqual(a[1], 'curly')
+
+    def test_register(self):
+        pass

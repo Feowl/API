@@ -1,4 +1,5 @@
 from django.core.mail import EmailMultiAlternatives, get_connection
+from django.db import IntegrityError
 from django.template.loader import get_template
 from django.template import Context
 from django.utils.translation import ugettext_lazy as _
@@ -32,18 +33,49 @@ def send_message(users, message, channel):
     connection.close()
 
 
+def register(message_array):
+    """
+        Message: register <contributor_name>
+    """
+    from feowl.models import Contributor
+    from pwgen import pwgen
+    pwd = pwgen(10, no_symbols=True)
+    mobile_number = pwd  # We get it later from the meta data
+    try:
+        contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=pwd)
+        contributor.save()
+        msg = "Your password {0}".format(pwd)
+        channel = ""
+        send_message([contributor], msg, channel)
+    except IntegrityError, e:
+        msg = e.message
+        if msg.find("name") != -1:
+            return "Name already exist. Please use an other one"
+        elif msg.find("email") != -1:
+            return "Email already exist. Please use an other one."
+        return "Unkown Error please try later to register"
+
+
 def parse(message):
-    if message == "contribute":
-        pass
-    elif message == "help":
-        pass
-    elif message == "register":
-        pass
-    elif message == "unregister":
-        pass
-    elif message == "poll":
-        pass
+    keywords = ['contribute', 'help', 'register', 'unregister', 'poll']
+    message_array = message.split()
+    for index, keyword in enumerate(message_array):
+        if keyword in keywords:
+            return index, keyword, message_array
+    return -1, "Bad Keyword", "No clearly keyword in the string"
 
 
 def read_message(message):
-    parse(message)
+    index, keyword, message_array = parse(message)
+    if keyword == "contribute":
+        pass
+    elif keyword == "help":
+        pass
+    elif keyword == "register":
+        register(message_array)
+    elif keyword == "unregister":
+        pass
+    elif keyword == "poll":
+        pass
+    elif index == -1:  # Should send an error messages and maybe plus help
+        pass

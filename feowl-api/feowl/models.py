@@ -7,6 +7,13 @@ import settings
 from tastypie.models import create_api_key
 models.signals.post_save.connect(create_api_key, sender=User)
 
+SMS = 0
+EMAIL = 1
+CHANNEL_CHOICES = (
+    (SMS, "SMS"),
+    (EMAIL, "Email")
+)
+
 
 def get_sentinel_user():
     return Contributor.objects.get_or_create(name=settings.ANONYMOUS_USER_NAME, email=settings.ANONYMOUS_EMAIL)[0]
@@ -23,13 +30,6 @@ class Contributor(models.Model):
         (DAILY, 'Daily'),
         (WEEKLY, 'Weekly'),
         (MONTHLY, 'Monthly')
-    )
-
-    SMS = 0
-    EMAIL = 1
-    CHANNEL_CHOICES = (
-        (SMS, "SMS"),
-        (EMAIL, "Email")
     )
 
     name = models.CharField('name', max_length=30, unique=True,
@@ -135,3 +135,18 @@ class PowerReport(models.Model):
             return "{0} at {1}".format(self.contributor, self.happened_at)
         else:
             return "{0}".format(self.happened_at)
+
+
+class Message(models.Model):
+    YES = 0
+    MAYBE = 1
+    NO = 2
+    SOURCE_CHOICES = (
+        (YES, "Yes"),
+        (MAYBE, "Maybe"),
+        (NO, "No")
+    )
+
+    message = models.TextField()
+    source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
+    parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)

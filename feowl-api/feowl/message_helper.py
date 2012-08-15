@@ -35,7 +35,7 @@ def send_message(users, message, channel):
     connection.close()
 
 
-def register(message_array):
+def register(message_array, mobile_number):
     """
         Message: register <contributor_name>
     """
@@ -46,7 +46,7 @@ def register(message_array):
     try:
         contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=pwd)
         contributor.save()
-        msg = "Congratulations, you are now registered on FEOWL, Your password is {0}".format(pwd)
+        msg = "Congratulations, you are now registered on FEOWL! Your password is {0}".format(pwd)
         channel = ""
         send_message([contributor], msg, channel)
     except IntegrityError, e:
@@ -59,7 +59,7 @@ def register(message_array):
 
 
 def parse(message):
-    keywords = ['contribute', 'help', 'register', 'unregister', 'poll']
+    keywords = ['contribute', 'help', 'register', 'unregister']
     message_array = message.split()
     for index, keyword in enumerate(message_array):
         if keyword in keywords:
@@ -68,16 +68,15 @@ def parse(message):
 
 
 def read_message(message):
+    mobile_number = "test_number"
     index, keyword, message_array = parse(message)
     if keyword == "contribute":
         pass
     elif keyword == "help":
         pass
     elif keyword == "register":
-        register(message_array)
+        register(message_array, mobile_number)
     elif keyword == "unregister":
-        pass
-    elif keyword == "poll": #doesn't exist - should be deleted
         pass
     elif index == -1:  # Should send an error messages and maybe plus help
         pass

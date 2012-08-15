@@ -1,5 +1,5 @@
 from django.core.mail import EmailMultiAlternatives, get_connection
-from django.db import IntegrityError
+from django.db import IntegrityError, DoesNotExist
 from django.template.loader import get_template
 from django.template import Context
 from django.utils.translation import ugettext_lazy as _
@@ -39,13 +39,20 @@ def register(message_array, mobile_number):
     """
         Message: register <contributor_name>
     """
-    from feowl.models import Contributor
+    from feowl.models import Contributor, Device
     from pwgen import pwgen
     pwd = pwgen(10, no_symbols=True)
     mobile_number = pwd  # We get it as a second parameter
     try:
+        try:
+            device = Device.objects.get(phone_number=mobile_number)
+        except DoesNotExist, e:
+            device = Device(phone_number=mobile_number)
+            device.save()
         contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=pwd)
         contributor.save()
+        device.contributor = contributor
+        device.save()
         msg = "Congratulations, you are now registered on FEOWL! Your password is {0}".format(pwd)
         channel = ""
         send_message([contributor], msg, channel)

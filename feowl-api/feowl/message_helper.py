@@ -7,6 +7,10 @@ from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 import settings
 
+from feowl.models import Contributor, Device
+
+#TODO: optimize the use of send_message in the functions
+
 
 def send_message(users, message, channel):
     email_messages = []
@@ -39,14 +43,13 @@ def register(message_array, mobile_number):
     """
         Message: register <contributor_name>
     """
-    from feowl.models import Contributor, Device
     from pwgen import pwgen
     pwd = pwgen(10, no_symbols=True)
     mobile_number = pwd  # We get it as a second parameter
     try:
         try:
             device = Device.objects.get(phone_number=mobile_number)
-        except DoesNotExist, e:
+        except DoesNotExist:
             device = Device(phone_number=mobile_number)
             device.save()
         contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=pwd)
@@ -63,6 +66,17 @@ def register(message_array, mobile_number):
         elif msg.find("email") != -1:
             return "Email already exist. Please use an other one."
         return "Unkown Error please try later to register"
+
+
+def unregister(mobile_number):
+    """
+        Message: unregister
+    """
+    try:
+        device = Device.objects.get(phone_number=mobile_number)
+    except DoesNotExist:
+        return "Your mobile phone is not registered"
+    Contributor.objects.get(pk=device.contributor.id).delete()
 
 
 def parse(message):
@@ -84,6 +98,6 @@ def read_message(message):
     elif keyword == "register":
         register(message_array, mobile_number)
     elif keyword == "unregister":
-        pass
+        unregister(mobile_number)
     elif index == -1:  # Should send an error messages and maybe plus help
         pass

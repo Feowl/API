@@ -31,6 +31,12 @@ class Contributor(models.Model):
         (WEEKLY, 'Weekly'),
         (MONTHLY, 'Monthly')
     )
+    ACTIVE = 0
+    INACTIVE = 1
+    STATUS_CHOICES = (
+        (ACTIVE, "Active"),
+        (INACTIVE, "Inactive ")
+    )
 
     name = models.CharField('name', max_length=30, unique=True,
         help_text='Required. 30 characters or fewer. Letters, numbers and '
@@ -44,6 +50,7 @@ class Contributor(models.Model):
     frequency = models.PositiveIntegerField(choices=FREQUENCY_CHOICES, default=DAILY, blank=True)
     channel = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL, blank=True)
     refunds = models.PositiveIntegerField(default=0, blank=True)
+    status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=ACTIVE, blank=True)
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)

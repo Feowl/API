@@ -43,6 +43,7 @@ class Contributor(models.Model):
     enquiry = models.DateField(null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCY_CHOICES, default=DAILY, blank=True)
     channel = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL, blank=True)
+    refunds = models.PositiveIntegerField(default=0, blank=True)
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)

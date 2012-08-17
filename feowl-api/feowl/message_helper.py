@@ -63,6 +63,10 @@ def contribute(message_array, mobile_number):
         # Check if we ask this user to contribute
         if device.contributor.enquiry != datetime.today().date():  # Maybe we have to check if it was yesterday
             return "We dont ask this user"  # END
+        if not message_array[1].replace(",", "").isdigit():
+            return "Duration is not a number"
+        if message_array[2].lower().capitalize() not in ("Douala1", "Douala2", "Douala3", "Douala4", "Douala5"):
+            return "Area is not in the list"
     except DoesNotExist:
         raise
 
@@ -103,7 +107,7 @@ def unregister(mobile_number):
     try:
         device = Device.objects.get(phone_number=mobile_number)
     except DoesNotExist:
-        return "Your mobile phone is not registered"
+        return "Your mobile phone is not registered"  # Some error message ?
     Contributor.objects.get(pk=device.contributor.id).delete()
 
 
@@ -113,7 +117,7 @@ def parse(message):
     for index, keyword in enumerate(message_array):
         if keyword in keywords:
             return index, keyword, message_array
-    return -1, "Bad Keyword", "No clearly keyword in the string"
+    return -1, "Bad Keyword", ["No clearly keyword in the string"]
 
 
 def read_message(message):
@@ -128,4 +132,4 @@ def read_message(message):
     elif keyword == "unregister":
         unregister(mobile_number)
     elif index == -1:  # Should send an error messages and maybe plus help
-        pass
+        return "Something went wrong"

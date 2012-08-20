@@ -1,5 +1,4 @@
-from django.db import IntegrityError, DoesNotExist
-
+from django.db import IntegrityError
 from datetime import datetime
 
 from feowl.models import Contributor, Device
@@ -44,7 +43,7 @@ def contribute(message_array, mobile_number):
             return "Duration is not a number"
         if message_array[2].lower().capitalize() not in ("Douala1", "Douala2", "Douala3", "Douala4", "Douala5"):
             return "Area is not in the list"
-    except DoesNotExist:
+    except Device.DoesNotExist:
         raise
 
 
@@ -58,7 +57,7 @@ def register(message_array, mobile_number):
     try:
         try:
             device = Device.objects.get(phone_number=mobile_number)
-        except DoesNotExist:
+        except Device.DoesNotExist:
             device = Device(phone_number=mobile_number)
             device.save()
         contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=pwd)
@@ -83,7 +82,7 @@ def unregister(mobile_number):
     """
     try:
         device = Device.objects.get(phone_number=mobile_number)
-    except DoesNotExist:
+    except Device.DoesNotExist:
         return "Your mobile phone is not registered"  # Some error message ?
     Contributor.objects.get(pk=device.contributor.id).delete()
 

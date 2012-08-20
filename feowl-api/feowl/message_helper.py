@@ -97,8 +97,7 @@ def parse(message):
     return -1, "Bad Keyword", ["No clearly keyword in the string"]
 
 
-def read_message(message):
-    mobile_number = "test_number"
+def read_message(message, mobile_number):
     index, keyword, message_array = parse(message)
     if keyword == "contribute":
         contribute(message_array, mobile_number)

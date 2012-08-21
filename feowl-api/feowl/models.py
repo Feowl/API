@@ -33,9 +33,11 @@ class Contributor(models.Model):
     )
     ACTIVE = 0
     INACTIVE = 1
+    UNKNOWN = 2
     STATUS_CHOICES = (
         (ACTIVE, "Active"),
-        (INACTIVE, "Inactive ")
+        (INACTIVE, "Inactive "),
+        (UNKNOWN, "Unknown")
     )
 
     name = models.CharField('name', max_length=30, unique=True,

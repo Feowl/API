@@ -2,6 +2,7 @@ from django.db import IntegrityError
 from django.db.models import F
 
 from datetime import datetime
+from pwgen import pwgen
 import re
 
 from feowl.models import Contributor, Device, PowerReport, Area, Message, SMS
@@ -74,7 +75,6 @@ def register(mobile_number):
     """
         Message: register
     """
-    from pwgen import pwgen
     pwd = pwgen(10, no_symbols=True)
     try:
         try:
@@ -114,6 +114,20 @@ def unregister(mobile_number):
         return "Your mobile phone is not registered"  # Some error message ?
 
 
+def invalid(mobile_number):
+    """
+        Message: <something wrong>
+    """
+    try:
+        device = Device.objects.get(phone_number=mobile_number)
+    except Device.DoesNotExist:
+        pwd = pwgen(10, no_symbols=True)
+        contributor = Contributor(name=mobile_number, email=mobile_number + "@feowl.com", password=pwd, status=Contributor.UNKNOWN)
+        contributor.save()
+        device = Device(phone_number=mobile_number, contributor=contributor)
+        device.save()
+
+
 def parse(message):
     keywords = ['contribute', 'help', 'register', 'unregister']
     message_array = message.split()
@@ -134,4 +148,5 @@ def read_message(message, mobile_number):
     elif keyword == "unregister":
         unregister(mobile_number)
     elif index == -1:  # Should send an error messages and maybe plus help
+        invalid(mobile_number)
         return "Something went wrong"

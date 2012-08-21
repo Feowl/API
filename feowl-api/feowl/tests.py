@@ -521,3 +521,6 @@ class MessagingTestCase(unittest.TestCase):
         contributors = Contributor.objects.all()
         self.assertEqual(len(devices), 1)
         self.assertEqual(len(contributors), 1)
+
+    def test_zcontribute(self):
+        read_message("contribute 60, Douala1", "32423423423")

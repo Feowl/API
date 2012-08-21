@@ -1,7 +1,9 @@
 from django.db import IntegrityError
-from datetime import datetime
 
-from feowl.models import Contributor, Device
+from datetime import datetime
+import re
+
+from feowl.models import Contributor, Device, PowerReport, Area
 
 #TODO: optimize the use of send_message in the functions
 
@@ -23,7 +25,8 @@ def contribute(message_array, mobile_number):
         # Check if user exist else create a inactive user
         if device.contributor == None:
             try:
-                contributor = Contributor(name=mobile_number, email=mobile_number + "@feowl.com", status=Contributor.INACTIVE)
+                contributor = Contributor(name=mobile_number,
+                    email=mobile_number + "@feowl.com", status=Contributor.INACTIVE)
                 contributor.save()
                 device.contributor = contributor.id
                 device.save()
@@ -38,10 +41,19 @@ def contribute(message_array, mobile_number):
         # Check if we ask this user to contribute
         if device.contributor.enquiry != datetime.today().date():  # Maybe we have to check if it was yesterday
             return "We dont ask this user"  # END
+        # Check if the duration a digit and and remove the default comma
         if not message_array[1].replace(",", "").isdigit():
             return "Duration is not a number"
-        if message_array[2].lower().capitalize() not in ("Douala1", "Douala2", "Douala3", "Douala4", "Douala5"):
+        # Some simple maybe parsing
+        msg_area = message_array[2].lower().capitalize()
+        if msg_area not in ("Douala1", "Douala2", "Douala3", "Douala4", "Douala5"):
             return "Area is not in the list"
+        #TODO: We should make clear names for the area that we dont get hazle sometimes
+        area_id = re.findall(r'\d+', msg_area)[0]
+        area = Area.objects.get(pk=area_id)
+        report = PowerReport(duration=message_array[1], contributor=contributor, device=device,
+                    area=area, happened_at=datetime.today().date())
+        report.save()
     except Device.DoesNotExist:
         raise
 
@@ -58,7 +70,8 @@ def register(message_array, mobile_number):
         except Device.DoesNotExist:
             device = Device(phone_number=mobile_number)
             device.save()
-        contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=mobile_number)
+        contributor = Contributor(name=message_array[1],
+            email=mobile_number + "@feowl.com", password=mobile_number)
         contributor.save()
         device.contributor = contributor
         device.save()

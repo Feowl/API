@@ -184,7 +184,7 @@ class PowerReportAggregatedResource(Resource):
     pos_neg_ratio = fields.DecimalField('pos_neg_ratio', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
 
     class Meta:
-        resource_name = 'aggregation'
+        resource_name = 'reports-aggregation'
         object_class = GenericResponseObject
         include_resource_uri = False
 
@@ -195,13 +195,6 @@ class PowerReportAggregatedResource(Resource):
         authorization = DjangoAuthorization()
 
         #TODO: we need a custom validation class for this as there is no model...
-
-    def base_urls(self):
-        return [
-            url(r"^(?P<resource_name>%s)/reports/$" % self._meta.resource_name, self.wrap_view('dispatch_list_aggregated'), name="api_dispatch_list_aggregated"),
-            url(r"^(?P<resource_name>%s)/reports/schema/$" % self._meta.resource_name, self.wrap_view('get_schema'), name='api_get_schema')
-        ]
-
     def dispatch_list_aggregated(self, request, resource_name, **kwargs):
         return self.dispatch_list(request, **kwargs)
 
@@ -252,7 +245,7 @@ class PowerCutDurations(Resource):
     proportion = fields.DecimalField('proportion', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
 
     class Meta:
-        resource_name = 'aggregation'
+        resource_name = 'reports-distribution'
         object_class = GenericResponseObject
         include_resource_uri = False
 
@@ -263,13 +256,6 @@ class PowerCutDurations(Resource):
         authorization = DjangoAuthorization()
 
         #TODO: we need a custom validation class for this as there is no model...
-
-    def base_urls(self):
-        return [
-            url(r"^(?P<resource_name>%s)/distribution/$" % self._meta.resource_name, self.wrap_view('dispatch_list_aggregated'), name="api_dispatch_list_aggregated"),
-            url(r"^(?P<resource_name>%s)/distribution/schema/$" % self._meta.resource_name, self.wrap_view('get_schema'), name='api_get_schema')
-        ]
-
     def dispatch_list_aggregated(self, request, resource_name, **kwargs):
         return self.dispatch_list(request, **kwargs)
 

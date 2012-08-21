@@ -489,15 +489,15 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(devices), 0)
         self.assertEqual(len(contributors), 0)
 
-        read_message("register timi", "32423423423")
+        read_message("register", "32423423423")
 
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
         self.assertEqual(len(devices), 1)
         self.assertEqual(len(contributors), 1)
 
-        timi = Contributor.objects.get(name="timi")
-        self.assertEqual(timi.name, "timi")
+        timi = Contributor.objects.get(name="32423423423")
+        self.assertEqual(timi.name, "32423423423")
         timi_device = Device.objects.get(phone_number="32423423423")
         self.assertEqual(timi_device.phone_number, "32423423423")
 

@@ -58,9 +58,9 @@ def contribute(message_array, mobile_number):
         raise
 
 
-def register(message_array, mobile_number):
+def register(mobile_number):
     """
-        Message: register <contributor_name>
+        Message: register
     """
     from pwgen import pwgen
     pwd = pwgen(10, no_symbols=True)
@@ -70,8 +70,8 @@ def register(message_array, mobile_number):
         except Device.DoesNotExist:
             device = Device(phone_number=mobile_number)
             device.save()
-        contributor = Contributor(name=message_array[1],
-            email=mobile_number + "@feowl.com", password=mobile_number)
+        contributor = Contributor(name=mobile_number,
+            email=mobile_number + "@feowl.com", password=pwd)
         contributor.save()
         device.contributor = contributor
         device.save()
@@ -118,7 +118,7 @@ def read_message(message, mobile_number):
     elif keyword == "help":
         pass
     elif keyword == "register":
-        register(message_array, mobile_number)
+        register(mobile_number)
     elif keyword == "unregister":
         unregister(mobile_number)
     elif index == -1:  # Should send an error messages and maybe plus help

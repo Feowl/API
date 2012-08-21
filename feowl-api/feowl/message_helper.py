@@ -10,9 +10,8 @@ def send_message(users, message, channel):
     for user in users:
         if user.channel == "SMS":
             # Make sure that we have an phone number before sending an SMS
-            pass
-        user.enquiry = datetime.today().date()
-        user.save()
+            user.enquiry = datetime.today().date()
+            user.save()
 
 
 def contribute(message_array, mobile_number):

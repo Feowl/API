@@ -42,7 +42,8 @@ def contribute(message_array, mobile_number):
         if device.contributor.enquiry != datetime.today().date():  # Maybe we have to check if it was yesterday
             return "We dont ask this user"  # END
         # Check if the duration a digit and and remove the default comma
-        if not message_array[1].replace(",", "").isdigit():
+        duration = message_array[1].replace(",", "")
+        if not duration.isdigit():
             return "Duration is not a number"
         # Some simple maybe parsing
         msg_area = message_array[2].lower().capitalize()
@@ -51,7 +52,7 @@ def contribute(message_array, mobile_number):
         #TODO: We should make clear names for the area that we dont get hazle sometimes
         area_id = re.findall(r'\d+', msg_area)[0]
         area = Area.objects.get(pk=area_id)
-        report = PowerReport(duration=message_array[1], contributor=contributor, device=device,
+        report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                     area=area, happened_at=datetime.today().date())
         report.save()
     except Device.DoesNotExist:

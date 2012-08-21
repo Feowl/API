@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.test.client import Client
+from django.utils import unittest
 
 from tastypie.models import create_api_key
 from tastypie_test import ResourceTestCase
@@ -10,7 +11,7 @@ from feowl.models import PowerReport, Area, Contributor, Device
 from feowl.message_helper import read_message
 
 import json
-from django.utils import unittest
+from datetime import datetime
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
@@ -478,6 +479,7 @@ class DeviceResourceTest(ResourceTestCase):
 
 
 class MessagingTestCase(unittest.TestCase):
+    # TODO use setup method
     def test_basic_stuff(self):
         a = ['larry', 'curly', 'moe']
         self.assertEqual(a[0], 'larry')
@@ -523,4 +525,17 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(contributors), 1)
 
     def test_zcontribute(self):
+        # Missing enquiry
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 0)
         read_message("contribute 60, Douala1", "32423423423")
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 0)
+
+        # With enquiry from today
+        contributor = Contributor.objects.get(name="32423423423")
+        contributor.enquiry = datetime.today().date()
+        contributor.save()
+        read_message("contribute 60, Douala1", "32423423423")
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 1)

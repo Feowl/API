@@ -42,28 +42,28 @@ class Contributor(models.Model):
     def __unicode__(self):
         return self.name
 
-    def save(self):
-        # Check if it already exist
-        created = self.id is not None
-        super(Contributor, self).save()
-        # Send an email if this are a new contributor
-        if not created:
-            from django.core.mail import EmailMultiAlternatives
-            from django.template import Context
-            from django.template.loader import get_template
-            from django.utils.translation import ugettext_lazy as _
+    # def save(self):
+    #     # Check if it already exist
+    #     created = self.id is not None
+    #     super(Contributor, self).save()
+    #     # Send an email if this are a new contributor
+    #     if not created:
+    #         from django.core.mail import EmailMultiAlternatives
+    #         from django.template import Context
+    #         from django.template.loader import get_template
+    #         from django.utils.translation import ugettext_lazy as _
 
-            plaintext = get_template('email/registration_confirmation.txt')
-            html = get_template('email/registration_confirmation.html')
-            subject = _('Welcome to Feowl')
+    #         plaintext = get_template('email/registration_confirmation.txt')
+    #         html = get_template('email/registration_confirmation.html')
+    #         subject = _('Welcome to Feowl')
 
-            d = Context({'name': self.name, 'email_language': self.language})
-            text_content = plaintext.render(d)
-            html_content = html.render(d)
+    #         d = Context({'name': self.name, 'email_language': self.language})
+    #         text_content = plaintext.render(d)
+    #         html_content = html.render(d)
 
-            msg = EmailMultiAlternatives(subject, text_content, settings.REGISTRATION_FROM, [self.email])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+    #         msg = EmailMultiAlternatives(subject, text_content, settings.REGISTRATION_FROM, [self.email])
+    #         msg.attach_alternative(html_content, "text/html")
+    #         msg.send()
 
 
 class Device(models.Model):

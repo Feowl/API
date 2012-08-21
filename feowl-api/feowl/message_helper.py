@@ -1,9 +1,10 @@
 from django.db import IntegrityError
+from django.db.models import F
 
 from datetime import datetime
 import re
 
-from feowl.models import Contributor, Device, PowerReport, Area
+from feowl.models import Contributor, Device, PowerReport, Area, Message, SMS
 
 #TODO: optimize the use of send_message in the functions
 
@@ -40,14 +41,20 @@ def contribute(message_array, mobile_number):
             return "User is created"  # END
         # Check if we ask this user to contribute
         if device.contributor.enquiry != datetime.today().date():  # Maybe we have to check if it was yesterday
+            msg = Message(message=" ".join(message_array), source=SMS)
+            msg.save()
             return "We dont ask this user"  # END
         # Check if the duration a digit and and remove the default comma
         duration = message_array[1].replace(",", "")
         if not duration.isdigit():
+            msg = Message(message=" ".join(message_array), source=SMS)
+            msg.save()
             return "Duration is not a number"
         # Some simple maybe parsing
         msg_area = message_array[2].lower().capitalize()
         if msg_area not in ("Douala1", "Douala2", "Douala3", "Douala4", "Douala5"):
+            msg = Message(message=" ".join(message_array), source=SMS)
+            msg.save()
             return "Area is not in the list"
         #TODO: We should make clear names for the area that we dont get hazle sometimes
         area_id = re.findall(r'\d+', msg_area)[0]
@@ -55,6 +62,10 @@ def contribute(message_array, mobile_number):
         report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                     area=area, happened_at=datetime.today().date())
         report.save()
+        msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES)
+        msg.save()
+        # Increment refunds
+        Contributor.objects.filter(pk=device.contributor.id).update(refunds=F('refunds') + 1)
     except Device.DoesNotExist:
         raise
 

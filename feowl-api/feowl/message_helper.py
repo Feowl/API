@@ -53,14 +53,13 @@ def register(message_array, mobile_number):
     """
     from pwgen import pwgen
     pwd = pwgen(10, no_symbols=True)
-    mobile_number = pwd  # We get it as a second parameter
     try:
         try:
             device = Device.objects.get(phone_number=mobile_number)
         except Device.DoesNotExist:
             device = Device(phone_number=mobile_number)
             device.save()
-        contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=pwd)
+        contributor = Contributor(name=message_array[1], email=mobile_number + "@feowl.com", password=mobile_number)
         contributor.save()
         device.contributor = contributor
         device.save()
@@ -82,9 +81,13 @@ def unregister(mobile_number):
     """
     try:
         device = Device.objects.get(phone_number=mobile_number)
+        if device.contributor != None:
+            Contributor.objects.get(pk=device.contributor.id).delete()
+        else:
+            # Should happen not often
+            device.delete()
     except Device.DoesNotExist:
         return "Your mobile phone is not registered"  # Some error message ?
-    Contributor.objects.get(pk=device.contributor.id).delete()
 
 
 def parse(message):

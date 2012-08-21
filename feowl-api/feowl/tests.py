@@ -6,7 +6,8 @@ from django.test.client import Client
 from tastypie.models import create_api_key
 from tastypie_test import ResourceTestCase
 
-from models import PowerReport, Area, Contributor, Device
+from feowl.models import PowerReport, Area, Contributor, Device
+from feowl.message_helper import read_message
 
 import json
 from django.utils import unittest
@@ -483,4 +484,34 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(a[1], 'curly')
 
     def test_register(self):
-        pass
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), 0)
+        self.assertEqual(len(contributors), 0)
+
+        read_message("register timi", "32423423423")
+
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), 1)
+        self.assertEqual(len(contributors), 1)
+
+        timi = Contributor.objects.get(name="timi")
+        self.assertEqual(timi.name, "timi")
+        timi_device = Device.objects.get(phone_number="32423423423")
+        self.assertEqual(timi_device.phone_number, "32423423423")
+
+    def test_unregister(self):
+        devices = Device.objects.all()
+        self.assertEqual(len(devices), 1)
+
+        device = Device(phone_number=3849203843)
+        device.save()
+
+        devices = Device.objects.all()
+        self.assertEqual(len(devices), 2)
+
+        read_message("unregister", "3849203843")
+
+        devices = Device.objects.all()
+        self.assertEqual(len(devices), 1)

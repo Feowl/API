@@ -505,13 +505,19 @@ class MessagingTestCase(unittest.TestCase):
         devices = Device.objects.all()
         self.assertEqual(len(devices), 1)
 
-        device = Device(phone_number=3849203843)
+        contributor = Contributor(name="testuser", email="testuser@email.com", password="test")
+        contributor.save()
+        device = Device(phone_number=3849203843, contributor=contributor)
         device.save()
 
         devices = Device.objects.all()
+        contributors = Contributor.objects.all()
         self.assertEqual(len(devices), 2)
+        self.assertEqual(len(contributors), 2)
 
         read_message("unregister", "3849203843")
 
         devices = Device.objects.all()
+        contributors = Contributor.objects.all()
         self.assertEqual(len(devices), 1)
+        self.assertEqual(len(contributors), 1)

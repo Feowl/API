@@ -480,6 +480,8 @@ class DeviceResourceTest(ResourceTestCase):
 
 
 class MessagingTestCase(unittest.TestCase):
+    # We have to run this test only in the complete test env is depends
+    # on it or we flush the database if come to this test
     # TODO use setup method
     def test_basic_stuff(self):
         a = ['larry', 'curly', 'moe']
@@ -489,14 +491,14 @@ class MessagingTestCase(unittest.TestCase):
     def test_register(self):
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 0)
+        self.assertEqual(len(devices), 1)
         self.assertEqual(len(contributors), 0)
 
         read_message("register", "32423423423")
 
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 1)
+        self.assertEqual(len(devices), 2)
         self.assertEqual(len(contributors), 1)
 
         timi = Contributor.objects.get(name="32423423423")
@@ -506,7 +508,7 @@ class MessagingTestCase(unittest.TestCase):
 
     def test_unregister(self):
         devices = Device.objects.all()
-        self.assertEqual(len(devices), 1)
+        self.assertEqual(len(devices), 2)
 
         contributor = Contributor(name="testuser", email="testuser@email.com", password="test")
         contributor.save()
@@ -515,23 +517,23 @@ class MessagingTestCase(unittest.TestCase):
 
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 2)
+        self.assertEqual(len(devices), 3)
         self.assertEqual(len(contributors), 2)
 
         read_message("unregister", "3849203843")
 
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 1)
+        self.assertEqual(len(devices), 2)
         self.assertEqual(len(contributors), 1)
 
     def test_zcontribute(self):
         # Missing enquiry
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 0)
+        self.assertEqual(len(reports), 5)
         read_message("contribute 60, Douala1", "32423423423")
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 0)
+        self.assertEqual(len(reports), 5)
 
         # With enquiry from today
         contributor = Contributor.objects.get(name="32423423423")
@@ -540,6 +542,6 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(contributor.refunds, 0)
         read_message("contribute 60, Douala1", "32423423423")
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 1)
+        self.assertEqual(len(reports), 6)
         contributor = Contributor.objects.get(name="32423423423")
         self.assertEqual(contributor.refunds, 1)

@@ -80,6 +80,22 @@ class ContributorResource(ModelResource):
     def dehydrate_password(self, bundle):
         return settings.DUMMY_PASSWORD
 
+    def obj_create(self, bundle, request=None, **kwargs):
+        from django.db import IntegrityError
+        from tastypie.exceptions import BadRequest
+        try:
+            bundle = super(ContributorResource, self).obj_create(bundle, request, **kwargs)
+        except IntegrityError, e:
+            msg = ""
+            import pdb
+            pdb.set_trace()
+            if e.message.find("name") != -1:
+                msg = 'That name already exists'
+            elif e.message.find("email") != -1:
+                msg = 'That email already exists'
+            raise BadRequest(msg)
+        return bundle
+
 
 class DeviceResource(ModelResource):
     contributor = fields.ForeignKey(ContributorResource, 'contributor', null=True)

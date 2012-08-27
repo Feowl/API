@@ -27,9 +27,9 @@ class Contributor(models.Model):
 
     name = models.CharField('name', max_length=30, unique=True,
         help_text='Required. 30 characters or fewer. Letters, numbers and '
-                    '@/./+/-/_ characters', blank=True)
+                    '@/./+/-/_ characters', blank=True, editable=False)
     password = models.CharField('password', max_length=128, blank=True)
-    email = models.EmailField('e-mail address', blank=True, unique=True)
+    email = models.EmailField('e-mail address', blank=True, unique=True, editable=False)
 
     credibility = models.DecimalField(max_digits=3, decimal_places=2, default='1.00', blank=True)
     language = models.CharField(max_length=5, default="EN", blank=True)

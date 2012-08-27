@@ -27,7 +27,7 @@ class ContributorResource(ModelResource):
         authorization = DjangoAuthorization()
         validation = ModelFormValidation(form_class=ContributorForm)
 
-        fields = ['id', 'email', 'password', 'name', 'language']
+        fields = ['id', 'email', 'password', 'name', 'language', 'frequency']
 
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'delete']

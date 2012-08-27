@@ -483,11 +483,6 @@ class MessagingTestCase(unittest.TestCase):
     # We have to run this test only in the complete test env is depends
     # on it or we flush the database if come to this test
     # TODO use setup method
-    def test_basic_stuff(self):
-        a = ['larry', 'curly', 'moe']
-        self.assertEqual(a[0], 'larry')
-        self.assertEqual(a[1], 'curly')
-
     def test_register(self):
         devices = Device.objects.all()
         contributors = Contributor.objects.all()

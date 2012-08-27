@@ -290,7 +290,8 @@ class ContributorResourceTest(ResourceTestCase):
             'email': 'tobias@test.de',
             'password': settings.DUMMY_PASSWORD,
             'resource_uri': self.detail_url,
-            'language': 'EN'  # EN is the default value
+            'language': 'EN',  # EN is the default value
+            'frequency': 1
         })
 
     def test_get_detail_unauthenticated(self):
@@ -303,7 +304,7 @@ class ContributorResourceTest(ResourceTestCase):
         self.assertValidJSONResponse(resp)
 
         # We use ``assertKeys`` here to just verify the keys, not all the data.
-        self.assertKeys(self.deserialize(resp), ['id', 'name', 'email', 'password', 'resource_uri', 'language'])
+        self.assertKeys(self.deserialize(resp), ['id', 'name', 'email', 'password', 'resource_uri', 'language', 'frequency'])
         self.assertEqual(self.deserialize(resp)['name'], "Tobias")
 
     def test_post_list_unauthenticated(self):

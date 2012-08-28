@@ -24,11 +24,11 @@ def contribute(message_array, mobile_number):
     """
     try:
         device = Device.objects.get(phone_number=mobile_number)
-        # Check if user exist else create a inactive user
+        # Check if user exist else create a unknow user
         if device.contributor == None:
             try:
                 contributor = Contributor(name=mobile_number,
-                    email=mobile_number + "@feowl.com", status=Contributor.INACTIVE)
+                    email=mobile_number + "@feowl.com", status=Contributor.UNKNOWN)
                 contributor.save()
                 device.contributor = contributor.id
                 device.save()

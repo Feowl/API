@@ -64,7 +64,6 @@ def contribute(message_array, mobile_number):
             msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
             return "Area is not in the list"
-        #TODO: We should make clear names for the area that we dont get hazle sometimes
         area = Area.objects.get(name=msg_area)
         report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                     area=area, happened_at=datetime.today().date())

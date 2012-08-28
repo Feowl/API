@@ -122,6 +122,11 @@ def unregister(mobile_number, message_array):
         return "Your mobile phone is not registered"  # Some error message ? NO is only logging like every return
 
 
+def help(mobile_number, message_array):
+    msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO, keyword=message_array[0])
+    msg.save()
+
+
 def invalid(mobile_number, message_array):
     """
         Message: <something wrong>
@@ -152,7 +157,7 @@ def read_message(message, mobile_number):
     if keyword == "contribute":
         contribute(message_array, mobile_number)
     elif keyword == "help":
-        pass
+        help(mobile_number, message_array)
     elif keyword == "register":
         register(mobile_number, message_array)
     elif keyword == "stop":

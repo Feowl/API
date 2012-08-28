@@ -160,3 +160,4 @@ class Message(models.Model):
     message = models.TextField()
     source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)
+    keyword = models.CharField(max_length=30, default="Default Keyword")

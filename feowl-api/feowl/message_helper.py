@@ -152,5 +152,5 @@ def read_message(message, mobile_number):
         invalid(mobile_number)
         return "Something went wrong"
 
-#TODO: Add column keyword to message and save everywhere message
+#TODO: save everywhere message and update function calls
 #TODO: Check refunds for keywords

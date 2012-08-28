@@ -56,14 +56,16 @@ def contribute(message_array, mobile_number):
             return "Duration is not a number"
         # Some simple maybe parsing
         msg_area = message_array[2].lower().capitalize()
-        #TODO: Get all names from areas instead of this list
-        if msg_area not in ("Douala1", "Douala2", "Douala3", "Douala4", "Douala5"):
+        areas_obj = Area.objects.all()
+        areas = []
+        [areas.append(area.name) for area in areas_obj]
+
+        if msg_area not in areas:
             msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
             return "Area is not in the list"
         #TODO: We should make clear names for the area that we dont get hazle sometimes
-        area_id = re.findall(r'\d+', msg_area)[0]
-        area = Area.objects.get(pk=area_id)
+        area = Area.objects.get(name=msg_area)
         report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                     area=area, happened_at=datetime.today().date())
         report.save()

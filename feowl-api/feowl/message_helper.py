@@ -21,6 +21,7 @@ def send_message(users, message, channel):
 def contribute(message_array, mobile_number):
     """
         Message: contribute <duration>, <area>
+        TODO: Message: contribute <Nb of reports> <area><duration>, <area><duration>
     """
     try:
         device = Device.objects.get(phone_number=mobile_number)
@@ -45,6 +46,8 @@ def contribute(message_array, mobile_number):
             msg = Message(message=" ".join(message_array), source=SMS)
             msg.save()
             return "We dont ask this user"  # END
+        #TODO: Check if already a message is processed maybe with a new column response
+
         # Check if the duration a digit and and remove the default comma
         duration = message_array[1].replace(",", "")
         if not duration.isdigit():
@@ -53,6 +56,7 @@ def contribute(message_array, mobile_number):
             return "Duration is not a number"
         # Some simple maybe parsing
         msg_area = message_array[2].lower().capitalize()
+        #TODO: Get all names from areas instead of this list
         if msg_area not in ("Douala1", "Douala2", "Douala3", "Douala4", "Douala5"):
             msg = Message(message=" ".join(message_array), source=SMS)
             msg.save()
@@ -68,7 +72,7 @@ def contribute(message_array, mobile_number):
         # Increment refunds
         Contributor.objects.filter(pk=device.contributor.id).update(refunds=F('refunds') + 1)
     except Device.DoesNotExist:
-        raise
+        return "something"
 
 
 def register(mobile_number):
@@ -80,16 +84,13 @@ def register(mobile_number):
         try:
             device = Device.objects.get(phone_number=mobile_number)
         except Device.DoesNotExist:
-            device = Device(phone_number=mobile_number)
+            contributor = Contributor(name=mobile_number,
+                email=mobile_number + "@feowl.com", password=pwd)
+            contributor.save()
+            device = Device(phone_number=mobile_number, contributor=contributor)
             device.save()
-        contributor = Contributor(name=mobile_number,
-            email=mobile_number + "@feowl.com", password=pwd)
-        contributor.save()
-        device.contributor = contributor
-        device.save()
-        msg = "Congratulations, you are now registered on FEOWL! Your password is {0}".format(pwd)
-        channel = ""
-        send_message([contributor], msg, channel)
+            msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
+            send_message([contributor], msg, "SMS")
     except IntegrityError, e:
         msg = e.message
         if msg.find("name") != -1:
@@ -101,7 +102,7 @@ def register(mobile_number):
 
 def unregister(mobile_number):
     """
-        Message: unregister
+        Message: stop
     """
     try:
         device = Device.objects.get(phone_number=mobile_number)
@@ -111,7 +112,7 @@ def unregister(mobile_number):
             # Should happen not often
             device.delete()
     except Device.DoesNotExist:
-        return "Your mobile phone is not registered"  # Some error message ?
+        return "Your mobile phone is not registered"  # Some error message ? NO is only logging like every return
 
 
 def invalid(mobile_number):
@@ -129,11 +130,11 @@ def invalid(mobile_number):
 
 
 def parse(message):
-    keywords = ['contribute', 'help', 'register', 'unregister']
+    keywords = ['contribute', 'help', 'register', 'stop']
     message_array = message.split()
     for index, keyword in enumerate(message_array):
-        if keyword in keywords:
-            return index, keyword, message_array
+        if keyword.lower() in keywords:
+            return index, keyword.lower(), message_array
     return -1, "Bad Keyword", ["No clearly keyword in the string"]
 
 
@@ -145,8 +146,11 @@ def read_message(message, mobile_number):
         pass
     elif keyword == "register":
         register(mobile_number)
-    elif keyword == "unregister":
+    elif keyword == "stop":
         unregister(mobile_number)
     elif index == -1:  # Should send an error messages and maybe plus help
         invalid(mobile_number)
         return "Something went wrong"
+
+#TODO: Add column keyword to message and save everywhere message
+#TODO: Check refunds for keywords

@@ -515,7 +515,7 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(devices), 3)
         self.assertEqual(len(contributors), 2)
 
-        read_message("unregister", "3849203843")
+        read_message("stop", "3849203843")
 
         devices = Device.objects.all()
         contributors = Contributor.objects.all()

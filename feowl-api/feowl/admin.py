@@ -6,26 +6,28 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.views.decorators.debug import sensitive_post_parameters
-from django.http import HttpResponseRedirect, Http404
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.template.response import TemplateResponse
 from django.contrib import messages
-
+from django.core.exceptions import PermissionDenied
 from tastypie.admin import ApiKeyInline
 from tastypie.models import ApiAccess, ApiKey
 
-from models import PowerReport, Area, Device, Contributor
+from models import PowerReport, Area, Device, Contributor, Message
 from forms import ContributorAdminForm
+
 
 class UserModelAdmin(UserAdmin):
     inlines = UserAdmin.inlines + [ApiKeyInline]
 
+
 class ContributorAdmin(admin.ModelAdmin):
     form = ContributorAdminForm
-    change_password_form = AdminPasswordChangeForm    
-    change_user_password_template = None    
+    change_password_form = AdminPasswordChangeForm
+    change_user_password_template = None
 
     def get_urls(self):
         from django.conf.urls import patterns
@@ -80,6 +82,7 @@ admin.site.register(PowerReport, admin_gis.OSMGeoAdmin)
 admin.site.register(Area, admin_gis.OSMGeoAdmin)
 admin.site.register(Contributor, ContributorAdmin)
 admin.site.register(Device)
+admin.site.register(Message)
 
 admin.site.register(ApiKey)
 admin.site.register(ApiAccess)

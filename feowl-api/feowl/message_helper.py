@@ -91,6 +91,7 @@ def register(mobile_number, message_array):
             contributor.save()
             device = Device(phone_number=mobile_number, contributor=contributor)
             device.save()
+            Contributor.objects.filter(pk=device.contributor.id).update(refunds=F('refunds') + 1)
             msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
             send_message([contributor], msg, "SMS")
             msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES, keyword=message_array[0])
@@ -159,5 +160,3 @@ def read_message(message, mobile_number):
     elif index == -1:  # Should send an error messages and maybe plus help
         invalid(mobile_number, message_array)
         return "Something went wrong"
-
-#TODO: Check refunds for keywords

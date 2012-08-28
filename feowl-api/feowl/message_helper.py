@@ -75,7 +75,7 @@ def contribute(message_array, mobile_number):
         return "something"
 
 
-def register(mobile_number):
+def register(mobile_number, message_array):
     """
         Message: register
     """
@@ -91,6 +91,8 @@ def register(mobile_number):
             device.save()
             msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
             send_message([contributor], msg, "SMS")
+            msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES, keyword=message_array[0])
+            msg.save()
     except IntegrityError, e:
         msg = e.message
         if msg.find("name") != -1:
@@ -100,7 +102,7 @@ def register(mobile_number):
         return "Unkown Error please try later to register"
 
 
-def unregister(mobile_number):
+def unregister(mobile_number, message_array):
     """
         Message: stop
     """
@@ -111,11 +113,13 @@ def unregister(mobile_number):
         else:
             # Should happen not often
             device.delete()
+        msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES, keyword=message_array[0])
+        msg.save()
     except Device.DoesNotExist:
         return "Your mobile phone is not registered"  # Some error message ? NO is only logging like every return
 
 
-def invalid(mobile_number):
+def invalid(mobile_number, message_array):
     """
         Message: <something wrong>
     """
@@ -127,6 +131,8 @@ def invalid(mobile_number):
         contributor.save()
         device = Device(phone_number=mobile_number, contributor=contributor)
         device.save()
+    msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO, keyword=message_array[0])
+    msg.save()
 
 
 def parse(message):
@@ -145,12 +151,11 @@ def read_message(message, mobile_number):
     elif keyword == "help":
         pass
     elif keyword == "register":
-        register(mobile_number)
+        register(mobile_number, message_array)
     elif keyword == "stop":
-        unregister(mobile_number)
+        unregister(mobile_number, message_array)
     elif index == -1:  # Should send an error messages and maybe plus help
-        invalid(mobile_number)
+        invalid(mobile_number, message_array)
         return "Something went wrong"
 
-#TODO: save everywhere message and update function calls
 #TODO: Check refunds for keywords

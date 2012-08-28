@@ -43,7 +43,7 @@ def contribute(message_array, mobile_number):
             return "User is created"  # END
         # Check if we ask this user to contribute
         if device.contributor.enquiry != datetime.today().date():  # Maybe we have to check if it was yesterday
-            msg = Message(message=" ".join(message_array), source=SMS)
+            msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
             return "We dont ask this user"  # END
         #TODO: Check if already a message is processed maybe with a new column response
@@ -51,14 +51,14 @@ def contribute(message_array, mobile_number):
         # Check if the duration a digit and and remove the default comma
         duration = message_array[1].replace(",", "")
         if not duration.isdigit():
-            msg = Message(message=" ".join(message_array), source=SMS)
+            msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
             return "Duration is not a number"
         # Some simple maybe parsing
         msg_area = message_array[2].lower().capitalize()
         #TODO: Get all names from areas instead of this list
         if msg_area not in ("Douala1", "Douala2", "Douala3", "Douala4", "Douala5"):
-            msg = Message(message=" ".join(message_array), source=SMS)
+            msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
             return "Area is not in the list"
         #TODO: We should make clear names for the area that we dont get hazle sometimes
@@ -67,7 +67,7 @@ def contribute(message_array, mobile_number):
         report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                     area=area, happened_at=datetime.today().date())
         report.save()
-        msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES)
+        msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES, keyword=message_array[0])
         msg.save()
         # Increment refunds
         Contributor.objects.filter(pk=device.contributor.id).update(refunds=F('refunds') + 1)

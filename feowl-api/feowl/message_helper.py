@@ -10,12 +10,10 @@ from feowl.models import Contributor, Device, PowerReport, Area, Message, SMS
 #TODO: optimize database access
 
 
-def send_message(users, message, channel):
+def send_message(users, message):
     for user in users:
-        if user.channel == "SMS":
-            # Make sure that we have an phone number before sending an SMS
-            user.enquiry = datetime.today().date()
-            user.save()
+        pass
+        # Make sure that we have an phone number before sending an SMS
 
 
 def create_unknown_user(device, mobile_number):
@@ -98,7 +96,7 @@ def register(mobile_number, message_array):
                 device.contributor.password = pwd
                 device.contributor.save()
                 msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
-                send_message([device.contributor], msg, "SMS")
+                send_message([device.contributor], msg)
         except Device.DoesNotExist:
             contributor = Contributor(name=mobile_number,
                 email=mobile_number + "@feowl.com", password=pwd)
@@ -107,7 +105,7 @@ def register(mobile_number, message_array):
             device.save()
             Contributor.objects.filter(pk=device.contributor.id).update(refunds=F('refunds') + 1)
             msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
-            send_message([contributor], msg, "SMS")
+            send_message([contributor], msg)
             msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES, keyword=message_array[0])
             msg.save()
     except IntegrityError, e:
@@ -150,9 +148,9 @@ def help(mobile_number, message_array):
         device = Device.objects.get(phone_number=mobile_number)
         if device.contributor == None:
             return create_unknown_user(device, mobile_number)
-        send_message([device.contributor], first_help_msg, "SMS")
-        send_message([device.contributor], second_help_msg, "SMS")
-        send_message([device.contributor], third_help_msg, "SMS")
+        send_message([device.contributor], first_help_msg)
+        send_message([device.contributor], second_help_msg)
+        send_message([device.contributor], third_help_msg)
     except Device.DoesNotExist:
         return "Device does not exist"
     msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO, keyword=message_array[0])

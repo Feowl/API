@@ -122,6 +122,25 @@ def unregister(mobile_number, message_array):
 
 
 def help(mobile_number, message_array):
+    first_help_msg = """To report a powercut, send the district name and it's
+        duration in mn(ex: PC douala10). Please wait for Feowl asking you by
+        sms before answer."""
+    second_help_msg = """To report many powercuts, separate it with a dot(ex:
+        PC akwa10 deido70)"""
+    third_help_msg = """To unsuscribe, send STOP. If you wasn't in Douala, send
+         OUT. For each valid sms that you send,you'll receive a confirmation
+         and your sms will be refund"""
+
+    try:
+        device = Device.objects.get(phone_number=mobile_number)
+        if device.contributor == None:
+            #TODO: Maybe a new user creation
+            pass
+        send_message([device.contributor], first_help_msg, "SMS")
+        send_message([device.contributor], second_help_msg, "SMS")
+        send_message([device.contributor], third_help_msg, "SMS")
+    except Device.DoesNotExist:
+        return "Device not DoesNotExist"
     msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO, keyword=message_array[0])
     msg.save()
 

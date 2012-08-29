@@ -154,12 +154,12 @@ def invalid(mobile_number, message_array):
     """
     try:
         device = Device.objects.get(phone_number=mobile_number)
+        if device.contributor == None:
+            create_unknown_user(device, mobile_number)
     except Device.DoesNotExist:
-        pwd = pwgen(10, no_symbols=True)
-        contributor = Contributor(name=mobile_number, email=mobile_number + "@feowl.com", password=pwd, status=Contributor.UNKNOWN)
-        contributor.save()
-        device = Device(phone_number=mobile_number, contributor=contributor)
+        device = Device(phone_number=mobile_number)
         device.save()
+        create_unknown_user(device, mobile_number)
     msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO, keyword=message_array[0])
     msg.save()
 

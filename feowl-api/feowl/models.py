@@ -49,6 +49,7 @@ class Contributor(models.Model):
     credibility = models.DecimalField(max_digits=3, decimal_places=2, default='1.00', blank=True)
     language = models.CharField(max_length=5, default="EN", blank=True)
     enquiry = models.DateField(null=True, blank=True)
+    response = models.DateField(null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCY_CHOICES, default=DAILY, blank=True)
     channel = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL, blank=True)
     refunds = models.PositiveIntegerField(default=0, blank=True)

@@ -93,6 +93,12 @@ def register(mobile_number, message_array):
     try:
         try:
             device = Device.objects.get(phone_number=mobile_number)
+            if device.contributor.status == Contributor.UNKNOWN:
+                device.contributor.status = Contributor.ACTIVE
+                device.contributor.password = pwd
+                device.contributor.save()
+                msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
+                send_message([device.contributor], msg, "SMS")
         except Device.DoesNotExist:
             contributor = Contributor(name=mobile_number,
                 email=mobile_number + "@feowl.com", password=pwd)

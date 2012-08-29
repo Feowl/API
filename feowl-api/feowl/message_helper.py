@@ -18,6 +18,23 @@ def send_message(users, message, channel):
             user.save()
 
 
+def create_unknown_user(device, mobile_number):
+    try:
+        contributor = Contributor(name=mobile_number,
+            email=mobile_number + "@feowl.com", status=Contributor.UNKNOWN)
+        contributor.save()
+        device.contributor = contributor.id
+        device.save()
+    except IntegrityError, e:
+        msg = e.message
+        if msg.find("name") != -1:
+            return "Name already exist. Please use an other one"
+        elif msg.find("email") != -1:
+            return "Email already exist. Please use an other one."
+        return "Unkown Error please try later to register"
+    return "User is created"  # END
+
+
 def contribute(message_array, mobile_number):
     """
         Message: contribute <duration>, <area>
@@ -27,20 +44,7 @@ def contribute(message_array, mobile_number):
         device = Device.objects.get(phone_number=mobile_number)
         # Check if user exist else create a unknow user
         if device.contributor == None:
-            try:
-                contributor = Contributor(name=mobile_number,
-                    email=mobile_number + "@feowl.com", status=Contributor.UNKNOWN)
-                contributor.save()
-                device.contributor = contributor.id
-                device.save()
-            except IntegrityError, e:
-                msg = e.message
-                if msg.find("name") != -1:
-                    return "Name already exist. Please use an other one"
-                elif msg.find("email") != -1:
-                    return "Email already exist. Please use an other one."
-                return "Unkown Error please try later to register"
-            return "User is created"  # END
+            return create_unknown_user(device, mobile_number)
         # Check if we ask this user to contribute
         if device.contributor.enquiry != datetime.today().date():  # Maybe we have to check if it was yesterday
             msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
@@ -134,13 +138,12 @@ def help(mobile_number, message_array):
     try:
         device = Device.objects.get(phone_number=mobile_number)
         if device.contributor == None:
-            #TODO: Maybe a new user creation
-            pass
+            return create_unknown_user(device, mobile_number)
         send_message([device.contributor], first_help_msg, "SMS")
         send_message([device.contributor], second_help_msg, "SMS")
         send_message([device.contributor], third_help_msg, "SMS")
     except Device.DoesNotExist:
-        return "Device not DoesNotExist"
+        return "Device does not exist"
     msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO, keyword=message_array[0])
     msg.save()
 

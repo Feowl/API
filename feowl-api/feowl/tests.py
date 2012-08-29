@@ -482,7 +482,8 @@ class DeviceResourceTest(ResourceTestCase):
 class MessagingTestCase(unittest.TestCase):
     # We have to run this test only in the complete test env is depends
     # on it or we flush the database if come to this test
-    # TODO use setup method
+    #TODO: use setup method
+    #TODO: Recheck tests
     def test_register(self):
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
@@ -496,10 +497,11 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(devices), 2)
         self.assertEqual(len(contributors), 1)
 
-        timi = Contributor.objects.get(name="32423423423")
-        self.assertEqual(timi.name, "32423423423")
-        timi_device = Device.objects.get(phone_number="32423423423")
-        self.assertEqual(timi_device.phone_number, "32423423423")
+        contributor = Contributor.objects.get(name="32423423423")
+        self.assertEqual(contributor.name, "32423423423")
+        self.assertEqual(contributor.refunds, 1)
+        device = Device.objects.get(phone_number="32423423423")
+        self.assertEqual(device.phone_number, "32423423423")
 
     def test_unregister(self):
         devices = Device.objects.all()
@@ -534,9 +536,9 @@ class MessagingTestCase(unittest.TestCase):
         contributor = Contributor.objects.get(name="32423423423")
         contributor.enquiry = datetime.today().date()
         contributor.save()
-        self.assertEqual(contributor.refunds, 0)
+        self.assertEqual(contributor.refunds, 1)
         read_message("contribute 60, Douala1", "32423423423")
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 6)
+        self.assertEqual(len(reports), 5)
         contributor = Contributor.objects.get(name="32423423423")
         self.assertEqual(contributor.refunds, 1)

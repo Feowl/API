@@ -75,6 +75,10 @@ class ContributorAdmin(admin.ModelAdmin):
             'admin/auth/user/change_password.html'
         ], context, current_app=self.admin_site.name)
 
+
+class MessageAdmin(admin.ModelAdmin):
+    list_filter = ('keyword', 'parsed')
+
 admin.site.unregister(User)
 admin.site.register(User, UserModelAdmin)
 
@@ -82,7 +86,7 @@ admin.site.register(PowerReport, admin_gis.OSMGeoAdmin)
 admin.site.register(Area, admin_gis.OSMGeoAdmin)
 admin.site.register(Contributor, ContributorAdmin)
 admin.site.register(Device)
-admin.site.register(Message)
+admin.site.register(Message, MessageAdmin)
 
 admin.site.register(ApiKey)
 admin.site.register(ApiAccess)

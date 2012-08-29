@@ -3,11 +3,11 @@ from django.db.models import F
 
 from datetime import datetime
 from pwgen import pwgen
-import re
 
 from feowl.models import Contributor, Device, PowerReport, Area, Message, SMS
 
 #TODO: optimize the use of send_message in the functions
+#TODO: optimize database access
 
 
 def send_message(users, message, channel):
@@ -40,18 +40,20 @@ def contribute(message_array, mobile_number):
         Message: contribute <duration>, <area>
         TODO: Message: contribute <Nb of reports> <area><duration>, <area><duration>
     """
+    today = datetime.today().date()
     try:
         device = Device.objects.get(phone_number=mobile_number)
         # Check if user exist else create a unknow user
         if device.contributor == None:
             return create_unknown_user(device, mobile_number)
         # Check if we ask this user to contribute
-        if device.contributor.enquiry != datetime.today().date():  # Maybe we have to check if it was yesterday
+        if device.contributor.enquiry != today:
             msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
             return "We dont ask this user"  # END
-        #TODO: Check if already a message is processed maybe with a new column response
-
+        # Check if we already had an answer on this day
+        if device.contributor.response == today:
+            return "Already did a contribution"  # END
         # Check if the duration a digit and and remove the default comma
         duration = message_array[1].replace(",", "")
         if not duration.isdigit():
@@ -72,6 +74,9 @@ def contribute(message_array, mobile_number):
         report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                     area=area, happened_at=datetime.today().date())
         report.save()
+        # Set response to know that we this user already was handled
+        device.contributor.response = today
+        device.contributor.save()
         msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES, keyword=message_array[0])
         msg.save()
         # Increment refunds

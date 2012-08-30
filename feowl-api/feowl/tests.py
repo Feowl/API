@@ -482,9 +482,20 @@ class DeviceResourceTest(ResourceTestCase):
 class MessagingTestCase(unittest.TestCase):
     # We have to run this test only in the complete test env is depends
     # on it or we flush the database if come to this test
-    #TODO: Recheck tests
     def setUp(self):
+        self.register_keyword = "register"
+        self.unregister_keyword = "stop"
+        self.contribute_keyword = "contribute"
+
         self.register_test_user_no = "32423423423"
+
+        self.unregister_test_user_name = "testuser"
+        self.unregister_test_user_email = "testuser@test.com"
+        self.unregister_test_user_password = "testpassword"
+        self.unregister_test_user_no = "3849203843"
+
+        self.contribute_duration = "60"
+        self.contribute_area = Area.objects.all()[0].name
 
     def test_register(self):
         devices = Device.objects.all()
@@ -492,7 +503,7 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(devices), 1)
         self.assertEqual(len(contributors), 0)
 
-        read_message("register", self.register_test_user_no)
+        read_message(self.register_keyword, self.register_test_user_no)
 
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
@@ -509,9 +520,12 @@ class MessagingTestCase(unittest.TestCase):
         devices = Device.objects.all()
         self.assertEqual(len(devices), 2)
 
-        contributor = Contributor(name="testuser", email="testuser@email.com", password="test")
+        contributor = Contributor(name=self.unregister_test_user_name,
+                                email=self.unregister_test_user_email,
+                                password=self.unregister_test_user_password)
         contributor.save()
-        device = Device(phone_number=3849203843, contributor=contributor)
+        device = Device(phone_number=self.unregister_test_user_no,
+                        contributor=contributor)
         device.save()
 
         devices = Device.objects.all()
@@ -519,7 +533,7 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(devices), 3)
         self.assertEqual(len(contributors), 2)
 
-        read_message("stop", "3849203843")
+        read_message(self.unregister_keyword, self.unregister_test_user_no)
 
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
@@ -527,20 +541,24 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(contributors), 1)
 
     def test_zcontribute(self):
+        contribute_msg = (self.contribute_keyword + " " +
+                self.contribute_duration + ", " + self.contribute_area)
+
         # Missing enquiry
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), 5)
-        read_message("contribute 60, Douala1", "32423423423")
+        read_message(contribute_msg, self.register_test_user_no)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), 5)
 
         # With enquiry from today
-        contributor = Contributor.objects.get(name="32423423423")
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
         contributor.enquiry = datetime.today().date()
         contributor.save()
         self.assertEqual(contributor.refunds, 1)
-        read_message("contribute 60, Douala1", "32423423423")
+
+        read_message(contribute_msg, self.register_test_user_no)
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 5)
-        contributor = Contributor.objects.get(name="32423423423")
-        self.assertEqual(contributor.refunds, 1)
+        self.assertEqual(len(reports), 6)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 2)

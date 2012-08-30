@@ -59,18 +59,16 @@ def contribute(message_array, mobile_number):
             msg.save()
             return "Duration is not a number"
         # Some simple maybe parsing
-        msg_area = message_array[2].lower().capitalize()
-        areas_obj = Area.objects.all()
-        areas = []
-        [areas.append(area.name) for area in areas_obj]
+        msg_area = " ".join(message_array[2:4])
+        areas_obj = Area.objects.filter(name__iexact=msg_area)
 
-        if msg_area not in areas:
+        area_count = len(areas_obj)
+        if area_count == 0 or area_count > 1:
             msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
-            return "Area is not in the list"
-        area = Area.objects.get(name=msg_area)
+            return "Area is not in the list or no much Areas"
         report = PowerReport(duration=duration, contributor=device.contributor, device=device,
-                    area=area, happened_at=datetime.today().date())
+                    area=areas_obj[0], happened_at=datetime.today().date())
         report.save()
         # Set response to know that we this user already was handled
         device.contributor.response = today

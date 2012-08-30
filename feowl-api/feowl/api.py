@@ -48,6 +48,7 @@ class ContributorResource(ModelResource):
         '''
         method to verify a raw password against the saved encrypted one (only use through SSL!)
         '''
+        #TODO: Check the function for a password change with put
         self.method_check(request, allowed=['get'])
         self.is_authenticated(request)
         self.throttle_check(request)
@@ -87,8 +88,6 @@ class ContributorResource(ModelResource):
             bundle = super(ContributorResource, self).obj_create(bundle, request, **kwargs)
         except IntegrityError, e:
             msg = ""
-            import pdb
-            pdb.set_trace()
             if e.message.find("name") != -1:
                 msg = 'That name already exists'
             elif e.message.find("email") != -1:

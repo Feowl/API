@@ -261,8 +261,9 @@ class ContributorResourceTest(ResourceTestCase):
         # Fetch the ``Entry`` object we'll use in testing.
         # Note that we aren't using PKs because they can change depending
         # on what other tests are running.
-        Contributor(name="Tobias", email="tobias@test.de").save()
-        self.contributor_1 = Contributor.objects.get(pk=1)
+        self.contributor_1 = Contributor(name="Tobias", email="tobias@test.de")
+        self.contributor_1.set_password("tobias")
+        self.contributor_1.save()
 
         # We also build a detail URI, since we will be using it all over.
         # DRY, baby. DRY.
@@ -357,6 +358,41 @@ class ContributorResourceTest(ResourceTestCase):
         self.assertEqual(Contributor.objects.count(), 1)
         self.assertHttpAccepted(self.c.delete(self.detail_url, self.get_credentials()))
         self.assertEqual(Contributor.objects.count(), 0)
+
+    def test_check_password(self):
+        """Check that the password of the Contributor is right"""
+        check_password_url = self.detail_url + "check_password/"
+        credentials = self.get_credentials()
+        # Check if only authorized can access this url
+        self.assertHttpUnauthorized(self.c.get(check_password_url))
+
+        # Test with credentials and wrong password
+        credentials_and_wrong_password = credentials
+        credentials_and_wrong_password.update({"password": "wrong_tobias"})
+        resp = self.c.get(check_password_url, credentials_and_wrong_password)
+        self.assertHttpOK(resp)
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(self.deserialize(resp)['password_valid'], False)
+
+        # Test with credentials and right password
+        credentials_and_password = credentials
+        credentials_and_password.update({"password": "tobias"})
+        resp = self.c.get(check_password_url, credentials_and_password)
+        self.assertHttpOK(resp)
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(self.deserialize(resp)['password_valid'], True)
+
+        # Update password with put and chek password again
+        change_contributor = Permission.objects.get(codename="change_contributor")
+        self.user.user_permissions.add(change_contributor)
+        self.assertHttpAccepted(self.c.put(self.detail_url + '?username=' + self.username + '&api_key=' + self.api_key, data=json.dumps({"password": "newpassword"}), content_type="application/json"))
+
+        credentials_and_updated_password = credentials
+        credentials_and_updated_password.update({"password": "newpassword"})
+        resp = self.c.get(check_password_url, credentials_and_updated_password)
+        self.assertHttpOK(resp)
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(self.deserialize(resp)['password_valid'], True)
 
 
 class DeviceResourceTest(ResourceTestCase):

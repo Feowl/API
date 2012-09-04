@@ -74,7 +74,10 @@ class ContributorResource(ModelResource):
 
     def hydrate_password(self, bundle):
         """Turn a passed in password into a hash so it is not saved raw."""
-        bundle.data['password'] = make_password(bundle.data.get('password'))
+        #TODO: If statement should not more needed with the next version of tastypie
+        pwd = str(bundle.data.get('password'))
+        if not pwd.startswith('pbkdf2_sha256$') and not pwd.endswith('='):
+            bundle.data['password'] = make_password(bundle.data.get('password'))
         return bundle
 
     def dehydrate_password(self, bundle):
@@ -87,8 +90,6 @@ class ContributorResource(ModelResource):
             bundle = super(ContributorResource, self).obj_create(bundle, request, **kwargs)
         except IntegrityError, e:
             msg = ""
-            import pdb
-            pdb.set_trace()
             if e.message.find("name") != -1:
                 msg = 'That name already exists'
             elif e.message.find("email") != -1:

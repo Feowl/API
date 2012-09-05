@@ -16,6 +16,8 @@ from datetime import datetime
 models.signals.post_save.connect(create_api_key, sender=User)
 
 
+#TODO: Isolated the tests from each other
+
 class PowerReportResourceTest(ResourceTestCase):
     fixtures = ['test_data.json']
 

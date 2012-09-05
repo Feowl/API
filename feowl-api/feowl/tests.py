@@ -580,7 +580,7 @@ class MessagingTestCase(unittest.TestCase):
 
     def test_zcontribute(self):
         contribute_msg = (self.contribute_keyword + " " +
-                self.contribute_duration + ", " + self.contribute_area)
+                self.contribute_area + " " + self.contribute_duration)
 
         # Missing enquiry
         reports = PowerReport.objects.all()

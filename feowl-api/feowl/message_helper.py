@@ -35,7 +35,7 @@ def create_unknown_user(device, mobile_number):
 
 def contribute(message_array, mobile_number):
     """
-        Message: contribute <duration>, <area>
+        Message: contribute <area> <duration>
         TODO: Message: contribute <Nb of reports> <area><duration>, <area><duration>
     """
     today = datetime.today().date()
@@ -53,13 +53,13 @@ def contribute(message_array, mobile_number):
         if device.contributor.response == today:
             return "Already did a contribution"  # END
         # Check if the duration a digit and and remove the default comma
-        duration = message_array[1].replace(",", "")
+        duration = message_array[3]
         if not duration.isdigit():
             msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
             return "Duration is not a number"
         # Some simple maybe parsing
-        msg_area = " ".join(message_array[2:4])
+        msg_area = " ".join(message_array[1:3])
         areas_obj = Area.objects.filter(name__iexact=msg_area)
 
         area_count = len(areas_obj)

@@ -8,6 +8,7 @@ from feowl.models import Contributor, Device, PowerReport, Area, Message, SMS
 
 #TODO: optimize the use of send_message in the functions
 #TODO: optimize database access
+#TODO: integrate logging
 
 
 def send_message(users, message):
@@ -36,7 +37,7 @@ def create_unknown_user(device, mobile_number):
 def contribute(message_array, mobile_number):
     """
         Message: contribute <area> <duration>
-        TODO: Message: contribute <Nb of reports> <area><duration>, <area><duration>
+        TODO: Message: contribute <area> <duration>, <area> <duration>
     """
     today = datetime.today().date()
     try:
@@ -78,7 +79,7 @@ def contribute(message_array, mobile_number):
         # Increment refunds
         Contributor.objects.filter(pk=device.contributor.id).update(refunds=F('refunds') + 1)
     except Device.DoesNotExist:
-        return "something"
+        return "Device is not Existing"
 
 
 def register(mobile_number, message_array):
@@ -129,7 +130,7 @@ def unregister(mobile_number, message_array):
         msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES, keyword=message_array[0])
         msg.save()
     except Device.DoesNotExist:
-        return "Your mobile phone is not registered"  # Some error message ? NO is only logging like every return
+        return "Your mobile phone is not registered"
 
 
 def help(mobile_number, message_array):

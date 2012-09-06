@@ -595,8 +595,18 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
         self.assertEqual(contributor.refunds, 1)
 
-        read_message(contribute_msg, self.register_test_user_no)
+        # read_message(contribute_msg, self.register_test_user_no)
+        # reports = PowerReport.objects.all()
+        # self.assertEqual(len(reports), 6)
+        # contributor = Contributor.objects.get(name=self.register_test_user_no)
+        # self.assertEqual(contributor.refunds, 2)
+
+        multi_contribute_msg = (self.contribute_keyword + " " +
+                self.contribute_area + " " + self.contribute_duration + ", " +
+                self.contribute_area + " " + self.contribute_duration)
+
+        read_message(multi_contribute_msg, self.register_test_user_no)
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 6)
+        self.assertEqual(len(reports), 7)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, 2)

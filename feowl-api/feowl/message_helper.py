@@ -53,24 +53,30 @@ def contribute(message_array, mobile_number):
         # Check if we already had an answer on this day
         if device.contributor.response == today:
             return "Already did a contribution"  # END
-        # Check if the duration a digit and and remove the default comma
-        duration = message_array[3]
-        if not duration.isdigit():
-            msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
-            msg.save()
-            return "Duration is not a number"
-        # Some simple maybe parsing
-        msg_area = " ".join(message_array[1:3])
-        areas_obj = Area.objects.filter(name__iexact=msg_area)
 
-        area_count = len(areas_obj)
-        if area_count == 0 or area_count > 1:
-            msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
-            msg.save()
-            return "Area is not in the list or no much Areas"
-        report = PowerReport(duration=duration, contributor=device.contributor, device=device,
-                    area=areas_obj[0], happened_at=datetime.today().date())
-        report.save()
+        msg_len = len(message_array)
+        loops = msg_len / 3
+        for x in range(loops):
+            x += 1
+            # Check if the duration a digit and and remove the default comma
+            duration = message_array[x * 3].replace(",", "")
+            if not duration.isdigit():
+                msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
+                msg.save()
+                return "Duration is not a number"
+            # Some simple maybe parsing
+            msg_area = " ".join(message_array[x * 3 - 2:x * 3])
+            areas_obj = Area.objects.filter(name__iexact=msg_area)
+
+            area_count = len(areas_obj)
+            if area_count == 0 or area_count > 1:
+                msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
+                msg.save()
+                return "Area is not in the list or no much Areas"
+            report = PowerReport(duration=duration, contributor=device.contributor, device=device,
+                        area=areas_obj[0], happened_at=datetime.today().date())
+            report.save()
+
         # Set response to know that we this user already was handled
         device.contributor.response = today
         device.contributor.save()

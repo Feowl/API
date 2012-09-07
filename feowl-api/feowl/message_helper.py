@@ -85,6 +85,7 @@ def contribute(message_array, mobile_number):
         msg.save()
         # Increment refunds
         Contributor.objects.filter(pk=device.contributor.id).update(refunds=F('refunds') + 1)
+        send_message([device.contributor], "is this correct, send reports data")
     except Device.DoesNotExist:
         return "Device is not Existing"
 
@@ -163,6 +164,16 @@ def help(mobile_number, message_array):
     msg.save()
 
 
+def no(mobile_number, message_array):
+    try:
+        device = Device.objects.get(phone_number=mobile_number)
+        if device.contributor == None:
+            return create_unknown_user(device, mobile_number)
+        PowerReport.objects.filter(contributor=device.contributor, happened_at_gte=datetime.today().date()).delete()
+    except Device.DoesNotExist:
+        return "Device does not exist"
+
+
 def invalid(mobile_number, message_array):
     """
         Message: <something wrong>
@@ -180,7 +191,7 @@ def invalid(mobile_number, message_array):
 
 
 def parse(message):
-    keywords = ['contribute', 'help', 'register', 'stop']
+    keywords = ['contribute', 'help', 'register', 'stop', 'no']
     # Instead of split using we regex to find all words
     message_array = re.findall(r'\w+', message)
     for index, keyword in enumerate(message_array):

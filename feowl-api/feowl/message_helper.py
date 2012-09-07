@@ -3,6 +3,7 @@ from django.db.models import F
 
 from datetime import datetime
 from pwgen import pwgen
+import re
 
 from feowl.models import Contributor, Device, PowerReport, Area, Message, SMS
 
@@ -180,7 +181,8 @@ def invalid(mobile_number, message_array):
 
 def parse(message):
     keywords = ['contribute', 'help', 'register', 'stop']
-    message_array = message.split()
+    # Instead of split using we regex to find all words
+    message_array = re.findall(r'\w+', message)
     for index, keyword in enumerate(message_array):
         if keyword.lower() in keywords:
             return index, keyword.lower(), message_array

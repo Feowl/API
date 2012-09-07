@@ -601,9 +601,11 @@ class MessagingTestCase(unittest.TestCase):
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, 2)
 
+        # Reset the response time in the db
         contributor.response = datetime.today().date() - timedelta(days=1)
         contributor.save()
 
+        # Multiple message
         multi_contribute_msg = (self.contribute_keyword + " " +
                 self.contribute_area + " " + self.contribute_duration + ", " +
                 self.contribute_area + " " + self.contribute_duration)
@@ -613,3 +615,17 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(reports), 8)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, 3)
+
+        contributor.response = datetime.today().date() - timedelta(days=1)
+        contributor.save()
+
+        # No space after the comma
+        multi_contribute_msg = (self.contribute_keyword + " " +
+                self.contribute_area + " " + self.contribute_duration + "," +
+                self.contribute_area + " " + self.contribute_duration)
+
+        read_message(multi_contribute_msg, self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 10)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 4)

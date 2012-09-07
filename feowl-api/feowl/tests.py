@@ -11,7 +11,7 @@ from feowl.models import PowerReport, Area, Contributor, Device
 from feowl.message_helper import read_message
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
@@ -595,11 +595,14 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
         self.assertEqual(contributor.refunds, 1)
 
-        # read_message(contribute_msg, self.register_test_user_no)
-        # reports = PowerReport.objects.all()
-        # self.assertEqual(len(reports), 6)
-        # contributor = Contributor.objects.get(name=self.register_test_user_no)
-        # self.assertEqual(contributor.refunds, 2)
+        read_message(contribute_msg, self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 6)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 2)
+
+        contributor.response = datetime.today().date() - timedelta(days=1)
+        contributor.save()
 
         multi_contribute_msg = (self.contribute_keyword + " " +
                 self.contribute_area + " " + self.contribute_duration + ", " +
@@ -607,6 +610,6 @@ class MessagingTestCase(unittest.TestCase):
 
         read_message(multi_contribute_msg, self.register_test_user_no)
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 7)
+        self.assertEqual(len(reports), 8)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
-        self.assertEqual(contributor.refunds, 2)
+        self.assertEqual(contributor.refunds, 3)

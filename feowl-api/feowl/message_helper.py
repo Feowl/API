@@ -4,8 +4,12 @@ from django.db.models import F
 from datetime import datetime, timedelta
 from pwgen import pwgen
 import re
+import logging
 
 from feowl.models import Contributor, Device, PowerReport, Area, Message, SMS
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 #TODO: optimize the use of send_message in the functions
 #TODO: optimize database access
@@ -28,11 +32,15 @@ def create_unknown_user(device, mobile_number):
     except IntegrityError, e:
         msg = e.message
         if msg.find("name") != -1:
-            return "Name already exist. Please use an other one"
+            logger.warning("Name already exist. Please use an other one")
+            return
         elif msg.find("email") != -1:
-            return "Email already exist. Please use an other one."
-        return "Unkown Error please try later to register"
-    return "User is created"  # END
+            logger.warning("Email already exist. Please use an other one.")
+            return
+        logger.error("Unkown Error please try later to register")
+        return
+    logger.info("User is created")
+    return  # END
 
 
 def contribute(message_array, mobile_number):
@@ -50,10 +58,12 @@ def contribute(message_array, mobile_number):
         if device.contributor.enquiry != today:
             msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
             msg.save()
-            return "We dont ask this user"  # END
+            logger.info("We dont ask this user")
+            return  # END
         # Check if we already had an answer on this day
         if device.contributor.response == today:
-            return "Already did a contribution"  # END
+            logger.info("Already did a contribution")
+            return  # END
 
         validate_msg = ""
         msg_len = len(message_array)
@@ -65,7 +75,8 @@ def contribute(message_array, mobile_number):
             if not duration.isdigit():
                 msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
                 msg.save()
-                return "Duration is not a number"
+                logger.warning("Duration is not a number")
+                return
             # Some simple maybe parsing
             msg_area = " ".join(message_array[x * 3 - 2:x * 3])
             areas_obj = Area.objects.filter(name__iexact=msg_area)
@@ -74,7 +85,8 @@ def contribute(message_array, mobile_number):
             if area_count == 0 or area_count > 1:
                 msg = Message(message=" ".join(message_array), source=SMS, keyword=message_array[0])
                 msg.save()
-                return "Area is not in the list or no much Areas"
+                logger.warning("Area is not in the list or no much Areas")
+                return
             report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                         area=areas_obj[0], happened_at=datetime.today().date())
             report.save()
@@ -90,7 +102,8 @@ def contribute(message_array, mobile_number):
 
         send_message([device.contributor], validate_msg)
     except Device.DoesNotExist:
-        return "Device is not Existing"
+        logger.warning("Device is not Existing")
+        return
 
 
 def register(mobile_number, message_array):
@@ -121,10 +134,13 @@ def register(mobile_number, message_array):
     except IntegrityError, e:
         msg = e.message
         if msg.find("name") != -1:
-            return "Name already exist. Please use an other one"
+            logger.warning("Name already exist. Please use an other one")
+            return
         elif msg.find("email") != -1:
-            return "Email already exist. Please use an other one."
-        return "Unkown Error please try later to register"
+            logger.warning("Email already exist. Please use an other one.")
+            return
+        logger.error("Unkown Error please try later to register")
+        return
 
 
 def unregister(mobile_number, message_array):
@@ -141,7 +157,8 @@ def unregister(mobile_number, message_array):
         msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.YES, keyword=message_array[0])
         msg.save()
     except Device.DoesNotExist:
-        return "Your mobile phone is not registered"
+        logger.info("Your mobile phone is not registered")
+        return
 
 
 def help(mobile_number, message_array):
@@ -184,7 +201,8 @@ def no(mobile_number, message_array):
         device.contributor.response = today - timedelta(days=1)
         device.contributor.save()
     except Device.DoesNotExist:
-        return "Device does not exist"
+        logger.info("Device does not exist")
+        return
 
 
 def invalid(mobile_number, message_array):

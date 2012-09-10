@@ -142,6 +142,9 @@ def unregister(mobile_number, message_array):
 
 
 def help(mobile_number, message_array):
+    """
+        Message: help
+    """
     first_help_msg = """To report a powercut, send the district name and it's
         duration in mn(ex: PC douala10). Please wait for Feowl asking you by
         sms before answer."""
@@ -165,12 +168,15 @@ def help(mobile_number, message_array):
 
 
 def no(mobile_number, message_array):
+    """
+        Message: no
+    """
     today = datetime.today().date()
     try:
         device = Device.objects.get(phone_number=mobile_number)
         if device.contributor == None:
             return create_unknown_user(device, mobile_number)
-        PowerReport.objects.filter(contributor=device.contributor, happened_at_gte=today).delete()
+        PowerReport.objects.filter(contributor=device.contributor, happened_at=today).delete()
         # Reset the response date
         device.contributor.response = today - timedelta(days=1)
         device.contributor.save()
@@ -214,6 +220,8 @@ def read_message(message, mobile_number):
         register(mobile_number, message_array)
     elif keyword == "stop":
         unregister(mobile_number, message_array)
+    elif keyword == "no":
+        no(mobile_number, message_array)
     elif index == -1:  # Should send an error messages and maybe plus help
         invalid(mobile_number, message_array)
         return "Something went wrong"

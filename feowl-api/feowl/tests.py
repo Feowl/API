@@ -629,3 +629,22 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(reports), 10)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, 4)
+
+        read_message("no", self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 5)
+
+        # No space after the comma
+        multi_contribute_msg = (self.contribute_keyword + " " +
+                self.contribute_area + " " + self.contribute_duration + "," +
+                self.contribute_area + " " + self.contribute_duration)
+
+        read_message(multi_contribute_msg, self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 7)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 5)
+
+        read_message("no", self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 5)

@@ -55,6 +55,7 @@ def contribute(message_array, mobile_number):
         if device.contributor.response == today:
             return "Already did a contribution"  # END
 
+        validate_msg = ""
         msg_len = len(message_array)
         loops = msg_len / 3
         for x in range(loops):
@@ -77,6 +78,7 @@ def contribute(message_array, mobile_number):
             report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                         area=areas_obj[0], happened_at=datetime.today().date())
             report.save()
+            validate_msg += "{0}.Report: Area - {1} Duration - {2} ".format(x, areas_obj[0].name, duration)
 
         # Set response to know that we this user already was handled
         device.contributor.response = today
@@ -85,7 +87,8 @@ def contribute(message_array, mobile_number):
         msg.save()
         # Increment refunds
         Contributor.objects.filter(pk=device.contributor.id).update(refunds=F('refunds') + 1)
-        send_message([device.contributor], "is this correct, send reports data")
+
+        send_message([device.contributor], validate_msg)
     except Device.DoesNotExist:
         return "Device is not Existing"
 

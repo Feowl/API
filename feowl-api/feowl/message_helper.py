@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.db.models import F
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from pwgen import pwgen
 import re
 
@@ -165,11 +165,15 @@ def help(mobile_number, message_array):
 
 
 def no(mobile_number, message_array):
+    today = datetime.today().date()
     try:
         device = Device.objects.get(phone_number=mobile_number)
         if device.contributor == None:
             return create_unknown_user(device, mobile_number)
-        PowerReport.objects.filter(contributor=device.contributor, happened_at_gte=datetime.today().date()).delete()
+        PowerReport.objects.filter(contributor=device.contributor, happened_at_gte=today).delete()
+        # Reset the response date
+        device.contributor.response = today - timedelta(days=1)
+        device.contributor.save()
     except Device.DoesNotExist:
         return "Device does not exist"
 

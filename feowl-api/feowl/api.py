@@ -48,6 +48,7 @@ class ContributorResource(ModelResource):
         '''
         method to verify a raw password against the saved encrypted one (only use through SSL!)
         '''
+        #TODO: Check the function for a password change with put
         self.method_check(request, allowed=['get'])
         self.is_authenticated(request)
         self.throttle_check(request)

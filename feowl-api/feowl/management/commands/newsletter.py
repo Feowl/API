@@ -8,7 +8,8 @@ from datetime import datetime
 from optparse import make_option
 import settings
 
-from feowl.models import Contributor
+from feowl.models import Contributor, SMS, EMAIL
+from feowl.message_helper import send_message as sms_send_message
 
 
 class Command(BaseCommand):
@@ -33,13 +34,18 @@ class Command(BaseCommand):
 
         for user in contributors:
             if user.email and user.name:
-                print "{0} - {1} -- {2} -- {3}".format(user.name, user.email, user.enquiry, user.language)
-                d = Context({'name': user.name, 'newsletter_language': user.language})
-                text_content = plaintext.render(d)
-                html_content = html.render(d)
-                msg = EmailMultiAlternatives(subject, text_content, settings.NEWSLETTER_FROM, [user.email], connection=connection)
-                msg.attach_alternative(html_content, "text/html")
-                messages.append(msg)
+                if user.channel == EMAIL:
+                    d = Context({'name': user.name, 'newsletter_language': user.language})
+                    text_content = plaintext.render(d)
+                    html_content = html.render(d)
+                    msg = EmailMultiAlternatives(subject, text_content, settings.NEWSLETTER_FROM, [user.email], connection=connection)
+                    msg.attach_alternative(html_content, "text/html")
+                    messages.append(msg)
+                if user.channel == SMS:
+                    msg = """Did u witness powercuts in Douala yesterday? Reply
+                        with PC NO or PC district name&duration in mn. Separe
+                        each powercut by a space(ex: PC akwa10 deido70)"""
+                    sms_send_message([user], msg)
                 user.enquiry = datetime.today().date()
                 user.save()
 

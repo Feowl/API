@@ -7,6 +7,13 @@ import settings
 from tastypie.models import create_api_key
 models.signals.post_save.connect(create_api_key, sender=User)
 
+SMS = 0
+EMAIL = 1
+CHANNEL_CHOICES = (
+    (SMS, "SMS"),
+    (EMAIL, "Email")
+)
+
 
 def get_sentinel_user():
     return Contributor.objects.get_or_create(name=settings.ANONYMOUS_USER_NAME, email=settings.ANONYMOUS_EMAIL)[0]
@@ -22,7 +29,15 @@ class Contributor(models.Model):
         (OFF, 'Off'),
         (DAILY, 'Daily'),
         (WEEKLY, 'Weekly'),
-        (MONTHLY, 'Monthly'),
+        (MONTHLY, 'Monthly')
+    )
+    ACTIVE = 0
+    INACTIVE = 1
+    UNKNOWN = 2
+    STATUS_CHOICES = (
+        (ACTIVE, "Active"),
+        (INACTIVE, "Inactive "),
+        (UNKNOWN, "Unknown")
     )
 
     name = models.CharField('name', max_length=30, unique=True,
@@ -34,7 +49,11 @@ class Contributor(models.Model):
     credibility = models.DecimalField(max_digits=3, decimal_places=2, default='1.00', blank=True)
     language = models.CharField(max_length=5, default="EN", blank=True)
     enquiry = models.DateField(null=True, blank=True)
+    response = models.DateField(null=True, blank=True)
     frequency = models.PositiveIntegerField(choices=FREQUENCY_CHOICES, default=DAILY, blank=True)
+    channel = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL, blank=True)
+    refunds = models.PositiveIntegerField(default=0, blank=True)
+    status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=ACTIVE, blank=True)
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
@@ -127,3 +146,19 @@ class PowerReport(models.Model):
             return "{0} at {1}".format(self.contributor, self.happened_at)
         else:
             return "{0}".format(self.happened_at)
+
+
+class Message(models.Model):
+    YES = 0
+    MAYBE = 1
+    NO = 2
+    SOURCE_CHOICES = (
+        (YES, "Yes"),
+        (MAYBE, "Maybe"),
+        (NO, "No")
+    )
+
+    message = models.TextField()
+    source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
+    parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)
+    keyword = models.CharField(max_length=30, default="Default Keyword")

@@ -9,7 +9,7 @@ from optparse import make_option
 import settings
 
 from feowl.models import Contributor, SMS, EMAIL
-from feowl.message_helper import send_message as sms_send_message
+from feowl.message_helper import send_message as send_sms
 
 
 class Command(BaseCommand):
@@ -17,11 +17,11 @@ class Command(BaseCommand):
         make_option('--limit', '-l', dest='limit', default=100,
             help='Pass the Range of contributors you want to send a newsletter'),
     )
-    help = 'Send newsletter to a range of contributors'
+    help = 'Send poll to a range of contributors'
 
     can_import_settings = True
 
-    def  handle(self, *args, **options):
+    def handle(self, *args, **options):
         limit = options.get("limit")
 
         contributors = Contributor.objects.exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
@@ -43,9 +43,11 @@ class Command(BaseCommand):
                     messages.append(msg)
                 if user.channel == SMS:
                     msg = """Did u witness powercuts in Douala yesterday? Reply
-                        with PC NO or PC district name&duration in mn. Separe
+                        with PC NO or PC district name&duration in mn. Seperate
                         each powercut by a space(ex: PC akwa10 deido70)"""
-                    sms_send_message([user], msg)
+                    #msg = get_template('sms.txt')
+                    send_sms([user], msg)
+                # Update the list of targeted users
                 user.enquiry = datetime.today().date()
                 user.save()
 

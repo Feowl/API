@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 def read_message(message, mobile_number):
     index, keyword, message_array = parse(message)
-    if keyword == "contribute":
+    if keyword == "pc":
         contribute(message_array, mobile_number)
     elif keyword == "help":
         help(mobile_number, message_array)
@@ -35,7 +35,7 @@ def read_message(message, mobile_number):
 
 
 def parse(message):
-    keywords = ['contribute', 'help', 'register', 'stop', 'no']
+    keywords = ['pc', 'help', 'register', 'stop', 'no']
     # Instead of split using we regex to find all words
     message_array = re.findall(r'\w+', message)
     for index, keyword in enumerate(message_array):
@@ -46,8 +46,8 @@ def parse(message):
 
 def contribute(message_array, mobile_number):
     """
-        Message: contribute <area> <duration>
-        TODO: Message: contribute <area> <duration>, <area> <duration>
+        Message: pc <area> <duration>
+        TODO: Message: pc <area> <duration>, <area> <duration>
     """
     today = datetime.today().date()
     try:
@@ -200,7 +200,7 @@ def help(mobile_number, message_array):
         duration in mn(ex: PC douala10). Please wait for Feowl asking you by
         sms before answer."""
     second_help_msg = """To report many powercuts, separate it with a comma(ex:
-        contribute akwa10, deido70)"""
+        pc akwa10, deido70)"""
     third_help_msg = """To unsuscribe, send STOP. If you wasn't in Douala, send
          OUT. For each valid sms that you send,you'll receive a confirmation
          and your sms will be refunded"""

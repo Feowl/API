@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.test.client import Client
+from feowl.sms_helper import receive_sms
 from django.utils import unittest
 
 from tastypie.models import create_api_key
@@ -644,3 +645,38 @@ class MessagingTestCase(unittest.TestCase):
         read_message("no", self.register_test_user_no)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), 5)
+
+        
+class SMSTestCase(unittest.TestCase):
+    mobile_number = "+4915738710431"
+
+    def setup(self):
+        pass
+
+    def test_register(self):
+        msg = "register"
+        receive_sms(self.mobile_number, msg)
+
+        contributor = Contributor.objects.get(name=self.mobile_number)
+        device = Device.objects.get(phone_number=self.mobile_number)
+        self.assertEqual(contributor.name, self.mobile_number)
+        self.assertEqual(contributor.refunds, 1)
+        self.assertEqual(device.phone_number, self.mobile_number)
+
+    def test_cancel(self):
+        msg = "cancel"
+        receive_sms(self.mobile_number, msg)
+
+    def test_unregister(self):
+        devices = Device.objects.all()
+        self.assertEqual(len(devices), 2)
+
+        msg = "stop"
+        receive_sms(self.mobile_number, msg)
+
+    def test_help(self):
+        msg = "help"
+        receive_sms(self.mobile_number, msg)
+
+    def test_contribute(self):
+        pass

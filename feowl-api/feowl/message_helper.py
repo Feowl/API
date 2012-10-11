@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 #TODO: integrate logging
 
 
-def read_message(message, mobile_number):
+def read_message(mobile_number, message):
     index, keyword, message_array = parse(message)
     if keyword == "pc":
         contribute(message_array, mobile_number)
@@ -27,21 +27,21 @@ def read_message(message, mobile_number):
         register(mobile_number, message_array)
     elif keyword == "stop":
         unregister(mobile_number, message_array)
-    elif keyword == "no":
-        no(mobile_number, message_array)
+    elif keyword == "cancel":
+        cancel(mobile_number, message_array)
     elif index == -1:  # Should send an error messages and maybe plus help
         invalid(mobile_number, message_array)
         return "Something went wrong"
 
 
 def parse(message):
-    keywords = ['pc', 'help', 'register', 'stop', 'no']
+    keywords = ['pc', 'help', 'register', 'stop', 'cancel']
     # Instead of split using we regex to find all words
     message_array = re.findall(r'\w+', message)
     for index, keyword in enumerate(message_array):
         if keyword.lower() in keywords:
             return index, keyword.lower(), message_array
-    return -1, "Bad Keyword", ["No clear keyword in the message"]
+    return -1, "Bad Keyword", message_array
 
 
 def contribute(message_array, mobile_number):
@@ -64,7 +64,12 @@ def contribute(message_array, mobile_number):
         #Else try to parse the contribution and save the report
         else:
             duration, areaid, validated_msg = parse_contribute(message_array)
-            report = PowerReport(duration=duration, contributor=device.contributor, device=device,
+            #If user sent PC No - then no outage has been experienced
+            if (duration < 0):
+                report = PowerReport(has_experienced_outage=False, duration=0, contributor=device.contributor, device=device,
+                        area=areaid, happened_at=today)
+            else:
+                report = PowerReport(duration=duration, contributor=device.contributor, device=device,
                         area=areaid, happened_at=today)
             report.save()
         # Set response to know that this user was handled already
@@ -90,28 +95,33 @@ def increment_refund(user_id):
 def parse_contribute(message_array):
     #TODO:algorithme to be improved
         validated_msg = ""
-        msg_len = len(message_array)
-        loops = msg_len / 3
-        for x in range(loops):
-            x += 1
-            # Check if the duration a digit and and remove the default comma
-            duration = message_array[x * 3].replace(",", "")
-            if not duration.isdigit():
-                save_message(message_array, SMS)
-                logger.warning("Duration is not a number")
-                return
-            # Some simple maybe parsing
-            msg_area = " ".join(message_array[x * 3 - 2:x * 3])
-            areas_obj = Area.objects.filter(name__iexact=msg_area)
-
-            area_count = len(areas_obj)
-            if area_count == 0 or area_count > 1:
-                save_message(message_array, SMS)
-                logger.warning("Area is not in the list or no much Areas")
-                return
-            validated_msg += "{0}.Report: Area - {1} Duration - {2} ".format(x, areas_obj[0].name, duration)
+        if message_array[1] == "no":
+            validated_msg = "No Report"
             save_message(message_array, SMS, parsed=Message.YES)
-            return duration, areas_obj[0], validated_msg
+            return -1, -1, -1
+        else:
+            msg_len = len(message_array)
+            loops = msg_len / 3
+            for x in range(loops):
+                x += 1
+                # Check if the duration a digit and and remove the default comma
+                duration = message_array[x * 3].replace(",", "")
+                if not duration.isdigit():
+                    save_message(message_array, SMS)
+                    logger.warning("Duration is not a number")
+                    return
+                # Some simple maybe parsing
+                msg_area = " ".join(message_array[x * 3 - 2:x * 3])
+                areas_obj = Area.objects.filter(name__iexact=msg_area)
+
+                area_count = len(areas_obj)
+                if area_count == 0 or area_count > 1:
+                    save_message(message_array, SMS)
+                    logger.warning("Area is not in the list or no much Areas")
+                    return
+                validated_msg += "{0}.Report: Area - {1} Duration - {2} ".format(x, areas_obj[0].name, duration)
+                save_message(message_array, SMS, parsed=Message.YES)
+                return duration, areas_obj[0], validated_msg
 
 
 def create_unknown_user(mobile_number):
@@ -145,7 +155,7 @@ def register(mobile_number, message_array):
     try:
         try:
             device = Device.objects.get(phone_number=mobile_number)
-            #If Contributor an unknown, then she becames active
+            #If Contributor an unknown, then she becomes active
             if device.contributor.status == Contributor.UNKNOWN:
                 device.contributor.status = Contributor.ACTIVE
                 device.contributor.password = pwd
@@ -217,15 +227,18 @@ def help(mobile_number, message_array):
     save_message(message_array, SMS, parsed=Message.NO)
 
 
-def no(mobile_number, message_array):
+def cancel(mobile_number, message_array):
     """
-        Message: no
+        Message: cancel
     """
     today = datetime.today().date()
     try:
         device = Device.objects.get(phone_number=mobile_number)
-        if device.contributor != None:
-            PowerReport.objects.filter(contributor=device.contributor, happened_at=today).delete()
+        if (device.contributor != None):
+            reports = PowerReport.objects.filter(contributor=device.contributor, happened_at=today)
+            if (reports != None):
+                if (reports > 0):
+                    reports.delete()
             # Reset the response date
             device.contributor.response = today - timedelta(days=1)
             device.contributor.save()
@@ -241,6 +254,8 @@ def invalid(mobile_number, message_array):
     """
         Message: <something wrong>
     """
+    msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO)
+    msg.save()
     try:
         device = Device.objects.get(phone_number=mobile_number)
         if device.contributor == None:
@@ -249,23 +264,22 @@ def invalid(mobile_number, message_array):
         device = Device(phone_number=mobile_number)
         device.save()
         create_unknown_user(device, mobile_number)
-        save_message(message_array, SMS, parsed=Message.NO)
 
 
-def send_sms(number, msg):
+def send_sms(mobile_number, message):
     req = "json"
     key = "ff33ed3f"
     secret = "eddd3f0c"
     sender = "feowl"
-    msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': number, 'text': msg, 'username': key}
+    msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
 
     sms = NexmoMessage(msg)
     sms.send_request()
 
 
-def send_message(phone_number, message):
+def send_message(mobile_number, message):
         #TODO: Make sure that we have an phone number before sending an SMS
-        send_sms(phone_number, message)
+        send_sms(mobile_number, message)
 
 
 def save_message(message_array, src, parsed=Message.NO):

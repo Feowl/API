@@ -3,20 +3,7 @@
 # Install Postgres 9.1, PostGIS and create PostGIS template on a clean Ubuntu 11.10 Oneiric Ocelot box
 # http://wildfish.com
 
-# add the ubuntu gis ppa
-sudo apt-get -y install python-software-properties
-sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable 
-sudo apt-get update 
 
-# the big list of apt dependencies to check we have installed
-sudo apt-get -y install postgis postgresql-9.1 postgresql-server-dev-9.1 postgresql-contrib-9.1 postgis  gdal-bin binutils libgeos-3.2.2 libgeos-c1 libgeos-dev libgdal1-dev libxml2 libxml2-dev libxml2-dev checkinstall proj libpq-dev
-
-sudo mkdir -p '/usr/share/postgresql/9.1/contrib/postgis-1.5'
-
-# fetch, compile and install PostGIS
-wget http://postgis.refractions.net/download/postgis-1.5.3.tar.gz
-tar zxvf postgis-1.5.3.tar.gz && cd postgis-1.5.3/
-sudo ./configure && sudo make && sudo checkinstall --pkgname postgis-1.5.3 --pkgversion 1.5.3-src --default
 
 
 

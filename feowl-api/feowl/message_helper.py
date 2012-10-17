@@ -223,7 +223,7 @@ def help(mobile_number, message_array):
         send_message(device.phone_number, third_help_msg)
     except Device.DoesNotExist:
         return "Device does not exist"
-    save_message(message_array, SMS, parsed=Message.NO)
+    save_message(message_array, SMS, parsed=Message.YES)
 
 
 def cancel(mobile_number, message_array):

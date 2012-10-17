@@ -6,8 +6,7 @@ from datetime import datetime, timedelta
 from pwgen import pwgen
 import re
 import logging
-from nexmomessage import NexmoMessage
-
+import sms_helper
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -171,7 +170,7 @@ def register(mobile_number, message_array):
             device.save()
             increment_refund(device.contributor.id)
             msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
-            send_message(device.phone_number, msg)
+            send_message(mobile_number, msg)
             save_message(message_array, SMS, parsed=Message.YES)
     except IntegrityError, e:
         msg = e.message
@@ -266,20 +265,9 @@ def invalid(mobile_number, message_array):
         create_unknown_user(device, mobile_number)
 
 
-def send_sms(mobile_number, message):
-    req = "json"
-    key = "ff33ed3f"
-    secret = "eddd3f0c"
-    sender = "feowl"
-    msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
-
-    sms = NexmoMessage(msg)
-    sms.send_request()
-
-
 def send_message(mobile_number, message):
         #TODO: Make sure that we have an phone number before sending an SMS
-        send_sms(mobile_number, message)
+        sms_helper.send_sms(mobile_number, message)
 
 
 def save_message(message_array, src, parsed=Message.NO):

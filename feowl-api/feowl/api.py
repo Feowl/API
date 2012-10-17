@@ -17,6 +17,7 @@ from models import PowerReport, Device, Contributor, Area
 from validation import ModelFormValidation
 from serializers import CSVSerializer
 import sms_helper
+import simplejson
 
 
 class ContributorResource(ModelResource):
@@ -318,44 +319,25 @@ class PowerCutDurations(Resource):
 class IncomingSmsResource(Resource):
     class Meta:
         resource_name = 'incoming-sms'
+        object_class = GenericResponseObject
+        #include_resource_uri = False
+
+        list_allowed_methods = ['post', 'get']
+        detail_allowed_methods = []
 
         authentication = ApiKeyAuthentication()
         authorization = DjangoAuthorization()
 
-        object_class = GenericResponseObject
-        #include_resource_uri = False
-
-        list_allowed_methods = ['post']
-        detail_allowed_methods = []
-
     def obj_create(self, bundle, request=None, **kwargs):
-        bundle.obj = "hellow world"
-        bundle = self.full_hydrate(bundle)
-        #phone = request.body.mobile_phone
-        #msg = request.body.message
-        sms_helper.receive_sms("+4915738710431", "register")
+        json_data = simplejson.loads(request.raw_post_data)
+        try:
+            phone = json_data['mobile_phone']
+            msg = json_data['in_message']
+        except KeyError:
+            HttpResponseServerError("Malformed data!")
+        sms_helper.receive_sms(phone, msg)
+        bundle.obj = bundle = self.build_bundle(request=request)
         return bundle
 
-    def dispatch_list(self, request, **kwargs):
-        return self.dispatch('list', request, **kwargs)
-
-    def rollback(self, bundles):
-        pass
-
-    def get_object_list(self, request):
-        pass
-
-    def obj_get_list(self, request=None, **kwargs):
-        pass
-
-    def obj_get(self, request=None, **kwargs):
-        pass
-
-    def obj_update(self, bundle, request=None, **kwargs):
-        return self.obj_create(bundle, request, **kwargs)
-
-    def obj_delete_list(self, request=None, **kwargs):
-        pass
-
-    def obj_delete(self, request=None, **kwargs):
-        pass
+    def get_resource_uri(self, bundle_or_obj):
+        return '/api/v1/%s/%s/' % (self._meta.resource_name, bundle_or_obj.obj.id)

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.auth.hashers import make_password
+#import sms_helper
 
 import settings
 
@@ -162,3 +163,20 @@ class Message(models.Model):
     source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)
     keyword = models.CharField(max_length=30, default="No Keyword")
+
+
+'''
+class IncomingSms(models.Model):
+    in_message = models.TextField()
+    mobile_phone = models.CharField(max_length=30, blank=True)
+
+    #def save(self):
+        #sms_helper.receive_sms(self.mobile_phone, self.in_message)
+        #print "message recu avec success"
+
+
+class OutgoingSms(models.Model):
+    out_message = models.TextField()
+    template = models.TextField()
+    mobile_phone = models.CharField(max_length=30, blank=True)
+'''

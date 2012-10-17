@@ -79,6 +79,10 @@ class ContributorAdmin(admin.ModelAdmin):
 class MessageAdmin(admin.ModelAdmin):
     list_filter = ('keyword', 'parsed')
 
+
+#class IncomingSmsAdmin(admin.ModelAdmin):
+ #   list_filter = ('in_message', 'mobile_phone')
+
 admin.site.unregister(User)
 admin.site.register(User, UserModelAdmin)
 
@@ -87,6 +91,7 @@ admin.site.register(Area, admin_gis.OSMGeoAdmin)
 admin.site.register(Contributor, ContributorAdmin)
 admin.site.register(Device)
 admin.site.register(Message, MessageAdmin)
+#admin.site.register(IncomingSms, IncomingSmsAdmin)
 
 admin.site.register(ApiKey)
 admin.site.register(ApiAccess)

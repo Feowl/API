@@ -16,6 +16,7 @@ from forms import PowerReportForm, DeviceForm, ContributorForm, AreaForm
 from models import PowerReport, Device, Contributor, Area
 from validation import ModelFormValidation
 from serializers import CSVSerializer
+import sms_helper
 
 
 class ContributorResource(ModelResource):
@@ -312,3 +313,49 @@ class PowerCutDurations(Resource):
             # create aggregate object
             result.append(GenericResponseObject({'upper_bound': upper_bound, 'lower_bound': lower_bound, 'contributions': contributions, 'proportion': proportion, 'quintile': quintile + 1}))
         return result
+
+
+class IncomingSmsResource(Resource):
+    class Meta:
+        resource_name = 'incoming-sms'
+
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
+
+        object_class = GenericResponseObject
+        #include_resource_uri = False
+
+        list_allowed_methods = ['post']
+        detail_allowed_methods = []
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        bundle.obj = "hellow world"
+        bundle = self.full_hydrate(bundle)
+        #phone = request.body.mobile_phone
+        #msg = request.body.message
+        sms_helper.receive_sms("+4915738710431", "register")
+        return bundle
+
+    def dispatch_list(self, request, **kwargs):
+        return self.dispatch('list', request, **kwargs)
+
+    def rollback(self, bundles):
+        pass
+
+    def get_object_list(self, request):
+        pass
+
+    def obj_get_list(self, request=None, **kwargs):
+        pass
+
+    def obj_get(self, request=None, **kwargs):
+        pass
+
+    def obj_update(self, bundle, request=None, **kwargs):
+        return self.obj_create(bundle, request, **kwargs)
+
+    def obj_delete_list(self, request=None, **kwargs):
+        pass
+
+    def obj_delete(self, request=None, **kwargs):
+        pass

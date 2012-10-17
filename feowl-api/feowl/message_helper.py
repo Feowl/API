@@ -1,5 +1,6 @@
 from django.db import IntegrityError
 from django.db.models import F
+from feowl.models import Device, PowerReport, Area, Message, SMS, Contributor
 
 from datetime import datetime, timedelta
 from pwgen import pwgen
@@ -7,7 +8,6 @@ import re
 import logging
 from nexmomessage import NexmoMessage
 
-from feowl.models import Contributor, Device, PowerReport, Area, Message, SMS
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)

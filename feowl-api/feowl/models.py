@@ -130,7 +130,7 @@ class PowerReport(models.Model):
     #see: http://postgis.refractions.net/documentation/manual-1.5/ch04.html#PostGIS_GeographyVSGeometry
     quality = models.DecimalField(max_digits=4, decimal_places=2, default='-1.00', blank=True)
     duration = models.PositiveIntegerField(null=False, blank=False, help_text="Duration in minutes")
-    happened_at = models.DateTimeField(null=False, blank=False, help_text="Datetime preferrably with timezone")
+    happened_at = models.DateTimeField(auto_now=True, null=False, blank=False, help_text="Datetime preferrably with timezone")
     has_experienced_outage = models.BooleanField(null=False, blank=False, default=True, help_text="Boolean that indicates if user reported a power cut.")
 
     area = models.ForeignKey(Area, blank=False, null=False)

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.test.client import Client
-from feowl.sms_helper import receive_sms
+from feowl.sms_helper import receive_sms, send_sms
 from django.utils import unittest
 
 from tastypie.models import create_api_key
@@ -532,7 +532,7 @@ class MessagingTestCase(unittest.TestCase):
         self.unregister_test_user_email = "testuser@test.com"
         self.unregister_test_user_password = "testpassword"
         self.unregister_test_user_no = "4849203843"
-        self.help_no = "+4915738710431"
+        self.help_no = "915738710431"
 
         self.contribute_duration = "60"
         self.contribute_area = Area.objects.all()[0].name
@@ -600,6 +600,15 @@ class MessagingTestCase(unittest.TestCase):
         contributors = Contributor.objects.all()
         self.assertEqual(len(devices), nb_devices + 1)
         self.assertEqual(len(contributors), nb_contributors + 1)
+    
+    def test_sendSMS(self):
+        msg = "hi from feowl"
+        bad_phone = "915738710431"
+        send_sms(bad_phone, msg)
+
+        good_phone = "+4915738710431"
+        send_sms(good_phone, msg)
+
 
 '''
     def test_zcontribute(self):

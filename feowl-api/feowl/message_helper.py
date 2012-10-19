@@ -125,13 +125,11 @@ def parse_contribute(message_array):
 
 def create_unknown_user(mobile_number):
     #TODO: Really not sure about this process and how python handles the erros, what happen if an error occurs?
-    print "hi from create unknown user"
     try:
-        contributor = Contributor(name="mobile user",
+        contributor = Contributor(name=mobile_number,
             email=mobile_number + "@feowl.com", status=Contributor.UNKNOWN)
         contributor.save()
-        device = Device(category="mobile", phone_number=mobile_number)
-        device.contributor = contributor
+        device = Device(category="mobile", phone_number=mobile_number, contributor=contributor)
         device.save()
     except IntegrityError, e:
         msg = e.message
@@ -151,7 +149,6 @@ def register(mobile_number, message_array):
     """
         Message: register
     """
-    print "hi from register"
     pwd = pwgen(10, no_symbols=True)
     try:
         try:
@@ -229,6 +226,7 @@ def help(mobile_number, message_array):
         send_message(device.phone_number, third_help_msg)
     except Device.DoesNotExist:
         return "Device does not exist"
+
     save_message(message_array, SMS, parsed=Message.YES)
 
 
@@ -259,16 +257,14 @@ def invalid(mobile_number, message_array):
     """
         Message: <something wrong>
     """
-    print "hi from invalid"
     msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO)
     msg.save()
+
     try:
         device = Device.objects.get(phone_number=mobile_number)
         if device.contributor == None:
             create_unknown_user(mobile_number)
     except Device.DoesNotExist:
-        device = Device(phone_number=mobile_number)
-        device.save()
         create_unknown_user(mobile_number)
 
 

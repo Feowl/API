@@ -7,12 +7,10 @@ def send_sms(mobile_number, message):
     key = "ff33ed3f"
     secret = "eddd3f0c"
     sender = "feowl"
-    if (is_phone_number(message)):
-        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
-        sms = NexmoMessage(msg)
-        sms.send_request()
-    else:
-        raise "invalid phone number"
+    msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
+    sms = NexmoMessage(msg)
+    #sms.send_request()
+    #print " ----> message sent" 
 
 
 def is_phone_number(message):

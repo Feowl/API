@@ -531,7 +531,8 @@ class MessagingTestCase(unittest.TestCase):
         self.unregister_test_user_name = "testuser"
         self.unregister_test_user_email = "testuser@test.com"
         self.unregister_test_user_password = "testpassword"
-        self.unregister_test_user_no = "3849203843"
+        self.unregister_test_user_no = "4849203843"
+        self.help_no = "+4915738710431"
 
         self.contribute_duration = "60"
         self.contribute_area = Area.objects.all()[0].name
@@ -539,11 +540,9 @@ class MessagingTestCase(unittest.TestCase):
     def test_register(self):
         contributors = Contributor.objects.all()
         nb_contributors = len(contributors)
-        self.assertEqual(nb_contributors, 0)
 
         devices = Device.objects.all()
         nb_devices = len(devices)
-        self.assertEqual(nb_devices, 0)
         receive_sms(self.register_test_user_no, self.register_keyword)
         contributors = Contributor.objects.all()
         devices = Device.objects.all()
@@ -556,36 +555,51 @@ class MessagingTestCase(unittest.TestCase):
 
     def test_unregister(self):
         devices = Device.objects.all()
-        contributor = Contributor(name=self.unregister_test_user_name,
-                                email=self.unregister_test_user_email,
-                                password=self.unregister_test_user_password)
-        contributor.save()
-        device = Device(phone_number=self.unregister_test_user_no,
-                        contributor=contributor)
-        device.save()
+        nb_devices = len(devices)
+        contributors = Contributor.objects.all()
+        nb_contributors = len(contributors)
 
+        #Registering a User
+        receive_sms(self.unregister_test_user_no, "register")
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
+        #Unregistering a user
+        receive_sms(self.unregister_test_user_no, self.unregister_keyword)
+
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices)
+        self.assertEqual(len(contributors), nb_contributors)
+
+    def test_help(self):
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
         nb_devices = len(devices)
         nb_contributors = len(contributors)
 
-        receive_sms(self.unregister_test_user_no, self.unregister_keyword)
+        contributor = Contributor(name=self.unregister_test_user_name, email=self.unregister_test_user_email, password=self.unregister_test_user_password)
+        contributor.save()
+        device = Device(phone_number=self.help_no, contributor=contributor)
+        device.save()
+                            
+        receive_sms(self.help_no, "help")
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
 
+    def test_invalid(self):
+        devices = Device.objects.all()
+        nb_devices = len(devices)
+        contributors = Contributor.objects.all()
+        nb_contributors = len(contributors)
+        receive_sms("889383849", "lkjasdlkajs akjkdlaksjdui akjdlkasd")
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), nb_devices - 1)
-        self.assertEqual(len(contributors), nb_contributors - 1)
-
-    def test_help(self):
-        devices = Device.objects.all()
-        contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 0)
-        self.assertEqual(len(contributors), 0)
-        receive_sms("+4915738710431", "help")
-        devices = Device.objects.all()
-        contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 1)
-        self.assertEqual(len(contributors), 1)
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
 
 '''
     def test_zcontribute(self):

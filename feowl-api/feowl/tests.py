@@ -544,23 +544,15 @@ class MessagingTestCase(unittest.TestCase):
         devices = Device.objects.all()
         nb_devices = len(devices)
         self.assertEqual(nb_devices, 0)
-        print "contributors, devices:"
-        print contributors.count(), devices.count()
-
-        receive_sms("register", "+4915738710431")
+        receive_sms(self.register_test_user_no, self.register_keyword)
         contributors = Contributor.objects.all()
         devices = Device.objects.all()
-        print "contributors, devices:"
-        print contributors.count(), devices.count()
-        #print "contributor name: " + contributors[0].name
-
         self.assertEqual(len(contributors), nb_contributors + 1)
 
-        #device = Device.objects.get(phone_number=self.register_test_user_no)
-        #contributor = Contributor.objects.get(name=self.register_test_user_no)
-        #self.assertEqual(contributor.name, self.register_test_user_no)
-        #self.assertEqual(contributor.refunds, 1)
-        #self.assertEqual(device.phone_number, self.register_test_user_no)
+        device = Device.objects.get(phone_number=self.register_test_user_no)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 1)
+        self.assertEqual(device.phone_number, self.register_test_user_no)
 '''
     def test_unregister(self):
         devices = Device.objects.all()

@@ -125,6 +125,7 @@ def parse_contribute(message_array):
 
 def create_unknown_user(mobile_number):
     #TODO: Really not sure about this process and how python handles the erros, what happen if an error occurs?
+    print "hi from create unknown user"
     try:
         contributor = Contributor(name="mobile user",
             email=mobile_number + "@feowl.com", status=Contributor.UNKNOWN)
@@ -258,6 +259,7 @@ def invalid(mobile_number, message_array):
     """
         Message: <something wrong>
     """
+    print "hi from invalid"
     msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO)
     msg.save()
     try:

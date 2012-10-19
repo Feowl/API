@@ -32,7 +32,7 @@ DATABASES = {
 }
 
 if 'test' in sys.argv:
-    DATABASES['default'].update({'USER': 'postgres', 'PASSWORD': ''})
+    DATABASES['default'].update({'USER': 'postgres', 'PASSWORD': 'admin'})
 
 #proper geos path for os x
 if sys.platform == 'darwin':

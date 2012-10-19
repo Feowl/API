@@ -77,6 +77,7 @@ class ContributorAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
+    list_display = ('message', 'source', 'keyword', 'parsed')
     list_filter = ('keyword', 'parsed')
 
 admin.site.unregister(User)

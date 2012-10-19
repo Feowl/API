@@ -2,13 +2,14 @@ from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.test.client import Client
+from feowl.sms_helper import receive_sms, send_sms
 from django.utils import unittest
 
 from tastypie.models import create_api_key
 from tastypie_test import ResourceTestCase
 
 from feowl.models import PowerReport, Area, Contributor, Device
-from feowl.message_helper import read_message
+#from feowl.message_helper import read_message
 
 import json
 from datetime import datetime, timedelta
@@ -525,59 +526,91 @@ class MessagingTestCase(unittest.TestCase):
         self.unregister_keyword = "stop"
         self.contribute_keyword = "contribute"
 
-        self.register_test_user_no = "32423423423"
+        self.register_test_user_no = "3849203843"
 
         self.unregister_test_user_name = "testuser"
         self.unregister_test_user_email = "testuser@test.com"
         self.unregister_test_user_password = "testpassword"
-        self.unregister_test_user_no = "3849203843"
+        self.unregister_test_user_no = "4849203843"
+        self.help_no = "915738710431"
 
         self.contribute_duration = "60"
         self.contribute_area = Area.objects.all()[0].name
 
     def test_register(self):
-        devices = Device.objects.all()
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 1)
-        self.assertEqual(len(contributors), 0)
-
-        read_message(self.register_keyword, self.register_test_user_no)
+        nb_contributors = len(contributors)
 
         devices = Device.objects.all()
+        nb_devices = len(devices)
+        receive_sms(self.register_test_user_no, self.register_keyword)
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 2)
-        self.assertEqual(len(contributors), 1)
+        devices = Device.objects.all()
+        self.assertEqual(len(contributors), nb_contributors + 1)
 
-        contributor = Contributor.objects.get(name=self.register_test_user_no)
         device = Device.objects.get(phone_number=self.register_test_user_no)
-        self.assertEqual(contributor.name, self.register_test_user_no)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, 1)
         self.assertEqual(device.phone_number, self.register_test_user_no)
 
     def test_unregister(self):
         devices = Device.objects.all()
-        self.assertEqual(len(devices), 2)
+        nb_devices = len(devices)
+        contributors = Contributor.objects.all()
+        nb_contributors = len(contributors)
 
-        contributor = Contributor(name=self.unregister_test_user_name,
-                                email=self.unregister_test_user_email,
-                                password=self.unregister_test_user_password)
+        #Registering a User
+        receive_sms(self.unregister_test_user_no, "register")
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
+        #Unregistering a user
+        receive_sms(self.unregister_test_user_no, self.unregister_keyword)
+
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices)
+        self.assertEqual(len(contributors), nb_contributors)
+
+    def test_help(self):
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        nb_devices = len(devices)
+        nb_contributors = len(contributors)
+
+        contributor = Contributor(name=self.unregister_test_user_name, email=self.unregister_test_user_email, password=self.unregister_test_user_password)
         contributor.save()
-        device = Device(phone_number=self.unregister_test_user_no,
-                        contributor=contributor)
+        device = Device(phone_number=self.help_no, contributor=contributor)
         device.save()
-
+                            
+        receive_sms(self.help_no, "help")
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 3)
-        self.assertEqual(len(contributors), 2)
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
 
-        read_message(self.unregister_keyword, self.unregister_test_user_no)
-
+    def test_invalid(self):
+        devices = Device.objects.all()
+        nb_devices = len(devices)
+        contributors = Contributor.objects.all()
+        nb_contributors = len(contributors)
+        receive_sms("889383849", "lkjasdlkajs akjkdlaksjdui akjdlkasd")
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
-        self.assertEqual(len(devices), 2)
-        self.assertEqual(len(contributors), 1)
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
+    
+    def test_sendSMS(self):
+        msg = "hi from feowl"
+        bad_phone = "915738710431"
+        send_sms(bad_phone, msg)
 
+        good_phone = "+4915738710431"
+        send_sms(good_phone, msg)
+
+
+'''
     def test_zcontribute(self):
         contribute_msg = (self.contribute_keyword + " " +
                 self.contribute_area + " " + self.contribute_duration)
@@ -644,3 +677,4 @@ class MessagingTestCase(unittest.TestCase):
         read_message("no", self.register_test_user_no)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), 5)
+'''

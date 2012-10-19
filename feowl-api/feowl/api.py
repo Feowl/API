@@ -16,6 +16,8 @@ from forms import PowerReportForm, DeviceForm, ContributorForm, AreaForm
 from models import PowerReport, Device, Contributor, Area
 from validation import ModelFormValidation
 from serializers import CSVSerializer
+import sms_helper
+import simplejson
 
 
 class ContributorResource(ModelResource):
@@ -312,3 +314,30 @@ class PowerCutDurations(Resource):
             # create aggregate object
             result.append(GenericResponseObject({'upper_bound': upper_bound, 'lower_bound': lower_bound, 'contributions': contributions, 'proportion': proportion, 'quintile': quintile + 1}))
         return result
+
+
+class IncomingSmsResource(Resource):
+    class Meta:
+        resource_name = 'incoming-sms'
+        object_class = GenericResponseObject
+        #include_resource_uri = False
+
+        list_allowed_methods = ['post', 'get']
+        detail_allowed_methods = []
+
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        json_data = simplejson.loads(request.raw_post_data)
+        try:
+            phone = json_data['mobile_phone']
+            msg = json_data['in_message']
+        except KeyError:
+            HttpResponseServerError("Malformed data!")
+        sms_helper.receive_sms(phone, msg)
+        bundle.obj = bundle = self.build_bundle(request=request)
+        return bundle
+
+    def get_resource_uri(self, bundle_or_obj):
+        return '/api/v1/%s/%s/' % (self._meta.resource_name, bundle_or_obj.obj.id)

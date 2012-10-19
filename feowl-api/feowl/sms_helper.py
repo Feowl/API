@@ -18,8 +18,13 @@ def send_sms(mobile_number, message):
         logger.error("Message not sent - Invalid phone number")
 
 
-def is_phone_number(message):
-    if message[0] == '+':
+def is_phone_number(num):
+    #TODO have fun with Regex to find if it's a good phone number or not
+    #Cameroon numbers
+    if ("+237" in num) and (len(num) == 12):
+        return True
+    #German Numbers
+    elif ("+49" in num):
         return True
     else:
         False

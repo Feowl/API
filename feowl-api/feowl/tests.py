@@ -553,7 +553,7 @@ class MessagingTestCase(unittest.TestCase):
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, 1)
         self.assertEqual(device.phone_number, self.register_test_user_no)
-'''
+
     def test_unregister(self):
         devices = Device.objects.all()
         contributor = Contributor(name=self.unregister_test_user_name,
@@ -569,13 +569,25 @@ class MessagingTestCase(unittest.TestCase):
         nb_devices = len(devices)
         nb_contributors = len(contributors)
 
-        read_message(self.unregister_keyword, self.unregister_test_user_no)
+        receive_sms(self.unregister_test_user_no, self.unregister_keyword)
 
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
         self.assertEqual(len(devices), nb_devices - 1)
         self.assertEqual(len(contributors), nb_contributors - 1)
 
+    def test_help(self):
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), 0)
+        self.assertEqual(len(contributors), 0)
+        receive_sms("+4915738710431", "help")
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), 1)
+        self.assertEqual(len(contributors), 1)
+
+'''
     def test_zcontribute(self):
         contribute_msg = (self.contribute_keyword + " " +
                 self.contribute_area + " " + self.contribute_duration)

@@ -7,9 +7,19 @@ def send_sms(mobile_number, message):
     key = "ff33ed3f"
     secret = "eddd3f0c"
     sender = "feowl"
-    msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
-    sms = NexmoMessage(msg)
-    sms.send_request()
+    if (is_phone_number(message)):
+        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
+        sms = NexmoMessage(msg)
+        sms.send_request()
+    else:
+        raise "invalid phone number"
+
+
+def is_phone_number(message):
+    if message[0] == '+':
+        return True
+    else:
+        False
 
 
 def special_batch_sms(mobile_numbers_list, message="template"):
@@ -24,4 +34,3 @@ def special_batch_sms(mobile_numbers_list, message="template"):
 
 def receive_sms(mobile_number, message):
     read_message(mobile_number, message)
-    

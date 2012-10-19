@@ -130,7 +130,7 @@ def create_unknown_user(mobile_number):
             email=mobile_number + "@feowl.com", status=Contributor.UNKNOWN)
         contributor.save()
         device = Device(category="mobile", phone_number=mobile_number)
-        device.contributor = contributor.id
+        device.contributor = contributor
         device.save()
     except IntegrityError, e:
         msg = e.message
@@ -150,12 +150,13 @@ def register(mobile_number, message_array):
     """
         Message: register
     """
+    print "hi from register"
     pwd = pwgen(10, no_symbols=True)
     try:
         try:
             device = Device.objects.get(phone_number=mobile_number)
             #If Contributor an unknown, then she becomes active
-            if device.contributor.status == Contributor.UNKNOWN:
+            if (device.contributor.status == Contributor.UNKNOWN) or (device.contributor.status == Contributor.INACTIVE):
                 device.contributor.status = Contributor.ACTIVE
                 device.contributor.password = pwd
                 device.contributor.save()
@@ -166,7 +167,7 @@ def register(mobile_number, message_array):
             contributor = Contributor(name=mobile_number,
                 email=mobile_number + "@feowl.com", password=pwd)
             contributor.save()
-            device = Device(phone_number=mobile_number, contributor=contributor)
+            device = Device(phone_number=mobile_number, contributor=contributor, category="mobile")
             device.save()
             increment_refund(device.contributor.id)
             msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
@@ -182,6 +183,10 @@ def register(mobile_number, message_array):
             return
         logger.error("Unkown Error please try later to register")
         return
+
+
+#def register(mobile_number, message_array):
+#    print "hello world"
 
 
 def unregister(mobile_number, message_array):
@@ -217,7 +222,7 @@ def help(mobile_number, message_array):
     try:
         device = Device.objects.get(phone_number=mobile_number)
         if device.contributor == None:
-            create_unknown_user(device, mobile_number)
+            create_unknown_user(mobile_number)
         send_message(device.phone_number, first_help_msg)
         send_message(device.phone_number, second_help_msg)
         send_message(device.phone_number, third_help_msg)
@@ -242,7 +247,7 @@ def cancel(mobile_number, message_array):
             device.contributor.response = today - timedelta(days=1)
             device.contributor.save()
         else:
-            return create_unknown_user(device, mobile_number)
+            return create_unknown_user(mobile_number)
         save_message(message_array, SMS, parsed=Message.YES)
     except Device.DoesNotExist:
         logger.info("Device does not exist")
@@ -258,11 +263,11 @@ def invalid(mobile_number, message_array):
     try:
         device = Device.objects.get(phone_number=mobile_number)
         if device.contributor == None:
-            create_unknown_user(device, mobile_number)
+            create_unknown_user(mobile_number)
     except Device.DoesNotExist:
         device = Device(phone_number=mobile_number)
         device.save()
-        create_unknown_user(device, mobile_number)
+        create_unknown_user(mobile_number)
 
 
 def send_message(mobile_number, message):

@@ -68,8 +68,6 @@ class Contributor(models.Model):
         super(Contributor, self).save()
          # Send an email if this are a new contributor
         if not created:
-            print "################# EMAIL IS"
-            print self.email
             email_helper.send_email(self.name, self.email, self.language)
 
 

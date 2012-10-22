@@ -600,7 +600,7 @@ class MessagingTestCase(unittest.TestCase):
         contributors = Contributor.objects.all()
         self.assertEqual(len(devices), nb_devices + 1)
         self.assertEqual(len(contributors), nb_contributors + 1)
-    
+
     def test_sendSMS(self):
         msg = "hi from feowl"
         bad_phone = "915738710431"
@@ -609,72 +609,71 @@ class MessagingTestCase(unittest.TestCase):
         good_phone = "+4915738710431"
         send_sms(good_phone, msg)
 
+#############################################
 
-'''
     def test_zcontribute(self):
-        contribute_msg = (self.contribute_keyword + " " +
-                self.contribute_area + " " + self.contribute_duration)
+        #contribute_msg = (self.contribute_keyword + " " +
+                #self.contribute_area + " " + self.contribute_duration)
+        contribute_msg = "pc douala1 100"
 
-        # Missing enquiry
+        # Missing enquiry - Contribution not accepted
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 5)
-        read_message(contribute_msg, self.register_test_user_no)
+        nb_reports = reports.count()
+        receive_sms(self.register_test_user_no, contribute_msg)
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 5)
+        self.assertEqual(len(reports), nb_reports)
 
-        # With enquiry from today
+        # With enquiry from today - Contribution accepted
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         contributor.enquiry = datetime.today().date()
         contributor.save()
-        self.assertEqual(contributor.refunds, 1)
+        refund = contributor.refunds
 
-        read_message(contribute_msg, self.register_test_user_no)
+        receive_sms(self.register_test_user_no, contribute_msg)
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 6)
+        self.assertEqual(len(reports), nb_reports + 1)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
-        self.assertEqual(contributor.refunds, 2)
+        self.assertEqual(contributor.refunds, refund + 1)
+        self.assertEqual(report.has_experienced_outage, True)
 
         # Reset the response time in the db
         contributor.response = datetime.today().date() - timedelta(days=1)
         contributor.save()
 
         # Multiple message
-        multi_contribute_msg = (self.contribute_keyword + " " +
-                self.contribute_area + " " + self.contribute_duration + ", " +
-                self.contribute_area + " " + self.contribute_duration)
-
-        read_message(multi_contribute_msg, self.register_test_user_no)
+        multi_contribute_msg = "pc doualaI 29, douala2 400, douala3 10"
         reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 8)
+        nb_reports = reports.count()
+        receive_sms(self.register_test_user_no, multi_contribute_msg)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), nb_reports + 1)
+
         contributor = Contributor.objects.get(name=self.register_test_user_no)
-        self.assertEqual(contributor.refunds, 3)
+        self.assertEqual(contributor.refunds, refund + 2)
 
         contributor.response = datetime.today().date() - timedelta(days=1)
         contributor.save()
 
+        # Test the no method if the reports wrong
+        receive_sms(self.register_test_user_no, "pc no")
+        nb_reports1 = PowerReport.objects.all().count()
+        receive_sms(self.register_test_user_no, multi_contribute_msg)
+        nb_reports2 = PowerReport.objects.all().count()
+        self.assertEqual(nb_reports2, nb_reports1 + 1)
+        report = PowerReport.objects.latest()
+        self.assertEqual(report.has_experienced_outage, False)
+
+
+
+'''
         # No space after the comma
         multi_contribute_msg = (self.contribute_keyword + " " +
                 self.contribute_area + " " + self.contribute_duration + "," +
                 self.contribute_area + " " + self.contribute_duration)
 
-        read_message(multi_contribute_msg, self.register_test_user_no)
+        receive_sms(self.register_test_user_no, multi_contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), 10)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, 4)
-
-        # Test the no method if the reports wrong
-        read_message("no", self.register_test_user_no)
-        reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 5)
-
-        read_message(multi_contribute_msg, self.register_test_user_no)
-        reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 7)
-        contributor = Contributor.objects.get(name=self.register_test_user_no)
-        self.assertEqual(contributor.refunds, 5)
-
-        read_message("no", self.register_test_user_no)
-        reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 5)
 '''

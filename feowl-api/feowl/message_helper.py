@@ -54,31 +54,40 @@ def contribute(message_array, mobile_number):
         # Check if user exist else create an unknow user
         if device.contributor == None:
             #TODO: find a better solution for this case (can we have a device without a contributor?)
-            pass
-
+            create_unknown_user(mobile_number)
+            return
         # If this user hasn't been asked today OR If has already answered today, then save the message and ignore contribution
         elif (device.contributor.enquiry != today) or (device.contributor.response == today):
             save_message(message_array, SMS)
             return
         #Else try to parse the contribution and save the report
         else:
-            duration, areaid, validated_msg = parse_contribute(message_array)
+            list = parse_contribute(message_array)
+            #If we haven't been able to parse the message
+            if list is None:
+                msg = "Hello, your message couldn't be translated - please send us another SMS, e.g. ""Douala1 40"" type HELP for help"
             #If user sent PC No - then no outage has been experienced
-            if (duration < 0):
-                report = PowerReport(has_experienced_outage=False, duration=0, contributor=device.contributor, device=device,
-                        area=areaid, happened_at=today)
+            elif list[0][0] == 0:
+                report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
+                        area=list[0][1], happened_at=today)
+                report.save()
+                increment_refund(device.contributor.id)
+                msg = "You have choosen to report no power cut, if this is not want you wanted to say, please send us a new message"
+                #logger.warning(report)
             else:
-                report = PowerReport(duration=duration, contributor=device.contributor, device=device,
-                        area=areaid, happened_at=today)
-            report.save()
+                i = 1
+                for item in list:
+                    report = PowerReport(duration=item[0], contributor=device.contributor, device=device,
+                        area=item[1], happened_at=today)
+                    report.save()
+                    increment_refund(device.contributor.id)
+                    i += 1
+                msg = "Hello, you have submitted " + str(len(list)) + " messages if this is not want you wanted to say, please send us a new message"
         # Set response to know that this user was handled already
         device.contributor.response = today
         device.contributor.save()
         #TODO:a better explanation message
-        send_message(device.phone_number, "Hello, this is the message that has been recorded: " + validated_msg +
-                                         " - if this is not want you wanted to say, please send us a new message")
-        # Increment refunds
-        increment_refund(device.contributor.id)
+        send_message(device.phone_number, msg)
 
     except Device.DoesNotExist:
         logger.warning("Device is not Existing")
@@ -88,17 +97,35 @@ def contribute(message_array, mobile_number):
 
 def increment_refund(user_id):
     #add +1 to the refund counter for the current user
-    Contributor.objects.filter(pk=user_id).update(refunds=F('refunds') + 1)
+    c = Contributor.objects.get(pk=user_id)
+    c.refunds += 1
+    c.save()
+    #c.update(refunds=F('refunds') + 1)
 
 
 def parse_contribute(message_array):
     #TODO:algorithme to be improved
-        validated_msg = ""
+        #Contributors reports that he hasn't witnessed a power cut
+        list = []
         if message_array[1] == "no":
-            validated_msg = "No Report"
             save_message(message_array, SMS, parsed=Message.YES)
-            return -1, -1, -1
+            list.append([0, get_area("other")])
+        #Contributor wants to report a power cut
         else:
+            i = 1
+            for word in message_array[1:]:
+                if word.isdigit():
+                    duration = word
+                    area = get_area(message_array[i - 1])
+                    save_message(message_array, SMS, parsed=Message.YES)
+                    list.append([duration, area])
+                i += 1
+            if len(list) == 0:
+                #No report could be added
+                save_message(message_array, SMS, parsed=Message.NO)
+                return None
+        return list
+        '''
             msg_len = len(message_array)
             loops = msg_len / 3
             for x in range(loops):
@@ -121,6 +148,15 @@ def parse_contribute(message_array):
                 validated_msg += "{0}.Report: Area - {1} Duration - {2} ".format(x, areas_obj[0].name, duration)
                 save_message(message_array, SMS, parsed=Message.YES)
                 return duration, areas_obj[0], validated_msg
+                '''
+
+
+def get_area(area_name):
+    try:
+        area = Area.objects.get(name=area_name)
+    except:
+        area = Area.objects.get(id=0)
+    return area
 
 
 def create_unknown_user(mobile_number):

@@ -22,7 +22,7 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'feowl',
         'USER': 'feowl_django',
-        'PASSWORD': 'passwd123',
+        'PASSWORD': 'Bee0phuah8qu',
         'HOST': 'localhost',
         'PORT': '',
         'OPTIONS': {

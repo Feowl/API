@@ -13,7 +13,7 @@ v1_api.register(PowerReportAggregatedResource())
 v1_api.register(DeviceResource())
 v1_api.register(ContributorResource())
 v1_api.register(AreaResource())
-v1_api.register(PowerCutDurations())
+#v1_api.register(PowerCutDurations())
 
 urlpatterns = patterns('',
     url(r'^grappelli/', include('grappelli.urls')),

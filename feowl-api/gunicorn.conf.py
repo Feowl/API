@@ -2,7 +2,7 @@ from re import search
 from os import getcwd
 
 # Check for dev in path, dev will bind the port to 8001, live to 8000
-seaching_path = 'dev'
+seaching_path = 'API'
 if search(seaching_path, getcwd()).group() == seaching_path:
     port = '8001'
     logfile = '/var/log/gunicorn/gunicorn-%s.log' % seaching_path

@@ -58,26 +58,5 @@
             "name": "Douala IV",
             "country": "Cameroon"
         }
-    },
-    {
-        "pk": 1,
-        "model": "auth.group",
-        "fields": {
-            "name": "API-Users",
-            "permissions": [
-                34,
-                35,
-                36,
-                28,
-                29,
-                30,
-                31,
-                32,
-                33,
-                37,
-                38,
-                39
-            ]
-        }
     }
 ]

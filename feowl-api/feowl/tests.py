@@ -1,14 +1,23 @@
-from django.test.client import Client
-from models import PowerReport, Area, Contributor, Device
-from django.contrib.auth.models import User, Permission
-from tastypie_test import ResourceTestCase
-from django.db import models
-from tastypie.models import create_api_key
-import json
 from django.conf import settings
+from django.contrib.auth.models import User, Permission
+from django.db import models
+from django.test.client import Client
+from feowl.sms_helper import receive_sms, send_sms
+from django.utils import unittest
+
+from tastypie.models import create_api_key
+from tastypie_test import ResourceTestCase
+
+from feowl.models import PowerReport, Area, Contributor, Device
+#from feowl.message_helper import read_message
+
+import json
+from datetime import datetime, timedelta
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
+
+#TODO: Isolated the tests from each other
 
 class PowerReportResourceTest(ResourceTestCase):
     fixtures = ['test_data.json']
@@ -255,8 +264,9 @@ class ContributorResourceTest(ResourceTestCase):
         # Fetch the ``Entry`` object we'll use in testing.
         # Note that we aren't using PKs because they can change depending
         # on what other tests are running.
-        Contributor(name="Tobias", email="tobias@test.de").save()
-        self.contributor_1 = Contributor.objects.get(pk=1)
+        self.contributor_1 = Contributor(name="Tobias", email="tobias@test.de")
+        self.contributor_1.set_password("tobias")
+        self.contributor_1.save()
 
         # We also build a detail URI, since we will be using it all over.
         # DRY, baby. DRY.
@@ -284,7 +294,8 @@ class ContributorResourceTest(ResourceTestCase):
             'email': 'tobias@test.de',
             'password': settings.DUMMY_PASSWORD,
             'resource_uri': self.detail_url,
-            'language': 'EN'  # EN is the default value
+            'language': 'EN',  # EN is the default value
+            'frequency': 1
         })
 
     def test_get_detail_unauthenticated(self):
@@ -297,7 +308,7 @@ class ContributorResourceTest(ResourceTestCase):
         self.assertValidJSONResponse(resp)
 
         # We use ``assertKeys`` here to just verify the keys, not all the data.
-        self.assertKeys(self.deserialize(resp), ['id', 'name', 'email', 'password', 'resource_uri', 'language'])
+        self.assertKeys(self.deserialize(resp), ['id', 'name', 'email', 'password', 'resource_uri', 'language', 'frequency'])
         self.assertEqual(self.deserialize(resp)['name'], "Tobias")
 
     def test_post_list_unauthenticated(self):
@@ -350,6 +361,41 @@ class ContributorResourceTest(ResourceTestCase):
         self.assertEqual(Contributor.objects.count(), 1)
         self.assertHttpAccepted(self.c.delete(self.detail_url, self.get_credentials()))
         self.assertEqual(Contributor.objects.count(), 0)
+
+    def test_check_password(self):
+        """Check that the password of the Contributor is right"""
+        check_password_url = self.detail_url + "check_password/"
+        credentials = self.get_credentials()
+        # Check if only authorized can access this url
+        self.assertHttpUnauthorized(self.c.get(check_password_url))
+
+        # Test with credentials and wrong password
+        credentials_and_wrong_password = credentials
+        credentials_and_wrong_password.update({"password": "wrong_tobias"})
+        resp = self.c.get(check_password_url, credentials_and_wrong_password)
+        self.assertHttpOK(resp)
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(self.deserialize(resp)['password_valid'], False)
+
+        # Test with credentials and right password
+        credentials_and_password = credentials
+        credentials_and_password.update({"password": "tobias"})
+        resp = self.c.get(check_password_url, credentials_and_password)
+        self.assertHttpOK(resp)
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(self.deserialize(resp)['password_valid'], True)
+
+        # Update password with put and chek password again
+        change_contributor = Permission.objects.get(codename="change_contributor")
+        self.user.user_permissions.add(change_contributor)
+        self.assertHttpAccepted(self.c.put(self.detail_url + '?username=' + self.username + '&api_key=' + self.api_key, data=json.dumps({"password": "newpassword"}), content_type="application/json"))
+
+        credentials_and_updated_password = credentials
+        credentials_and_updated_password.update({"password": "newpassword"})
+        resp = self.c.get(check_password_url, credentials_and_updated_password)
+        self.assertHttpOK(resp)
+        self.assertValidJSONResponse(resp)
+        self.assertEqual(self.deserialize(resp)['password_valid'], True)
 
 
 class DeviceResourceTest(ResourceTestCase):
@@ -470,3 +516,165 @@ class DeviceResourceTest(ResourceTestCase):
         self.assertEqual(Device.objects.count(), 1)
         self.assertHttpAccepted(self.c.delete(self.detail_url, self.get_credentials()))
         self.assertEqual(Device.objects.count(), 0)
+
+
+class MessagingTestCase(unittest.TestCase):
+    # We have to run this test only in the complete test env is depends
+    # on it or we flush the database if come to this test
+    def setUp(self):
+        self.register_keyword = "register"
+        self.unregister_keyword = "stop"
+        self.contribute_keyword = "contribute"
+
+        self.register_test_user_no = "3849203843"
+
+        self.unregister_test_user_name = "testuser"
+        self.unregister_test_user_email = "testuser@test.com"
+        self.unregister_test_user_password = "testpassword"
+        self.unregister_test_user_no = "4849203843"
+        self.help_no = "915738710431"
+
+        self.contribute_duration = "60"
+        self.contribute_area = Area.objects.all()[0].name
+
+    def test_register(self):
+        contributors = Contributor.objects.all()
+        nb_contributors = len(contributors)
+
+        devices = Device.objects.all()
+        nb_devices = len(devices)
+        receive_sms(self.register_test_user_no, self.register_keyword)
+        contributors = Contributor.objects.all()
+        devices = Device.objects.all()
+        self.assertEqual(len(contributors), nb_contributors + 1)
+
+        device = Device.objects.get(phone_number=self.register_test_user_no)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 1)
+        self.assertEqual(device.phone_number, self.register_test_user_no)
+
+    def test_unregister(self):
+        devices = Device.objects.all()
+        nb_devices = len(devices)
+        contributors = Contributor.objects.all()
+        nb_contributors = len(contributors)
+
+        #Registering a User
+        receive_sms(self.unregister_test_user_no, "register")
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
+        #Unregistering a user
+        receive_sms(self.unregister_test_user_no, self.unregister_keyword)
+
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices)
+        self.assertEqual(len(contributors), nb_contributors)
+
+    def test_help(self):
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        nb_devices = len(devices)
+        nb_contributors = len(contributors)
+
+        contributor = Contributor(name=self.unregister_test_user_name, email=self.unregister_test_user_email, password=self.unregister_test_user_password)
+        contributor.save()
+        device = Device(phone_number=self.help_no, contributor=contributor)
+        device.save()
+                            
+        receive_sms(self.help_no, "help")
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
+
+    def test_invalid(self):
+        devices = Device.objects.all()
+        nb_devices = len(devices)
+        contributors = Contributor.objects.all()
+        nb_contributors = len(contributors)
+        receive_sms("889383849", "lkjasdlkajs akjkdlaksjdui akjdlkasd")
+        devices = Device.objects.all()
+        contributors = Contributor.objects.all()
+        self.assertEqual(len(devices), nb_devices + 1)
+        self.assertEqual(len(contributors), nb_contributors + 1)
+    
+    def test_sendSMS(self):
+        msg = "hi from feowl"
+        bad_phone = "915738710431"
+        send_sms(bad_phone, msg)
+
+        good_phone = "+4915738710431"
+        send_sms(good_phone, msg)
+
+
+'''
+    def test_zcontribute(self):
+        contribute_msg = (self.contribute_keyword + " " +
+                self.contribute_area + " " + self.contribute_duration)
+
+        # Missing enquiry
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 5)
+        read_message(contribute_msg, self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 5)
+
+        # With enquiry from today
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        contributor.enquiry = datetime.today().date()
+        contributor.save()
+        self.assertEqual(contributor.refunds, 1)
+
+        read_message(contribute_msg, self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 6)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 2)
+
+        # Reset the response time in the db
+        contributor.response = datetime.today().date() - timedelta(days=1)
+        contributor.save()
+
+        # Multiple message
+        multi_contribute_msg = (self.contribute_keyword + " " +
+                self.contribute_area + " " + self.contribute_duration + ", " +
+                self.contribute_area + " " + self.contribute_duration)
+
+        read_message(multi_contribute_msg, self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 8)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 3)
+
+        contributor.response = datetime.today().date() - timedelta(days=1)
+        contributor.save()
+
+        # No space after the comma
+        multi_contribute_msg = (self.contribute_keyword + " " +
+                self.contribute_area + " " + self.contribute_duration + "," +
+                self.contribute_area + " " + self.contribute_duration)
+
+        read_message(multi_contribute_msg, self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 10)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 4)
+
+        # Test the no method if the reports wrong
+        read_message("no", self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 5)
+
+        read_message(multi_contribute_msg, self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 7)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        self.assertEqual(contributor.refunds, 5)
+
+        read_message("no", self.register_test_user_no)
+        reports = PowerReport.objects.all()
+        self.assertEqual(len(reports), 5)
+'''

@@ -32,7 +32,7 @@ DATABASES = {
 }
 
 if 'test' in sys.argv:
-    DATABASES['default'].update({'USER': 'postgres', 'PASSWORD': ''})
+    DATABASES['default'].update({'USER': 'postgres', 'PASSWORD': 'admin'})
 
 #proper geos path for os x
 if sys.platform == 'darwin':
@@ -233,3 +233,9 @@ ANONYMOUS_USER_NAME = "Anonymous"
 ANONYMOUS_EMAIL = "anonymous@feowl.com"
 NEWSLETTER_FROM = "newsletter@feowl.com"
 REGISTRATION_FROM = "registration@feowl.com"
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'i_chaib@esi.dz'
+EMAIL_HOST_PASSWORD = 'clart&obscure16'

@@ -1,0 +1,18 @@
+from django.core.mail import EmailMultiAlternatives
+from django.template import Context
+from django.template.loader import get_template
+from django.utils.translation import ugettext_lazy as _
+import settings
+
+
+def send_email(name, email, language):
+    plaintext = get_template('email/registration_confirmation.txt')
+    html = get_template('email/registration_confirmation.html')
+    subject = _('Welcome to Feowl')
+    d = Context({'name': name, 'email_language': language})
+    text_content = plaintext.render(d)
+    html_content = html.render(d)
+    msg = EmailMultiAlternatives(subject, text_content,
+             settings.REGISTRATION_FROM, [email])
+    msg.attach_alternative(html_content, "text/html")
+    msg.send()

@@ -16,6 +16,8 @@ from forms import PowerReportForm, DeviceForm, ContributorForm, AreaForm
 from models import PowerReport, Device, Contributor, Area
 from validation import ModelFormValidation
 from serializers import CSVSerializer
+import sms_helper
+import simplejson
 
 
 class ContributorResource(ModelResource):
@@ -27,7 +29,7 @@ class ContributorResource(ModelResource):
         authorization = DjangoAuthorization()
         validation = ModelFormValidation(form_class=ContributorForm)
 
-        fields = ['id', 'email', 'password', 'name', 'language']
+        fields = ['id', 'email', 'password', 'name', 'language', 'frequency']
 
         list_allowed_methods = ['get', 'post']
         detail_allowed_methods = ['get', 'put', 'delete']
@@ -48,6 +50,7 @@ class ContributorResource(ModelResource):
         '''
         method to verify a raw password against the saved encrypted one (only use through SSL!)
         '''
+        #TODO: Check the function for a password change with put
         self.method_check(request, allowed=['get'])
         self.is_authenticated(request)
         self.throttle_check(request)
@@ -74,11 +77,28 @@ class ContributorResource(ModelResource):
 
     def hydrate_password(self, bundle):
         """Turn a passed in password into a hash so it is not saved raw."""
-        bundle.data['password'] = make_password(bundle.data.get('password'))
+        #TODO: If statement should not more needed with the next version of tastypie
+        pwd = str(bundle.data.get('password'))
+        if not pwd.startswith('pbkdf2_sha256$') and not pwd.endswith('='):
+            bundle.data['password'] = make_password(bundle.data.get('password'))
         return bundle
 
     def dehydrate_password(self, bundle):
         return settings.DUMMY_PASSWORD
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        from django.db import IntegrityError
+        from tastypie.exceptions import BadRequest
+        try:
+            bundle = super(ContributorResource, self).obj_create(bundle, request, **kwargs)
+        except IntegrityError, e:
+            msg = ""
+            if e.message.find("name") != -1:
+                msg = 'That name already exists'
+            elif e.message.find("email") != -1:
+                msg = 'That email already exists'
+            raise BadRequest(msg)
+        return bundle
 
 
 class DeviceResource(ModelResource):
@@ -184,7 +204,7 @@ class PowerReportAggregatedResource(Resource):
     pos_neg_ratio = fields.DecimalField('pos_neg_ratio', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
 
     class Meta:
-        resource_name = 'aggregation'
+        resource_name = 'reports-aggregation'
         object_class = GenericResponseObject
         include_resource_uri = False
 
@@ -195,13 +215,6 @@ class PowerReportAggregatedResource(Resource):
         authorization = DjangoAuthorization()
 
         #TODO: we need a custom validation class for this as there is no model...
-
-    def base_urls(self):
-        return [
-            url(r"^(?P<resource_name>%s)/reports/$" % self._meta.resource_name, self.wrap_view('dispatch_list_aggregated'), name="api_dispatch_list_aggregated"),
-            url(r"^(?P<resource_name>%s)/reports/schema/$" % self._meta.resource_name, self.wrap_view('get_schema'), name='api_get_schema')
-        ]
-
     def dispatch_list_aggregated(self, request, resource_name, **kwargs):
         return self.dispatch_list(request, **kwargs)
 
@@ -252,7 +265,7 @@ class PowerCutDurations(Resource):
     proportion = fields.DecimalField('proportion', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
 
     class Meta:
-        resource_name = 'aggregation'
+        resource_name = 'reports-distribution'
         object_class = GenericResponseObject
         include_resource_uri = False
 
@@ -263,13 +276,6 @@ class PowerCutDurations(Resource):
         authorization = DjangoAuthorization()
 
         #TODO: we need a custom validation class for this as there is no model...
-
-    def base_urls(self):
-        return [
-            url(r"^(?P<resource_name>%s)/distribution/$" % self._meta.resource_name, self.wrap_view('dispatch_list_aggregated'), name="api_dispatch_list_aggregated"),
-            url(r"^(?P<resource_name>%s)/distribution/schema/$" % self._meta.resource_name, self.wrap_view('get_schema'), name='api_get_schema')
-        ]
-
     def dispatch_list_aggregated(self, request, resource_name, **kwargs):
         return self.dispatch_list(request, **kwargs)
 
@@ -308,3 +314,30 @@ class PowerCutDurations(Resource):
             # create aggregate object
             result.append(GenericResponseObject({'upper_bound': upper_bound, 'lower_bound': lower_bound, 'contributions': contributions, 'proportion': proportion, 'quintile': quintile + 1}))
         return result
+
+
+class IncomingSmsResource(Resource):
+    class Meta:
+        resource_name = 'incoming-sms'
+        object_class = GenericResponseObject
+        #include_resource_uri = False
+
+        list_allowed_methods = ['post', 'get']
+        detail_allowed_methods = []
+
+        authentication = ApiKeyAuthentication()
+        authorization = DjangoAuthorization()
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        json_data = simplejson.loads(request.raw_post_data)
+        try:
+            phone = json_data['mobile_phone']
+            msg = json_data['in_message']
+        except KeyError:
+            HttpResponseServerError("Malformed data!")
+        sms_helper.receive_sms(phone, msg)
+        bundle.obj = bundle = self.build_bundle(request=request)
+        return bundle
+
+    def get_resource_uri(self, bundle_or_obj):
+        return '/api/v1/%s/%s/' % (self._meta.resource_name, bundle_or_obj.obj.id)

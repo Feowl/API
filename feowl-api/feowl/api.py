@@ -322,7 +322,7 @@ class IncomingSmsResource(Resource):
         object_class = GenericResponseObject
         #include_resource_uri = False
 
-        list_allowed_methods = ['post', 'get']
+        list_allowed_methods = ['post']
         detail_allowed_methods = []
 
         authentication = ApiKeyAuthentication()

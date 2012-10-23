@@ -161,7 +161,7 @@ class AreaResourceTest(ResourceTestCase):
         self.post_data = {
             'city': 'Douala',
             'country': 'Cameroon',
-            'name': 'Douala VI',
+            'name': 'Douala4',
             'pop_per_sq_km': '12323.00',
             'overall_population': 200000
         }
@@ -169,7 +169,7 @@ class AreaResourceTest(ResourceTestCase):
         # Fetch the ``Entry`` object we'll use in testing.
         # Note that we aren't using PKs because they can change depending
         # on what other tests are running.
-        self.area_1 = Area.objects.get(name="Douala I")
+        self.area_1 = Area.objects.get(name="douala2")
 
         # We also build a detail URI, since we will be using it all over.
         # DRY, baby. DRY.
@@ -188,17 +188,8 @@ class AreaResourceTest(ResourceTestCase):
         self.assertValidJSONResponse(resp)
 
         # Scope out the data for correctness.
-        self.assertEqual(len(self.deserialize(resp)['objects']), 5)
-        # Here, we're checking an entire structure for the expected data.
-        self.assertEqual(self.deserialize(resp)['objects'][0], {
-            'city': 'Douala',
-            'country': 'Cameroon',
-            'name': 'Douala I',
-            'pop_per_sq_km': '0.00',
-            'overall_population': 223214,
-            'resource_uri': '/api/v1/areas/1/',
-            'id': '1'
-        })
+        self.assertEqual(len(self.deserialize(resp)['objects']), 6)
+
 
     def test_get_detail_unauthenticated(self):
         """Try to Get a single area from the API without authenticated"""
@@ -211,7 +202,7 @@ class AreaResourceTest(ResourceTestCase):
 
         # We use ``assertKeys`` here to just verify the keys, not all the data.
         self.assertKeys(self.deserialize(resp), ['id', 'city', 'country', 'name', 'pop_per_sq_km', 'overall_population', 'resource_uri'])
-        self.assertEqual(self.deserialize(resp)['name'], "Douala I")
+        self.assertEqual(self.deserialize(resp)['name'], "douala2")
 
     def test_post_list_unauthenticated(self):
         """Try to Post a single area to the API without authenticated"""
@@ -660,8 +651,7 @@ class MessagingTestCase(unittest.TestCase):
         reports = PowerReport.objects.all()
         nb_reports = reports.count()
         contributor = Contributor.objects.get(name=self.register_test_user_no)
-        refund = contributor.refunds
-
+        refund = contributor.refundsa
         receive_sms(self.register_test_user_no, multi_contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports + 4)

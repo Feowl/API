@@ -15,7 +15,8 @@ def send_sms(mobile_number, message):
         sms = NexmoMessage(msg)
         sms.send_request()
     else:
-        logger.error("Message not sent - Invalid phone number")
+        pass
+        #logger.error("Message not sent - Invalid phone number")
 
 
 def is_phone_number(num):

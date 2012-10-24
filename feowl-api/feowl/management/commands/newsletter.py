@@ -8,8 +8,9 @@ from datetime import datetime
 from optparse import make_option
 import settings
 
-from feowl.models import Contributor, SMS, EMAIL
-from feowl.message_helper import send_message as send_sms
+from feowl.models import Contributor, SMS, EMAIL,  Device
+from feowl.sms_helper import send_sms
+from feowl.email_helper import is_valid_email
 
 
 class Command(BaseCommand):
@@ -33,20 +34,23 @@ class Command(BaseCommand):
         connection.open()
 
         for user in contributors:
-            if user.email and user.name:
-                if user.channel == EMAIL:
+                if user.channel == EMAIL and is_valid_email(user.email):
                     d = Context({'name': user.name, 'newsletter_language': user.language})
                     text_content = plaintext.render(d)
                     html_content = html.render(d)
                     msg = EmailMultiAlternatives(subject, text_content, settings.NEWSLETTER_FROM, [user.email], connection=connection)
                     msg.attach_alternative(html_content, "text/html")
                     messages.append(msg)
-                if user.channel == SMS:
-                    msg = """Did u witness powercuts in Douala yesterday? Reply
-                        with PC NO or PC district name&duration in mn. Seperate
-                        each powercut by a space(ex: PC akwa10 deido70)"""
-                    #msg = get_template('sms.txt')
-                    send_sms([user], msg)
+
+                else:
+                    if user.channel == SMS:
+                        msg = """Did u witness powercuts in Douala yesterday? Reply
+                            with PC NO or PC district name&duration in mn. Seperate
+                            each powercut by a space(ex: PC akwa10 deido70)"""
+                        #msg = get_template('sms.txt')
+                        mobile = Device.objects.get(contributor=user)
+                        send_sms(mobile.phone_number, msg)
+
                 # Update the list of targeted users
                 user.enquiry = datetime.today().date()
                 user.save()

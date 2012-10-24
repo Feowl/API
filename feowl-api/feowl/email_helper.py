@@ -16,3 +16,10 @@ def send_email(name, email, language):
              settings.REGISTRATION_FROM, [email])
     msg.attach_alternative(html_content, "text/html")
     msg.send()
+
+
+def is_valid_email(email):
+    if "@feowl.com" in email:
+        return False
+    else:
+        return True

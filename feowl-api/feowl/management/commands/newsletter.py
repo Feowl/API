@@ -47,8 +47,6 @@ class Command(BaseCommand):
                     
                 else:
                     if user.channel == SMS:
-                        #msg = """Did u witness powercuts in Douala yesterday? Reply
-                        #    with PC NO or PC districtname duration in mn. Ex: pc doual2 10, douala3 70)"""
                         d = Context({'name': user.name, 'newsletter_language': user.language})
                         msg = get_template('sms.txt')
                         content = msg.render(d)
@@ -62,5 +60,5 @@ class Command(BaseCommand):
                 user.enquiry = datetime.today().date()
                 user.save()
 
-        #connection.send_messages(messages)
+        connection.send_messages(messages)
         connection.close()

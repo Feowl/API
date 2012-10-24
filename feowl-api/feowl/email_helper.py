@@ -3,6 +3,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.translation import ugettext_lazy as _
 import settings
+import re
 
 
 def send_email(name, email, language):

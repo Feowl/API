@@ -36,8 +36,8 @@ class Command(BaseCommand):
         connection = get_connection()
         connection.open()
 
-        for user in contributors:
-                logger.info("User {0}: Channel:{1}, Email:{2}, Phone:{3}", user.name, user.channel, user.email)
+        for i, user in enumerate(contributors):
+                print '{0} - User {1}: Channel:{2}, Email:{3}'.format(i + 1, user.name, user.channel, user.email)
                 if user.channel == EMAIL and is_valid_email(user.email):
                     d = Context({'name': user.name, 'newsletter_language': user.language})
                     text_content = plaintext.render(d)
@@ -45,17 +45,15 @@ class Command(BaseCommand):
                     msg = EmailMultiAlternatives(subject, text_content, settings.NEWSLETTER_FROM, [user.email], connection=connection)
                     msg.attach_alternative(html_content, "text/html")
                     messages.append(msg)
-                    logger.info("User {0} - Email sent to {0}", user.name, user.email)
+                    print 'Email sent to {1}'.format(user.name, user.email)
 
                 else:
                     if user.channel == SMS:
                         msg = """Did u witness powercuts in Douala yesterday? Reply
-                            with PC NO or PC district name&duration in mn. Seperate
-                            each powercut by a space(ex: PC akwa10 deido70)"""
+                            with PC NO or PC districtname duration in mn. Ex: pc doual2 10, douala3 70)"""
                         #msg = get_template('sms.txt')
                         mobile = Device.objects.get(contributor=user)
                         send_sms(mobile.phone_number, msg)
-                        logger.info("User {0} - SMS sent to {1}", user.name, mobile_phone)
 
                 # Update the list of targeted users
                 user.enquiry = datetime.today().date()

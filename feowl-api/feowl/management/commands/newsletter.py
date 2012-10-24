@@ -37,7 +37,6 @@ class Command(BaseCommand):
         connection.open()
 
         for i, user in enumerate(contributors):
-                print '{0} - User {1}: Channel:{2}, Email:{3}'.format(i + 1, user.name, user.channel, user.email)
                 if user.channel == EMAIL and is_valid_email(user.email):
                     d = Context({'name': user.name, 'newsletter_language': user.language})
                     text_content = plaintext.render(d)
@@ -45,19 +44,23 @@ class Command(BaseCommand):
                     msg = EmailMultiAlternatives(subject, text_content, settings.NEWSLETTER_FROM, [user.email], connection=connection)
                     msg.attach_alternative(html_content, "text/html")
                     messages.append(msg)
-                    print 'Email sent to {1}'.format(user.name, user.email)
-
+                    
                 else:
                     if user.channel == SMS:
-                        msg = """Did u witness powercuts in Douala yesterday? Reply
-                            with PC NO or PC districtname duration in mn. Ex: pc doual2 10, douala3 70)"""
-                        #msg = get_template('sms.txt')
-                        mobile = Device.objects.get(contributor=user)
-                        send_sms(mobile.phone_number, msg)
+                        #msg = """Did u witness powercuts in Douala yesterday? Reply
+                        #    with PC NO or PC districtname duration in mn. Ex: pc doual2 10, douala3 70)"""
+                        d = Context({'name': user.name, 'newsletter_language': user.language})
+                        msg = get_template('sms.txt')
+                        content = msg.render(d)
+                        try:
+                            mobile = Device.objects.get(contributor=user)
+                            send_sms(mobile.phone_number, content)
+                        except:
+                            logger.error("Impossible to send an SMS")
 
                 # Update the list of targeted users
                 user.enquiry = datetime.today().date()
                 user.save()
 
-        connection.send_messages(messages)
+        #connection.send_messages(messages)
         connection.close()

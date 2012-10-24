@@ -651,7 +651,7 @@ class MessagingTestCase(unittest.TestCase):
         reports = PowerReport.objects.all()
         nb_reports = reports.count()
         contributor = Contributor.objects.get(name=self.register_test_user_no)
-        refund = contributor.refundsa
+        refund = contributor.refunds
         receive_sms(self.register_test_user_no, multi_contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports + 4)

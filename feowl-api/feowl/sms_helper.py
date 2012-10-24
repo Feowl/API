@@ -24,8 +24,8 @@ def is_phone_number(num):
     #Cameroon numbers
     if ("+237" in num) and (len(num) == 12):
         return True
-    #German Numbers
-    elif ("+49" in num):
+    #German Numbers and French Numbers
+    elif ("+49" in num) or ("+33" in num):
         return True
     else:
         False

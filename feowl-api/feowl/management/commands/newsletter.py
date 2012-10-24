@@ -11,6 +11,9 @@ import settings
 from feowl.models import Contributor, SMS, EMAIL,  Device
 from feowl.sms_helper import send_sms
 from feowl.email_helper import is_valid_email
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -34,6 +37,7 @@ class Command(BaseCommand):
         connection.open()
 
         for user in contributors:
+                logger.info("User {0}: Channel:{1}, Email:{2}, Phone:{3}", user.name, user.channel, user.email)
                 if user.channel == EMAIL and is_valid_email(user.email):
                     d = Context({'name': user.name, 'newsletter_language': user.language})
                     text_content = plaintext.render(d)
@@ -41,6 +45,7 @@ class Command(BaseCommand):
                     msg = EmailMultiAlternatives(subject, text_content, settings.NEWSLETTER_FROM, [user.email], connection=connection)
                     msg.attach_alternative(html_content, "text/html")
                     messages.append(msg)
+                    logger.info("User {0} - Email sent to {0}", user.name, user.email)
 
                 else:
                     if user.channel == SMS:
@@ -50,6 +55,7 @@ class Command(BaseCommand):
                         #msg = get_template('sms.txt')
                         mobile = Device.objects.get(contributor=user)
                         send_sms(mobile.phone_number, msg)
+                        logger.info("User {0} - SMS sent to {1}", user.name, mobile_phone)
 
                 # Update the list of targeted users
                 user.enquiry = datetime.today().date()

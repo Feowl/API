@@ -20,7 +20,10 @@ def send_email(name, email, language):
 
 
 def is_valid_email(email):
-    if "@feowl.com" in email:
-        return False
+    if len(email) > 6 and "@" in email:
+        if re.match('\d+@feowl.com', email) != None:
+            return False
+        else:
+            return True
     else:
-        return True
+        return False

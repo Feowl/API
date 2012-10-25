@@ -177,6 +177,8 @@ class PowerReportResource(ModelResource):
             'contributor': ALL
         }
 
+        ordering = ['quality', 'duration', 'happened_at', 'area', 'contributor']
+        
 
 class GenericResponseObject(object):
     '''

@@ -154,6 +154,24 @@
       }
    },
    {
+      "pk":7,
+      "model":"feowl.powerreport",
+      "fields":{
+         "created":"2012-06-13T12:38:36.732Z",
+         "deleted":false,
+         "area":2,
+         "modified":"2012-06-13T12:38:36.732Z",
+         "device":null,
+         "happened_at":"2012-06-13T12:38:27Z",
+         "has_experienced_outage":true,
+         "contributor":null,
+         "duration":13,
+         "quality":"0.40",
+         "flagged":false,
+         "location":null
+      }
+   },
+   {
       "pk":1,
       "model":"feowl.powerreport",
       "fields":{

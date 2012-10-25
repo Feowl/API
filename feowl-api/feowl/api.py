@@ -177,6 +177,8 @@ class PowerReportResource(ModelResource):
             'contributor': ALL
         }
 
+        ordering = ['quality', 'duration', 'happened_at', 'area', 'contributor']
+        
 
 class GenericResponseObject(object):
     '''
@@ -322,7 +324,7 @@ class IncomingSmsResource(Resource):
         object_class = GenericResponseObject
         #include_resource_uri = False
 
-        list_allowed_methods = ['post', 'get']
+        list_allowed_methods = ['post']
         detail_allowed_methods = []
 
         authentication = ApiKeyAuthentication()

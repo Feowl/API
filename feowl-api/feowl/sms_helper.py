@@ -15,7 +15,8 @@ def send_sms(mobile_number, message):
         sms = NexmoMessage(msg)
         sms.send_request()
     else:
-        logger.error("Message not sent - Invalid phone number")
+        pass
+        #logger.error("Message not sent - Invalid phone number")
 
 
 def is_phone_number(num):
@@ -23,8 +24,8 @@ def is_phone_number(num):
     #Cameroon numbers
     if ("+237" in num) and (len(num) == 12):
         return True
-    #German Numbers
-    elif ("+49" in num):
+    #German Numbers and French Numbers
+    elif ("+49" in num) or ("+33" in num):
         return True
     else:
         False

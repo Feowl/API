@@ -62,19 +62,9 @@ class Contributor(models.Model):
     def __unicode__(self):
         return self.name
 
-
-
-
-
-
-
-
-
-
-    def save(self):
-        # Check if it already exist
+    def save(self, *args, **kwargs):
         created = self.id is not None
-        super(Contributor, self).save()
+        super(Contributor, self).save(*args, **kwargs)
          # Send an email if this are a new contributor
         if not created:
             email_helper.send_email(self.name, self.email, self.language)

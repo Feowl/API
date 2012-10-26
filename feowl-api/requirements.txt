@@ -15,3 +15,4 @@ pwgen==0.3
 python-dateutil==1.5
 pytz==2012c
 wsgiref==0.1.2
+simplejson

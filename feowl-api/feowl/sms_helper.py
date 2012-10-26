@@ -1,5 +1,4 @@
 from message_helper import read_message
-from nexmomessage import NexmoMessage
 import logging
 from urllib import urlencode
 import urllib2
@@ -19,20 +18,6 @@ def send_sms(mobile_number, message):
         #logger.warning(f.read())
     else:
         logger.error("SMS not sent - Invalid phone number")
-
-
-def send_sms_nexmo(mobile_number, message):
-    if (is_phone_number(mobile_number)):
-        req = "json"
-        key = "ff33ed3f"
-        secret = "eddd3f0c"
-        sender = "feowl"
-        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
-        sms = NexmoMessage(msg)
-        sms.send_request()
-    else:
-        logger.error("SMS not sent - Invalid phone number")
-
 
 def is_phone_number(num):
     #TODO have fun with Regex to find if it's a good phone number or not

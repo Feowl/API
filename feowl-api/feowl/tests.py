@@ -518,13 +518,13 @@ class MessagingTestCase(unittest.TestCase):
         self.unregister_keyword = "stop"
         self.contribute_keyword = "contribute"
 
-        self.register_test_user_no = "3849203843"
+        self.register_test_user_no = "23115738710431"
 
         self.unregister_test_user_name = "testuser"
         self.unregister_test_user_email = "testuser@test.com"
         self.unregister_test_user_password = "testpassword"
-        self.unregister_test_user_no = "4849203843"
-        self.help_no = "915738710431"
+        self.unregister_test_user_no = "815738710431"
+        self.help_no = "15738710431"
 
         self.contribute_duration = "60"
         self.contribute_area = Area.objects.all()[0].name
@@ -592,15 +592,15 @@ class MessagingTestCase(unittest.TestCase):
         contributors = Contributor.objects.all()
         self.assertEqual(len(devices), nb_devices + 1)
         self.assertEqual(len(contributors), nb_contributors + 1)
-    '''
+    
     def test_sendSMS(self):
         msg = "hi from feowl"
         bad_phone = "915738710431"
         send_sms(bad_phone, msg)
 
-        good_phone = "+4915738710431"
+        good_phone = "915738710431"
         send_sms(good_phone, msg)
-    '''
+
 #############################################
 
     def test_zcontribute(self):
@@ -609,6 +609,7 @@ class MessagingTestCase(unittest.TestCase):
         contribute_msg = "pc douala2 100"
 
         # Missing enquiry - Contribution not accepted
+        receive_sms(self.register_test_user_no, self.register_keyword)
         reports = PowerReport.objects.all()
         nb_reports = reports.count()
         receive_sms(self.register_test_user_no, contribute_msg)

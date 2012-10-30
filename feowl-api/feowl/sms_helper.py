@@ -19,6 +19,7 @@ def send_sms(mobile_number, message):
     else:
         logger.error("SMS not sent - Invalid phone number")
 
+
 def is_phone_number(num):
     #TODO have fun with Regex to find if it's a good phone number or not
     #Cameroon numbers

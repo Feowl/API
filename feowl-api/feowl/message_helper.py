@@ -65,7 +65,7 @@ def contribute(message_array, mobile_number):
             list = parse_contribute(message_array)
             #If we haven't been able to parse the message
             if list is None:
-                msg = "Hello, your message couldn't be translated - please send us another SMS, e.g. ""Douala1 40"" type HELP for help"
+                msg = "Hello, your message couldn't be translated - please send us another SMS, e.g. ""Douala1 40"". reply HELP for further information"
             #If user sent PC No - then no outage has been experienced
             elif list[0][0] == 0:
                 report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
@@ -75,6 +75,7 @@ def contribute(message_array, mobile_number):
                 msg = "You have choosen to report no power cut, if this is not want you wanted to say, please send us a new message"
                 #logger.warning(report)
             else:
+                msg = "You had {0} powercuts yesterday. Durations : ".format(len(list))
                 i = 1
                 for item in list:
                     report = PowerReport(duration=item[0], contributor=device.contributor, device=device,
@@ -82,7 +83,8 @@ def contribute(message_array, mobile_number):
                     report.save()
                     increment_refund(device.contributor.id)
                     i += 1
-                msg = "Hello, you have submitted " + str(len(list)) + " messages if this is not want you wanted to say, please send us a new message"
+                    msg += str(item[0]) + "min, "
+                msg += "If the data have been misunderstood, please send us another SMS."
         # Set response to know that this user was handled already
         device.contributor.response = today
         device.contributor.save()
@@ -195,7 +197,7 @@ def register(mobile_number, message_array):
                 device.contributor.password = pwd
                 device.contributor.channel = SMS
                 device.contributor.save()
-                msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
+                msg = "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP for further informations. ".format(pwd)
                 send_message(device.phone_number, msg)
         except Device.DoesNotExist:
             #If device doesn't exist then create a user
@@ -205,7 +207,7 @@ def register(mobile_number, message_array):
             device = Device(phone_number=mobile_number, contributor=contributor, category="mobile")
             device.save()
             increment_refund(device.contributor.id)
-            msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
+            msg = "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP for further informations. ".format(pwd)
             send_message(mobile_number, msg)
             save_message(message_array, SMS, parsed=Message.YES)
     except IntegrityError, e:

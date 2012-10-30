@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.db.models import F
 from feowl.models import Device, PowerReport, Area, Message, SMS, Contributor
-
+from django.contrib.gis.db import *
 from datetime import datetime, timedelta
 from pwgen import pwgen
 import re
@@ -125,37 +125,26 @@ def parse_contribute(message_array):
                 save_message(message_array, SMS, parsed=Message.NO)
                 return None
         return list
-        '''
-            msg_len = len(message_array)
-            loops = msg_len / 3
-            for x in range(loops):
-                x += 1
-                # Check if the duration a digit and and remove the default comma
-                duration = message_array[x * 3].replace(",", "")
-                if not duration.isdigit():
-                    save_message(message_array, SMS)
-                    logger.warning("Duration is not a number")
-                    return
-                # Some simple maybe parsing
-                msg_area = " ".join(message_array[x * 3 - 2:x * 3])
-                areas_obj = Area.objects.filter(name__iexact=msg_area)
 
-                area_count = len(areas_obj)
-                if area_count == 0 or area_count > 1:
-                    save_message(message_array, SMS)
-                    logger.warning("Area is not in the list or no much Areas")
-                    return
-                validated_msg += "{0}.Report: Area - {1} Duration - {2} ".format(x, areas_obj[0].name, duration)
-                save_message(message_array, SMS, parsed=Message.YES)
-                return duration, areas_obj[0], validated_msg
-                '''
+
+def get_all_areas_name():
+    areas = Area.objects.all()
+    list = []
+    for a in areas:
+        list.append(a.name)
+    return list
 
 
 def get_area(area_name):
+    from difflib import get_close_matches
+    from django.contrib.gis.geos import Polygon
+    areas = get_all_areas_name()
+    corrected_area_name = get_close_matches(area_name, areas, 1)
     try:
-        area = Area.objects.get(name=area_name)
-    except:
-        area = Area.objects.get(id=0)
+        area = Area.objects.get(name=corrected_area_name)
+    except Area.DoesNotExist:
+        poly = Polygon(((0, 0), (0, 0), (0, 0), (0, 0), (0, 0)), ((0, 0), (0, 0), (0, 0), (0, 0), (0, 0)))
+        area = Area.objects.create(name=area_name, overall_population=0, pop_per_sq_km=0, city="Douala", country="Cameroon", geometry=poly)
     return area
 
 

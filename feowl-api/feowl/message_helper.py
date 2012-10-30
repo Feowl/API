@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.db.models import F
 from feowl.models import Device, PowerReport, Area, Message, SMS, Contributor
-
+from django.contrib.gis.db import *
 from datetime import datetime, timedelta
 from pwgen import pwgen
 import re
@@ -65,7 +65,7 @@ def contribute(message_array, mobile_number):
             list = parse_contribute(message_array)
             #If we haven't been able to parse the message
             if list is None:
-                msg = "Hello, your message couldn't be translated - please send us another SMS, e.g. ""Douala1 40"" type HELP for help"
+                msg = "Hello, your message couldn't be translated - please send us another SMS, e.g. ""Douala1 40"". reply HELP for further information"
             #If user sent PC No - then no outage has been experienced
             elif list[0][0] == 0:
                 report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
@@ -75,6 +75,7 @@ def contribute(message_array, mobile_number):
                 msg = "You have choosen to report no power cut, if this is not want you wanted to say, please send us a new message"
                 #logger.warning(report)
             else:
+                msg = "You had {0} powercuts yesterday. Durations : ".format(len(list))
                 i = 1
                 for item in list:
                     report = PowerReport(duration=item[0], contributor=device.contributor, device=device,
@@ -82,7 +83,8 @@ def contribute(message_array, mobile_number):
                     report.save()
                     increment_refund(device.contributor.id)
                     i += 1
-                msg = "Hello, you have submitted " + str(len(list)) + " messages if this is not want you wanted to say, please send us a new message"
+                    msg += str(item[0]) + "min, "
+                msg += "If the data have been misunderstood, please send us another SMS."
         # Set response to know that this user was handled already
         device.contributor.response = today
         device.contributor.save()
@@ -125,37 +127,26 @@ def parse_contribute(message_array):
                 save_message(message_array, SMS, parsed=Message.NO)
                 return None
         return list
-        '''
-            msg_len = len(message_array)
-            loops = msg_len / 3
-            for x in range(loops):
-                x += 1
-                # Check if the duration a digit and and remove the default comma
-                duration = message_array[x * 3].replace(",", "")
-                if not duration.isdigit():
-                    save_message(message_array, SMS)
-                    logger.warning("Duration is not a number")
-                    return
-                # Some simple maybe parsing
-                msg_area = " ".join(message_array[x * 3 - 2:x * 3])
-                areas_obj = Area.objects.filter(name__iexact=msg_area)
 
-                area_count = len(areas_obj)
-                if area_count == 0 or area_count > 1:
-                    save_message(message_array, SMS)
-                    logger.warning("Area is not in the list or no much Areas")
-                    return
-                validated_msg += "{0}.Report: Area - {1} Duration - {2} ".format(x, areas_obj[0].name, duration)
-                save_message(message_array, SMS, parsed=Message.YES)
-                return duration, areas_obj[0], validated_msg
-                '''
+
+def get_all_areas_name():
+    areas = Area.objects.all()
+    list = []
+    for a in areas:
+        list.append(a.name)
+    return list
 
 
 def get_area(area_name):
+    from difflib import get_close_matches
+    from django.contrib.gis.geos import Polygon
+    areas = get_all_areas_name()
+    corrected_area_name = get_close_matches(area_name, areas, 1)
     try:
-        area = Area.objects.get(name=area_name)
-    except:
-        area = Area.objects.get(id=0)
+        area = Area.objects.get(name=corrected_area_name)
+    except Area.DoesNotExist:
+        poly = Polygon(((0, 0), (0, 0), (0, 0), (0, 0), (0, 0)), ((0, 0), (0, 0), (0, 0), (0, 0), (0, 0)))
+        area = Area.objects.create(name=area_name, overall_population=0, pop_per_sq_km=0, city="Douala", country="Cameroon", geometry=poly)
     return area
 
 
@@ -195,7 +186,7 @@ def register(mobile_number, message_array):
                 device.contributor.password = pwd
                 device.contributor.channel = SMS
                 device.contributor.save()
-                msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
+                msg = "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP for further informations. ".format(pwd)
                 send_message(device.phone_number, msg)
         except Device.DoesNotExist:
             #If device doesn't exist then create a user
@@ -205,7 +196,7 @@ def register(mobile_number, message_array):
             device = Device(phone_number=mobile_number, contributor=contributor, category="mobile")
             device.save()
             increment_refund(device.contributor.id)
-            msg = "Thanks for texting! You've joined our volunteer list. Your password is {0}. Reply HELP for further informations. ".format(pwd)
+            msg = "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP for further informations. ".format(pwd)
             send_message(mobile_number, msg)
             save_message(message_array, SMS, parsed=Message.YES)
     except IntegrityError, e:

@@ -656,6 +656,7 @@ class MessagingTestCase(unittest.TestCase):
         receive_sms(self.register_test_user_no, multi_contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports + 4)
+        print 'Multiple Messages has been contributed'
 
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         #self.assertEqual(contributor.refunds, refund + 4)

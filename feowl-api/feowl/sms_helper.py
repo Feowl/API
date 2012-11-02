@@ -2,6 +2,7 @@ from message_helper import read_message
 import logging
 from urllib import urlencode
 import urllib2
+import settings
 
 logger = logging.getLogger(__name__)
 
@@ -9,9 +10,8 @@ logger = logging.getLogger(__name__)
 # Send the request to LMT SMS gateway
 def send_sms(mobile_number, message):
     if (is_phone_number(mobile_number)):
-        sender = 'feowl'
         #Check handling of accents
-        params = {'UserName': 'feowl', 'Password': 'Pr0760ueL261022', 'SOA': sender, 'MN': mobile_number, 'SM': message}
+        params = {'UserName': settings.SMS_USERNAME, 'Password': settings.SMS_PASSWORD, 'SOA': settings.SMS_SENDER, 'MN': mobile_number, 'SM': message}
         url = "http://lmtgroup.dyndns.org/sendsms/sendsms.php"
         req = urllib2.Request(url + "?" + urlencode(params))
         f = urllib2.urlopen(req)

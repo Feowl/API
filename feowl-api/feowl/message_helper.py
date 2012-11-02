@@ -49,6 +49,7 @@ def contribute(message_array, mobile_number):
         TODO: Message: pc <area> <duration>, <area> <duration>
     """
     today = datetime.today().date()
+    yesterday = today - timedelta(1)
     try:
         device = Device.objects.get(phone_number=mobile_number)
         # Check if user exist else create an unknow user
@@ -65,7 +66,7 @@ def contribute(message_array, mobile_number):
             #If user sent PC No - then no outage has been experienced
             elif list[0][0] == 0:
                 report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
-                        area=list[0][1], happened_at=today)
+                        area=list[0][1], happened_at=yesterday)
                 report.save()
                 increment_refund(device.contributor.id)
                 msg = "You have choosen to report no power cut, if this is not want you wanted to say, please send us a new message"
@@ -75,11 +76,11 @@ def contribute(message_array, mobile_number):
                 i = 1
                 for item in list:
                     report = PowerReport(duration=item[0], contributor=device.contributor, device=device,
-                        area=item[1], happened_at=today)
+                        area=item[1], happened_at=yesterday)
                     report.save()
                     increment_refund(device.contributor.id)
                     i += 1
-                    msg += str(item[0]) + "min, "
+                    msg += str(item[0]) + " min, "
                 msg += "If the data have been misunderstood, please send us another SMS."
             send_message(device.phone_number, msg)
 

@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.auth.hashers import make_password
 import email_helper
+from datetime import datetime
 
 import settings
 
@@ -132,6 +133,17 @@ class PowerReport(models.Model):
             return "{0} at {1}".format(self.contributor, self.happened_at)
         else:
             return "{0}".format(self.happened_at)
+
+    def save(self, *args, **kwargs):
+        today = datetime.today().date()
+        msg = ""
+        if (self.contributor.enquiry == today) and (self.contributor.response != today):
+            self.contributor.update(response=today)
+            super(PowerReport, self).save(*args, **kwargs)
+            msg = "PowerReport Saved"
+        else:
+            msg = "PowerReport not saved because the contributor wasn't polled today or he has already responded"
+        return msg
 
 
 class Message(models.Model):

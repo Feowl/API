@@ -56,10 +56,6 @@ def contribute(message_array, mobile_number):
             #TODO: find a better solution for this case (can we have a device without a contributor?)
             create_unknown_user(mobile_number)
             return
-        # If this user hasn't been asked today OR If has already answered today, then save the message and ignore contribution
-        elif (device.contributor.enquiry != today) or (device.contributor.response == today):
-            save_message(message_array, SMS)
-            return
         #Else try to parse the contribution and save the report
         else:
             list = parse_contribute(message_array)
@@ -85,11 +81,7 @@ def contribute(message_array, mobile_number):
                     i += 1
                     msg += str(item[0]) + "min, "
                 msg += "If the data have been misunderstood, please send us another SMS."
-        # Set response to know that this user was handled already
-        device.contributor.response = today
-        device.contributor.save()
-        #TODO:a better explanation message
-        send_message(device.phone_number, msg)
+            send_message(device.phone_number, msg)
 
     except Device.DoesNotExist:
         logger.warning("Device is not Existing")

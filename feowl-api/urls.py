@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
 from django.contrib import admin
 from tastypie.api import Api
-from feowl.api import PowerReportResource, PowerReportAggregatedResource, DeviceResource, ContributorResource, AreaResource, PowerCutDurations
+from feowl.api import PowerReportResource, PowerReportAggregatedResource, DeviceResource, ContributorResource, AreaResource, PowerCutDurations, IncomingSmsResource
 
 admin.autodiscover()
 
@@ -14,6 +14,8 @@ v1_api.register(DeviceResource())
 v1_api.register(ContributorResource())
 v1_api.register(AreaResource())
 v1_api.register(PowerCutDurations())
+v1_api.register(IncomingSmsResource())
+
 
 urlpatterns = patterns('',
     url(r'^grappelli/', include('grappelli.urls')),

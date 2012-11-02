@@ -32,7 +32,7 @@ DATABASES = {
 }
 
 if 'test' in sys.argv:
-    DATABASES['default'].update({'USER': 'postgres', 'PASSWORD': ''})
+    DATABASES['default'].update({'USER': 'postgres', 'PASSWORD': 'admin'})
 
 #proper geos path for os x
 if sys.platform == 'darwin':
@@ -233,3 +233,8 @@ ANONYMOUS_USER_NAME = "Anonymous"
 ANONYMOUS_EMAIL = "anonymous@feowl.com"
 NEWSLETTER_FROM = "newsletter@feowl.com"
 REGISTRATION_FROM = "registration@feowl.com"
+
+try:
+        from local import *
+except:
+        print 'Note: Could not import local settings'

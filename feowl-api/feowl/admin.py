@@ -28,6 +28,7 @@ class ContributorAdmin(admin.ModelAdmin):
     form = ContributorAdminForm
     change_password_form = AdminPasswordChangeForm
     change_user_password_template = None
+    list_display = ('name', 'password', 'email', 'channel', 'status', 'enquiry', 'response')
 
     def get_urls(self):
         from django.conf.urls import patterns
@@ -77,12 +78,17 @@ class ContributorAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
+    list_display = ('message', 'source', 'keyword', 'parsed')
     list_filter = ('keyword', 'parsed')
+
+
+class PowerReportAdmin(admin.ModelAdmin):
+    list_display = ('modified', 'contributor', 'duration', 'happened_at', 'area')
 
 admin.site.unregister(User)
 admin.site.register(User, UserModelAdmin)
 
-admin.site.register(PowerReport, admin_gis.OSMGeoAdmin)
+admin.site.register(PowerReport,  PowerReportAdmin)
 admin.site.register(Area, admin_gis.OSMGeoAdmin)
 admin.site.register(Contributor, ContributorAdmin)
 admin.site.register(Device)

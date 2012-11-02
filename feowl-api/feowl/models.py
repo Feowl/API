@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.auth.hashers import make_password
+import email_helper
 
 import settings
 
@@ -61,28 +62,13 @@ class Contributor(models.Model):
     def __unicode__(self):
         return self.name
 
-    # def save(self):
-    #     # Check if it already exist
-    #     created = self.id is not None
-    #     super(Contributor, self).save()
-    #     # Send an email if this are a new contributor
-    #     if not created:
-    #         from django.core.mail import EmailMultiAlternatives
-    #         from django.template import Context
-    #         from django.template.loader import get_template
-    #         from django.utils.translation import ugettext_lazy as _
-
-    #         plaintext = get_template('email/registration_confirmation.txt')
-    #         html = get_template('email/registration_confirmation.html')
-    #         subject = _('Welcome to Feowl')
-
-    #         d = Context({'name': self.name, 'email_language': self.language})
-    #         text_content = plaintext.render(d)
-    #         html_content = html.render(d)
-
-    #         msg = EmailMultiAlternatives(subject, text_content, settings.REGISTRATION_FROM, [self.email])
-    #         msg.attach_alternative(html_content, "text/html")
-    #         msg.send()
+    def save(self, *args, **kwargs):
+        # Check if it already exist
+        created = self.id is not None
+        super(Contributor, self).save(*args, **kwargs)
+         # Send an email if this are a new contributor
+        if not created:
+            email_helper.send_email(self.name, self.email, self.language)
 
 
 class Device(models.Model):
@@ -130,7 +116,7 @@ class PowerReport(models.Model):
     #see: http://postgis.refractions.net/documentation/manual-1.5/ch04.html#PostGIS_GeographyVSGeometry
     quality = models.DecimalField(max_digits=4, decimal_places=2, default='-1.00', blank=True)
     duration = models.PositiveIntegerField(null=False, blank=False, help_text="Duration in minutes")
-    happened_at = models.DateTimeField(null=False, blank=False, help_text="Datetime preferrably with timezone")
+    happened_at = models.DateTimeField(auto_now=True, null=False, blank=False, help_text="Datetime preferrably with timezone")
     has_experienced_outage = models.BooleanField(null=False, blank=False, default=True, help_text="Boolean that indicates if user reported a power cut.")
 
     area = models.ForeignKey(Area, blank=False, null=False)
@@ -161,4 +147,4 @@ class Message(models.Model):
     message = models.TextField()
     source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)
-    keyword = models.CharField(max_length=30, default="Default Keyword")
+    keyword = models.CharField(max_length=30, default="No Keyword")

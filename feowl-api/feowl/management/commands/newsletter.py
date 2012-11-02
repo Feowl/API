@@ -29,16 +29,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         limit = options.get("limit")
 
-        contributors = Contributor.objects.exclude(name=settings.ANONYMOUS_USER_NAME, STATUS_CHOICES=Contributor.UNKNOWN).order_by('-enquiry')[:limit]
+        contributors = Contributor.objects.exclude(status=Contributor.UNKNOWN).exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
         messages = []
         plaintext = get_template('email/newsletter.txt')
         html = get_template('email/newsletter.html')
         subject = _('Hello from Feowl')
-        connection = get_connection()
+        #connection = get_connection()
         #connection.open()
-
-        '''
         for i, user in enumerate(contributors):
+                print "Contributor {0}: {1} - {2} - {3}".format(i, user.name, user.enquiry, user.status)
+                '''
                 if user.channel == EMAIL and is_valid_email(user.email):
                     d = Context({'name': user.name, 'newsletter_language': user.language})
                     text_content = plaintext.render(d)

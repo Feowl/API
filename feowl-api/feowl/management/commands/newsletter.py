@@ -34,11 +34,9 @@ class Command(BaseCommand):
         plaintext = get_template('email/newsletter.txt')
         html = get_template('email/newsletter.html')
         subject = _('Hello from Feowl')
-        #connection = get_connection()
-        #connection.open()
+        connection = get_connection()
+        connection.open()
         for i, user in enumerate(contributors):
-                print "Contributor {0}: {1} - {2} - {3}".format(i, user.name, user.enquiry, user.status)
-                '''
                 if user.channel == EMAIL and is_valid_email(user.email):
                     d = Context({'name': user.name, 'newsletter_language': user.language})
                     text_content = plaintext.render(d)
@@ -64,4 +62,3 @@ class Command(BaseCommand):
 
         connection.send_messages(messages)
         connection.close()
-        '''

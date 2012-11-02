@@ -524,7 +524,7 @@ class MessagingTestCase(unittest.TestCase):
         self.unregister_test_user_email = "testuser@test.com"
         self.unregister_test_user_password = "testpassword"
         self.unregister_test_user_no = "815738710431"
-        self.help_no = "15738710431"
+        self.help_no = "915738710431"
 
         self.contribute_duration = "60"
         self.contribute_area = Area.objects.all()[0].name
@@ -598,7 +598,7 @@ class MessagingTestCase(unittest.TestCase):
         bad_phone = "915738710431"
         send_sms(bad_phone, msg)
 
-        good_phone = "915738710431"
+        good_phone = "4915738710431"
         send_sms(good_phone, msg)
 
 #############################################

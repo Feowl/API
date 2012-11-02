@@ -4,6 +4,7 @@ from django.template.loader import get_template
 from django.template import Context
 from django.utils.translation import ugettext_lazy as _
 
+
 from datetime import datetime
 from optparse import make_option
 import settings
@@ -28,14 +29,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         limit = options.get("limit")
 
-        contributors = Contributor.objects.exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
+        contributors = Contributor.objects.exclude(status=Contributor.UNKNOWN).exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
         messages = []
         plaintext = get_template('email/newsletter.txt')
         html = get_template('email/newsletter.html')
         subject = _('Hello from Feowl')
         connection = get_connection()
         connection.open()
-
         for i, user in enumerate(contributors):
                 if user.channel == EMAIL and is_valid_email(user.email):
                     d = Context({'name': user.name, 'newsletter_language': user.language})
@@ -44,7 +44,7 @@ class Command(BaseCommand):
                     msg = EmailMultiAlternatives(subject, text_content, settings.NEWSLETTER_FROM, [user.email], connection=connection)
                     msg.attach_alternative(html_content, "text/html")
                     messages.append(msg)
-                    
+
                 else:
                     if user.channel == SMS:
                         d = Context({'name': user.name, 'newsletter_language': user.language})

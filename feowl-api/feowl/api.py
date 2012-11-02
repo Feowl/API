@@ -18,6 +18,10 @@ from validation import ModelFormValidation
 from serializers import CSVSerializer
 import sms_helper
 import simplejson
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 class ContributorResource(ModelResource):
@@ -331,13 +335,16 @@ class IncomingSmsResource(Resource):
         authorization = DjangoAuthorization()
 
     def obj_create(self, bundle, request=None, **kwargs):
-        json_data = simplejson.loads(request.raw_post_data)
-        try:
-            phone = json_data['mobile_phone']
-            msg = json_data['in_message']
-        except KeyError:
-            HttpResponseServerError("Malformed data!")
-        sms_helper.receive_sms(phone, msg)
+        response = []
+        msg = request.GET.get('in_message', '')
+        phone = request.GET.get('mobile_phone', '')
+        if (not phone) or (not msg):
+            response.append(GenericResponseObject({'response': 'Mobile Phone or Message are incorrects'}))
+            logger.error('Mobile Phone or Message are incorrects')
+        else:
+            sms_helper.receive_sms(phone, msg)
+            response.append(GenericResponseObject({'response': 'message received successfully'}))
+            logger.info('message received successfully')
         bundle.obj = bundle = self.build_bundle(request=request)
         return bundle
 

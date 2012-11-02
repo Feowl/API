@@ -18,6 +18,10 @@ from validation import ModelFormValidation
 from serializers import CSVSerializer
 import sms_helper
 import simplejson
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 
 class ContributorResource(ModelResource):

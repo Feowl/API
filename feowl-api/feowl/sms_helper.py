@@ -15,7 +15,7 @@ def send_sms(mobile_number, message):
         url = "http://lmtgroup.dyndns.org/sendsms/sendsms.php"
         req = urllib2.Request(url + "?" + urlencode(params))
         f = urllib2.urlopen(req)
-        #logger.warning(f.read())
+        logger.warning(f.read())
     else:
         logger.error("SMS not sent - Invalid phone number")
 

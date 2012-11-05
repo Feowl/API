@@ -57,14 +57,17 @@ def contribute(message_array, mobile_number):
             #TODO: find a better solution for this case (can we have a device without a contributor?)
             create_unknown_user(mobile_number)
             return
+        elif device.contributor.response == today:
+            #if a user has already reported some powercuts then, its response is no longer taken into account
+            return
         #Else try to parse the contribution and save the report
         else:
             list = parse_contribute(message_array)
-            #If we haven't been able to parse the message
             if list is None:
+                #If we haven't been able to parse the message
                 msg = "Hello, your message couldn't be translated - please send us another SMS, e.g. ""Douala1 40"". reply HELP for further information"
-            #If user sent PC No - then no outage has been experienced
             elif list[0][0] == 0:
+                #If user sent PC No - then no outage has been experienced
                 report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
                         area=list[0][1], happened_at=yesterday)
                 report.save()
@@ -72,6 +75,7 @@ def contribute(message_array, mobile_number):
                 msg = "You have choosen to report no power cut, if this is not want you wanted to say, please send us a new message"
                 #logger.warning(report)
             else:
+                #Reporting Several powercuts at once
                 msg = "You had {0} powercuts yesterday. Durations : ".format(len(list))
                 i = 1
                 for item in list:

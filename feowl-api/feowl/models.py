@@ -137,12 +137,13 @@ class PowerReport(models.Model):
     def save(self, *args, **kwargs):
         today = datetime.today().date()
         msg = ""
-        if (self.contributor.enquiry == today) and (self.contributor.response != today):
-            self.contributor.update(response=today)
-            super(PowerReport, self).save(*args, **kwargs)
-            msg = "PowerReport Saved"
+        if (self.contributor.enquiry == today):
+                self.contributor.response = today
+                self.contributor.save()
+                super(PowerReport, self).save(*args, **kwargs)
+                msg = "PowerReport Saved"
         else:
-            msg = "PowerReport not saved because the contributor wasn't polled today or he has already responded"
+            msg = "PowerReport not saved because the contributor wasn't polled today"
         return msg
 
 

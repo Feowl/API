@@ -137,6 +137,9 @@ class PowerReport(models.Model):
     def save(self, *args, **kwargs):
         today = datetime.today().date()
         msg = ""
+        if self.contributor is None:
+            return "no contributor"
+
         if (self.contributor.enquiry == today):
                 self.contributor.response = today
                 self.contributor.save()
@@ -145,7 +148,7 @@ class PowerReport(models.Model):
         else:
             msg = "PowerReport not saved because the contributor wasn't polled today"
         return msg
-
+        
 
 class Message(models.Model):
     YES = 0
@@ -161,3 +164,4 @@ class Message(models.Model):
     source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)
     keyword = models.CharField(max_length=30, default="No Keyword")
+    created = models.DateTimeField(auto_now_add=True)

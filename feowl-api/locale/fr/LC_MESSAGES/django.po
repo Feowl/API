@@ -20,24 +20,24 @@ msgstr ""
 
 #: feowl/admin.py:49
 msgid "Password changed successfully."
-msgstr ""
+msgstr "mot de passe modifie avec success"
 
 #: feowl/admin.py:59
 #, python-format
 msgid "Change password: %s"
-msgstr ""
+msgstr "Changer mot de passe"
 
 #: feowl/email_helper.py:13
 msgid "Welcome to Feowl"
-msgstr ""
+msgstr "Bienvenu sur Feowl"
 
 #: feowl/forms.py:10
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: feowl/forms.py:11
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
-msgstr ""
+msgstr "Requis. 30 caracters ou moins."
 
 #: feowl/forms.py:14
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
@@ -58,27 +58,27 @@ msgstr ""
 msgid ""
 "Hello, your message couldn't be translated - please send us another SMS, e."
 "g. Douala1 40. reply HELP for further information"
-msgstr ""
+msgstr "Votre message n'a pas pu etre traduit. Priere de nous envoyer un autre SMS. Example: Akwa 43. envoyez AIDE pour plus d'information"
 
 #: feowl/message_helper.py:114
 msgid ""
 "You have choosen to report no power cut, if this is not want you wanted to "
 "say, please send us a new message"
-msgstr ""
+msgstr "Vous n'avez reporte aucune coupure. Si vous voulez reporter une coupure, prirere de nous envoyer un autre SMS"
 
 #: feowl/message_helper.py:117
 msgid "You had {0} powercuts yesterday. Durations : "
-msgstr ""
+msgstr "Vous avez eu {0} coupure hier. Duree : " 
 
 #: feowl/message_helper.py:126
 msgid "If the data have been misunderstood, please send us another SMS."
-msgstr ""
+msgstr "Si nous n'avons pas compris votre message, priere de nous envoyer un autre SMS"
 
 #: feowl/message_helper.py:221
 msgid ""
 "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP "
 "for further informations. "
-msgstr ""
+msgstr "Merci pour votre message! vous avez rejoint notre equipe. Votre mot de passe est {0}. Repondre AIDE pour plus d'info"
 
 #: feowl/message_helper.py:247
 msgid ""
@@ -104,17 +104,17 @@ msgstr ""
 
 #: feowl/management/commands/newsletter.py:36
 msgid "Hello from Feowl"
-msgstr ""
+msgstr "Bonjour de Feowl"
 
 #: templates/sms.txt:4
 msgid ""
 "Hi, did u witness powercuts in Douala yesterday? Reply with \"pc no\" or "
 "\"pc districtname duration (in min)\". Ex: pc doual2 10, douala3 70"
-msgstr ""
+msgstr "Avez-vous eu une coupure electrique aujourd'hui?"
 
 #: templates/email/newsletter.html:4
 msgid "Hello"
-msgstr ""
+msgstr "Bonjour"
 
 #: templates/email/newsletter.html:6 templates/email/newsletter.txt:6
 msgid ""
@@ -124,15 +124,15 @@ msgstr ""
 
 #: templates/email/newsletter.html:7 templates/email/newsletter.txt:7
 msgid "Did you experience a power cut today? "
-msgstr ""
+msgstr "Avez-vous eu une coupure electrique aujourd'hui?"
 
 #: templates/email/newsletter.html:8 templates/email/newsletter.txt:8
 msgid "Please let us know by following this link: "
-msgstr ""
+msgstr "Merci de nous le faire savoir en suivant ce lien: "
 
 #: templates/email/newsletter.html:9 templates/email/newsletter.txt:9
 msgid "Many Thanks"
-msgstr ""
+msgstr "Merci"
 
 #: templates/email/newsletter.txt:4
 msgid "Hey"
@@ -141,4 +141,4 @@ msgstr ""
 #: templates/email/registration_confirmation.html:4
 #: templates/email/registration_confirmation.txt:4
 msgid "Welcome to feowl"
-msgstr ""
+msgstr "Bievenu"

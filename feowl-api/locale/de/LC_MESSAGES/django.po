@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 12:54+0200\n"
+"POT-Creation-Date: 2012-11-02 18:08+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Translated-Using: django-rosetta 0.6.8\n"
 
-#: feowl/admin.py:46
+#: feowl/admin.py:49
 msgid "Password changed successfully."
 msgstr ""
 
-#: feowl/admin.py:56
+#: feowl/admin.py:59
 #, python-format
 msgid "Change password: %s"
 msgstr "Passwort ändern: %s"
+
+#: feowl/email_helper.py:13
+msgid "Welcome to Feowl"
+msgstr ""
 
 #: feowl/forms.py:10
 msgid "Name"
@@ -50,12 +54,62 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: feowl/models.py:58
-msgid "Welcome to Feowl"
+#: feowl/message_helper.py:107
+msgid ""
+"Hello, your message couldn't be translated - please send us another SMS, e."
+"g. Douala1 40. reply HELP for further information"
 msgstr ""
 
-#: feowl/management/commands/newsletter.py:30
+#: feowl/message_helper.py:114
+msgid ""
+"You have choosen to report no power cut, if this is not want you wanted to "
+"say, please send us a new message"
+msgstr ""
+
+#: feowl/message_helper.py:117
+msgid "You had {0} powercuts yesterday. Durations : "
+msgstr ""
+
+#: feowl/message_helper.py:126
+msgid "If the data have been misunderstood, please send us another SMS."
+msgstr ""
+
+#: feowl/message_helper.py:221
+msgid ""
+"Thanks for texting! You've joined our team. Your password is {0}. Reply HELP "
+"for further informations. "
+msgstr ""
+
+#: feowl/message_helper.py:247
+msgid ""
+"To report a powercut, send the district name and it's\n"
+"        duration in mn(ex: PC douala10). Please wait for Feowl asking you "
+"by\n"
+"        sms before answer."
+msgstr ""
+
+#: feowl/message_helper.py:250
+msgid ""
+"To report many powercuts, separate it with a comma(ex:\n"
+"        pc akwa10, deido70)"
+msgstr ""
+
+#: feowl/message_helper.py:252
+msgid ""
+"To unsuscribe, send STOP. If you wasn't in Douala, send\n"
+"         OUT. For each valid sms that you send,you'll receive a "
+"confirmation\n"
+"         and your sms will be refunded"
+msgstr ""
+
+#: feowl/management/commands/newsletter.py:36
 msgid "Hello from Feowl"
+msgstr ""
+
+#: templates/sms.txt:4
+msgid ""
+"Hi, did u witness powercuts in Douala yesterday? Reply with \"pc no\" or "
+"\"pc districtname duration (in min)\". Ex: pc doual2 10, douala3 70"
 msgstr ""
 
 #: templates/email/newsletter.html:4
@@ -74,7 +128,7 @@ msgid "Did you experience a power cut today? "
 msgstr "Hatten sie in letzter Zeit einen Stromausfall?"
 
 #: templates/email/newsletter.html:8 templates/email/newsletter.txt:8
-msgid "Please let us know by following this link"
+msgid "Please let us know by following this link: "
 msgstr ""
 
 #: templates/email/newsletter.html:9 templates/email/newsletter.txt:9

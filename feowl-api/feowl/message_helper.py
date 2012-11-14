@@ -32,9 +32,8 @@ def read_message(mobile_number, message):
     index, keyword, message_array = parse(message)
 
     # *ensure* that there is both a device with that number and a corresponding contributor
-    try:
-        devices = Device.objects.filter(phone_number=mobile_number)
-        print "XXXXXXXXXXXXXXXXXXXxxxxxxXXXXXXXXXXXX" + str(len(devices))
+    devices = Device.objects.filter(phone_number=mobile_number)
+    if len(devices) > 0 :
         device = devices[0]
         # check if user exists; otherwise create an unknown user
         if device.contributor is None:
@@ -52,7 +51,7 @@ def read_message(mobile_number, message):
             device.save()
         else:
             contributor = device.contributor
-    except Device.DoesNotExist:
+    else:
         logger.warning("device does not exist")
         logger.warning("creating a new device and contributor")
         # create a new user (potentially with language) and device

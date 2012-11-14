@@ -5,9 +5,13 @@ import email_helper
 from datetime import datetime
 
 import settings
+import logging
 
 from tastypie.models import create_api_key
 models.signals.post_save.connect(create_api_key, sender=User)
+
+
+logger = logging.getLogger(__name__)
 
 SMS = 0
 EMAIL = 1
@@ -138,17 +142,19 @@ class PowerReport(models.Model):
         today = datetime.today().date()
         msg = ""
         if self.contributor is None:
-            return "no contributor"
-
-        if (self.contributor.enquiry == today):
+            msg = "PowerReport Saved"
+            logger.error(msg)
+        elif (self.contributor.enquiry == today):
                 self.contributor.response = today
                 self.contributor.save()
                 super(PowerReport, self).save(*args, **kwargs)
                 msg = "PowerReport Saved"
+                logger.error(msg)
         else:
             msg = "PowerReport not saved because the contributor wasn't polled today"
+            logger.error(msg)
         return msg
-        
+
 
 class Message(models.Model):
     YES = 0
@@ -164,4 +170,3 @@ class Message(models.Model):
     source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)
     keyword = models.CharField(max_length=30, default="No Keyword")
-    created = models.DateTimeField(auto_now_add=True)

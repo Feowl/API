@@ -38,6 +38,8 @@ class PowerReportResourceTest(ResourceTestCase):
            "duration": 60
         }
 
+        
+
         # Fetch the ``Entry`` object we'll use in testing.
         # Note that we aren't using PKs because they can change depending
         # on what other tests are running.
@@ -116,7 +118,25 @@ class PowerReportResourceTest(ResourceTestCase):
         # Check how many there are first.
         nb = PowerReport.objects.count()
         self.assertHttpCreated(self.c.post('/api/v1/reports/?username=%s&api_key=%s' % (self.username, self.api_key), data=json.dumps(self.post_data), content_type="application/json"))
-        # Verify a new one has been added.
+        # Verify that no report has been added
+        self.assertEqual(PowerReport.objects.count(), nb)
+
+    def test_post_list_with_permissions_and_polled_today(self):
+        """Post a single report to the API with authenticated and with add permissions"""
+        add_powerreport = Permission.objects.get(codename="add_powerreport")
+        self.user.user_permissions.add(add_powerreport)
+
+        # Set enquiry to today - so that the contribution is accepted
+        self.contributor_1 = Contributor(name="Marc", email="marc@test.de")
+        self.contributor_1.set_password("marc")
+        self.contributor_1.enquiry = datetime.today().date()
+        self.contributor_1.save()
+
+        # Check how many there are first.
+        nb = PowerReport.objects.count()
+        rt = PowerReport(has_experienced_outage=True, duration=153, contributor=self.contributor_1, area=Area.objects.get(pk=1), happened_at=datetime.today().date())
+        rt.save()
+        # Verify that a new report has been added.
         self.assertEqual(PowerReport.objects.count(), nb + 1)
 
     def test_put_detail_unauthenticated(self):
@@ -675,3 +695,5 @@ class MessagingTestCase(unittest.TestCase):
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, 4)
 '''
+
+

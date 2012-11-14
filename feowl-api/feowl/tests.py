@@ -518,12 +518,12 @@ class MessagingTestCase(unittest.TestCase):
         self.unregister_keyword = "stop"
         self.contribute_keyword = "contribute"
 
-        self.register_test_user_no = "23115738710431"
+        self.register_test_user_no = "45738710431"
 
         self.unregister_test_user_name = "testuser"
         self.unregister_test_user_email = "testuser@test.com"
         self.unregister_test_user_password = "testpassword"
-        self.unregister_test_user_no = "815738710431"
+        self.unregister_test_user_no = "415738710431"
         self.help_no = "915738710431"
 
         self.contribute_duration = "60"
@@ -599,7 +599,8 @@ class MessagingTestCase(unittest.TestCase):
         send_sms(bad_phone, msg)
 
         good_phone = "4915738710431"
-        send_sms(good_phone, msg)
+        send_sms(good_phone, "lmt")
+        send_sms(good_phone, "nexmo")
 
 #############################################
 

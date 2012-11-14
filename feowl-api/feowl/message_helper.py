@@ -24,7 +24,8 @@ kw2lang = {'pc': 'en',
            'register': 'en',
            'inscription': 'fr',
            'cancel': 'en',
-           'annule': 'fr'}
+           'annule': 'fr',
+           'test': 'en'}
 keywords = kw2lang.keys() + ['stop']
 
 def read_message(mobile_number, message):
@@ -75,6 +76,8 @@ def read_message(mobile_number, message):
         unregister(message_array, device)
     elif keyword in ("cancel", "annule"):
         cancel(message_array, device)
+    elif keyword in ("test"):
+        test(message_array, mobile_number)
     elif index == -1:  # Should send an error messages and maybe plus help
         invalid(mobile_number, message_array)
         return "Something went wrong"
@@ -283,11 +286,17 @@ def invalid(mobile_number, message_array):
     msg.save()
 
 
+def test(message_array, mobile_number):
+    save_message(message_array, SMS, parsed=Message.YES)
+    send_message(mobile_number, "it works - " + str(datetime.today().time()))
+
+
 def send_message(mobile_number, message):
-        #TODO: Make sure that we have an phone number before sending an SMS
         sms_helper.send_sms(mobile_number, message)
+        #sms_helper.send_sms_nexmo(mobile_number, message)
 
 
 def save_message(message_array, src, parsed=Message.NO):
     msg = Message(message=" ".join(message_array), source=src, keyword=message_array[0], parsed=parsed)
     msg.save()
+

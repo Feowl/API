@@ -3,6 +3,7 @@ import logging
 from urllib import urlencode
 import urllib2
 import settings
+from nexmomessage import NexmoMessage
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +21,24 @@ def send_sms(mobile_number, message):
         logger.error("SMS not sent - Invalid phone number")
 
 
+def send_sms_nexmo(mobile_number, message):
+    if (is_phone_number(mobile_number)):
+        req = "json"
+        key = "ff33ed3f"
+        secret = "eddd3f0c"
+        sender = "88002014"
+        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
+        sms = NexmoMessage(msg)
+        sms.send_request()
+        logger.info("SMS Sent. Number = {0}".format(mobile_number))
+    else:
+        logger.error("SMS not sent - Invalid phone number Number = {0}".format(mobile_number))
+
+
 def is_phone_number(num):
     #TODO have fun with Regex to find if it's a good phone number or not
     #Cameroon numbers
-    if num.startswith("237") and (len(num) == 12):
+    if num.startswith("237") and (len(num) == 11):
         return True
     #German Numbers and French Numbers
     elif num.startswith("49") or num.startswith("33"):

@@ -33,7 +33,9 @@ def read_message(mobile_number, message):
 
     # *ensure* that there is both a device with that number and a corresponding contributor
     try:
-        device = Device.objects.filter(phone_number=mobile_number)[0]
+        devices = Device.objects.filter(phone_number=mobile_number)
+        print "XXXXXXXXXXXXXXXXXXXxxxxxxXXXXXXXXXXXX" + str(len(devices))
+        device = devices[0]
         # check if user exists; otherwise create an unknown user
         if device.contributor is None:
             logger.error("found mobile device "+str(device)+" without a contributor")

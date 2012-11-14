@@ -599,8 +599,8 @@ class MessagingTestCase(unittest.TestCase):
         send_sms(bad_phone, msg)
 
         good_phone = "4915738710431"
-        send_sms(good_phone, "lmt")
-        send_sms(good_phone, "nexmo")
+        #send_sms(good_phone, "lmt")
+        #send_sms(good_phone, "nexmo")
 
 #############################################
 

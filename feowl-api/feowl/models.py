@@ -2,11 +2,16 @@ from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.auth.hashers import make_password
 import email_helper
+from datetime import datetime
 
 import settings
+import logging
 
 from tastypie.models import create_api_key
 models.signals.post_save.connect(create_api_key, sender=User)
+
+
+logger = logging.getLogger(__name__)
 
 SMS = 0
 EMAIL = 1
@@ -132,6 +137,23 @@ class PowerReport(models.Model):
             return "{0} at {1}".format(self.contributor, self.happened_at)
         else:
             return "{0}".format(self.happened_at)
+
+    def save(self, *args, **kwargs):
+        today = datetime.today().date()
+        msg = ""
+        if self.contributor is None:
+            msg = "no contributor"
+            logger.error(msg)
+        elif (self.contributor.enquiry == today):
+                self.contributor.response = today
+                self.contributor.save()
+                super(PowerReport, self).save(*args, **kwargs)
+                msg = "PowerReport Saved"
+                logger.error(msg)
+        else:
+            msg = "PowerReport not saved because the contributor wasn't polled today"
+            logger.error(msg)
+        return msg
 
 
 class Message(models.Model):

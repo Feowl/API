@@ -99,6 +99,7 @@ def contribute(message_array, device):
         TODO: Message: pc <area> <duration>, <area> <duration>
     """
     today = datetime.today().date()
+
     # If this user hasn't been asked today OR If has already answered today, then save the message and ignore contribution
     if (device.contributor.enquiry != today) or (device.contributor.response == today):
         save_message(message_array, SMS)
@@ -128,10 +129,6 @@ def contribute(message_array, device):
                 i += 1
                 msg += str(item[0]) + "min, "
             msg += _("If the data have been misunderstood, please send us another SMS.")
-        # Set response to know that this user was handled already
-        device.contributor.response = today
-        device.contributor.save()
-        #TODO:a better explanation message
         send_message(device.phone_number, msg)
 
 

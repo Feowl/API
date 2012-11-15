@@ -209,6 +209,12 @@ class PowerReportAggregatedResource(Resource):
     avg_duration = fields.DecimalField('avg_duration', help_text="Average duration of a power cut over all power cuts")
     pos_neg_ratio = fields.DecimalField('pos_neg_ratio', help_text="An approximate percentage of the people in the area that are affected by power cuts.")
 
+    nb_reports = fields.DecimalField('nb_reports', help_text="total number of contributions in the given area")
+    nb_reports_t0 = fields.DecimalField('nb_reports_t0', help_text="number of contributions with a duration of less than 30min")
+    nb_reports_t1 = fields.DecimalField('nb_reports_t1', help_text="number of contributions with a duration between 30 min and 2 h")
+    nb_reports_t2 = fields.DecimalField('nb_reports_t2', help_text="number of contributions with a duration between 2 h and 4h")
+    nb_reports_t3 = fields.DecimalField('nb_reports_t3', help_text="number of contributions with a duration that is greater than 4 hours")
+
     class Meta:
         resource_name = 'reports-aggregation'
         object_class = GenericResponseObject
@@ -258,8 +264,28 @@ class PowerReportAggregatedResource(Resource):
             if len(area_reports) and len(actual_powercut_reports):
                 pos_neg_ratio = Decimal(len(actual_powercut_reports)) / Decimal(len(area_reports))
 
+            #Total number of reports
+            if len(area_reports):
+                nb_reports = len(actual_powercut_reports)
+
+            #Number of contributions per duration level
+            if len(area_reports) and len(actual_powercut_reports):
+                nb_reports_t0 = len(actual_powercut_reports.filter(duration__lt=30))
+                nb_reports_t1 = len(actual_powercut_reports.filter(duration__gte=30, duration__lt=120))
+                nb_reports_t2 = len(actual_powercut_reports.filter(duration__gte=120, duration__lt=240))
+                nb_reports_t3 = len(actual_powercut_reports.filter(duration__gte=240))
+
             #create aggregate object
-            result.append(GenericResponseObject({'area': area, 'avg_duration': avg_duration, 'pos_neg_ratio': pos_neg_ratio}))
+            result.append(GenericResponseObject({
+            'area': area,
+            'avg_duration': avg_duration,
+            'pos_neg_ratio': pos_neg_ratio,
+            'nb_reports': nb_reports,
+            'nb_reports_t0': nb_reports_t0,
+            'nb_reports_t1': nb_reports_t1,
+            'nb_reports_t2': nb_reports_t2,
+            'nb_reports_t3': nb_reports_t3
+            }))
         return result
 
 

@@ -86,21 +86,24 @@ msgid ""
 "        duration in mn(ex: PC douala10). Please wait for Feowl asking you "
 "by\n"
 "        sms before answer."
-msgstr ""
+msgstr "Pour reporter des coupures, 
+lorsque Feowl vous pose la question par SMS, envoyez REP puis le nom du distrinct et la durée en min séparée par des espaces
+(ex:REP akwa 70)"
 
 #: feowl/message_helper.py:250
 msgid ""
 "To report many powercuts, separate it with a comma(ex:\n"
 "        pc akwa10, deido70)"
-msgstr ""
+msgstr "pour reporter plusieurs coupures, separez les par des virgules ex: REP akwa 30, deido 60"
 
 #: feowl/message_helper.py:252
 msgid ""
 "To unsuscribe, send STOP. If you wasn't in Douala, send\n"
-"         OUT. For each valid sms that you send,you'll receive a "
-"confirmation\n"
-"         and your sms will be refunded"
-msgstr ""
+"         OUT."
+msgstr "Pour vous désinscrire, envoyez STOP.
+Si vous n'étiez pas à Douala, envoyez OUT"
+
+
 
 #: feowl/management/commands/newsletter.py:36
 msgid "Hello from Feowl"
@@ -109,8 +112,8 @@ msgstr "Bonjour de Feowl"
 #: templates/sms.txt:4
 msgid ""
 "Hi, did u witness powercuts in Douala yesterday? Reply with \"pc no\" or "
-"\"pc districtname duration (in min)\". Ex: pc doual2 10, douala3 70"
-msgstr "Avez-vous eu une coupure electrique aujourd'hui?"
+"\"pc districtname duration (in min)\". Ex: pc Akwa 10, douala1 70"
+msgstr "Avez-vous eu des coupures à Douala hier ? Envoyez REP NO ou REP et leur durée en min, en les séparant par un espace (ex: REP Akwa 70)"
 
 #: templates/email/newsletter.html:4
 msgid "Hello"
@@ -120,7 +123,7 @@ msgstr "Bonjour"
 msgid ""
 "I’m a Feowl, and I help provide a better monitor electricity supply in "
 "Douala thanks to your contribution."
-msgstr ""
+msgstr "Je suis Feowl et j'aide a mieux suivre les coupures electriques a Douala. Merci de votre contribution"
 
 #: templates/email/newsletter.html:7 templates/email/newsletter.txt:7
 msgid "Did you experience a power cut today? "

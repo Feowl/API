@@ -32,8 +32,9 @@ def read_message(mobile_number, message):
     index, keyword, message_array = parse(message)
 
     # *ensure* that there is both a device with that number and a corresponding contributor
-    try:
-        device = Device.objects.get(phone_number=mobile_number)
+    devices = Device.objects.filter(phone_number=mobile_number)
+    if len(devices) > 0 :
+        device = devices[0]
         # check if user exists; otherwise create an unknown user
         if device.contributor is None:
             logger.error("found mobile device "+str(device)+" without a contributor")
@@ -50,7 +51,7 @@ def read_message(mobile_number, message):
             device.save()
         else:
             contributor = device.contributor
-    except Device.DoesNotExist:
+    else:
         logger.warning("device does not exist")
         logger.warning("creating a new device and contributor")
         # create a new user (potentially with language) and device
@@ -98,6 +99,7 @@ def contribute(message_array, device):
         TODO: Message: pc <area> <duration>, <area> <duration>
     """
     today = datetime.today().date()
+
     # If this user hasn't been asked today OR If has already answered today, then save the message and ignore contribution
     if (device.contributor.enquiry != today) or (device.contributor.response == today):
         save_message(message_array, SMS)
@@ -127,10 +129,6 @@ def contribute(message_array, device):
                 i += 1
                 msg += str(item[0]) + "min, "
             msg += _("If the data have been misunderstood, please send us another SMS.")
-        # Set response to know that this user was handled already
-        device.contributor.response = today
-        device.contributor.save()
-        #TODO:a better explanation message
         send_message(device.phone_number, msg)
 
 

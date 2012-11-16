@@ -597,11 +597,20 @@ class MessagingTestCase(unittest.TestCase):
         nb_devices = len(devices)
         contributors = Contributor.objects.all()
         nb_contributors = len(contributors)
+
+        #English SMS
         receive_sms("889383849", "lkjasdlkajs akjkdlaksjdui akjdlkasd")
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
         self.assertEqual(len(devices), nb_devices + 1)
         self.assertEqual(len(contributors), nb_contributors + 1)
+
+        #French SMS
+        nb_messages = len(Message.objects.all())
+        receive_sms("789383849", "ça a marché")
+        messages = Message.objects.all()
+        self.assertEqual(len(messages), nb_messages + 1)
+    
     
     def test_sendSMS(self):
         msg = "hi from feowl"
@@ -611,6 +620,7 @@ class MessagingTestCase(unittest.TestCase):
         good_phone = "4915738710431"
         #send_sms(good_phone, "lmt")
         #send_sms(good_phone, "nexmo")
+
 
 #############################################
 

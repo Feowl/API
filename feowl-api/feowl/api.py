@@ -380,10 +380,12 @@ class IncomingSmsResource(Resource):
         msg = request.GET.get('in_message', '').decode("latin-1").encode("utf-8")
         phone = request.GET.get('mobile_phone', '')
         if (not phone) or (not msg):
+            logger.error('Mobile Phone or Message are incorrects. Message is: {0}'.format(msg))
             response.append(GenericResponseObject({'response': 'Mobile Phone or Message are incorrects'}))
         else:
             sms_helper.receive_sms(phone, msg)
             response.append(GenericResponseObject({'response': 'message received succesfully'}))
+            logger.info('message received successfully')
         return response
 
     def get_resource_uri(self, bundle_or_obj):

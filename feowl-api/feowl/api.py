@@ -367,7 +367,8 @@ class IncomingSmsResource(Resource):
         phone = request.GET.get('mobile_phone', '')
         if (not phone) or (not msg):
             response.append(GenericResponseObject({'response': 'Mobile Phone or Message are incorrects'}))
-            logger.error('Mobile Phone or Message are incorrects')
+            logger.error('Mobile Phone or Message are incorrect')
+            raise ValueError('Mobile Phone or Message are incorrect')
         else:
             sms_helper.receive_sms(phone, msg)
             response.append(GenericResponseObject({'response': 'message received successfully'}))
@@ -380,8 +381,9 @@ class IncomingSmsResource(Resource):
         msg = request.GET.get('in_message', '').decode("latin-1").encode("utf-8")
         phone = request.GET.get('mobile_phone', '')
         if (not phone) or (not msg):
-            logger.error('Mobile Phone or Message are incorrects. Message is: {0}'.format(msg))
+            logger.error('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))
             response.append(GenericResponseObject({'response': 'Mobile Phone or Message are incorrects'}))
+            raise ValueError('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))
         else:
             sms_helper.receive_sms(phone, msg)
             response.append(GenericResponseObject({'response': 'message received succesfully'}))

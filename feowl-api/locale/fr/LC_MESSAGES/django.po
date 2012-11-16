@@ -21,7 +21,7 @@ msgstr ""
 
 #: feowl/admin.py:49
 msgid "Password changed successfully."
-msgstr "mot de passe modifie avec success"
+msgstr "mot de passe modifié avec succès"
 
 #: feowl/admin.py:59
 #, python-format
@@ -59,10 +59,8 @@ msgstr ""
 #, fuzzy
 msgid ""
 "Hello, your message couldn't be translated - please send us another SMS, e."
-"g. PC Akwa 40. reply HELP for further information"
-msgstr ""
-"Votre message n'a pas pu etre traduit. Priere de nous envoyer un autre SMS. "
-"Example: Akwa 43. envoyez AIDE pour plus d'information"
+g. PC Akwa 40. reply HELP for further information"
+msgstr "Votre message n'a pas pu etre traduit. Priere de nous envoyer un autre SMS. Example: Akwa 43. envoyez AIDE pour plus d'information"
 
 #: feowl/message_helper.py:120
 #, fuzzy
@@ -70,12 +68,12 @@ msgid ""
 "You have choosen to report no power cut, if this is not want you wanted to "
 "say, please send us a new SMS"
 msgstr ""
-"Vous n'avez reporte aucune coupure. Si vous voulez reporter une coupure, "
+"Vous n'avez reporté aucune coupure. Si vous voulez reporter une coupure, "
 "prirere de nous envoyer un autre SMS"
 
 #: feowl/message_helper.py:123
 msgid "You had {0} powercuts yesterday. Durations : "
-msgstr "Vous avez eu {0} coupure hier. Duree : "
+msgstr "Vous avez eu {0} coupure(s) hier. Durée : "
 
 #: feowl/message_helper.py:131
 msgid "min, "
@@ -84,7 +82,7 @@ msgstr ""
 #: feowl/message_helper.py:132
 msgid "If the data have been misunderstood, please send us another SMS."
 msgstr ""
-"Si nous n'avons pas compris votre message, priere de nous envoyer un autre "
+"Si nous n'avons pas bien compris votre message, priere de nous envoyer un autre "
 "SMS"
 
 #: feowl/message_helper.py:223
@@ -92,8 +90,8 @@ msgid ""
 "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP "
 "for further informations. "
 msgstr ""
-"Merci pour votre message! vous avez rejoint notre equipe. Votre mot de passe "
-"est {0}. Repondre AIDE pour plus d'info"
+"Merci pour votre message! vous avez rejoint notre équipe. Votre mot de passe "
+"est {0}. Répondre AIDE pour plus d'info"
 
 #: feowl/message_helper.py:249
 #, fuzzy
@@ -144,12 +142,12 @@ msgid ""
 "I’m a Feowl, and I help provide a better monitor electricity supply in "
 "Douala thanks to your contribution."
 msgstr ""
-"Je suis Feowl et j'aide a mieux suivre les coupures electriques a Douala. "
+"Je suis Feowl et j'aide à mieux suivre les coupures élèctriques a Douala. "
 "Merci de votre contribution"
 
 #: templates/email/newsletter.html:7 templates/email/newsletter.txt:7
 msgid "Did you experience a power cut today? "
-msgstr "Avez-vous eu une coupure electrique aujourd'hui?"
+msgstr "Avez-vous eu une coupure éléctrique aujourd'hui?"
 
 #: templates/email/newsletter.html:8 templates/email/newsletter.txt:8
 msgid "Please let us know by following this link: "
@@ -168,33 +166,3 @@ msgstr ""
 msgid "Welcome to feowl"
 msgstr "Bievenu"
 
-#~ msgid ""
-#~ "Hello, your message couldn't be translated - please send us another SMS, "
-#~ "e.g. Douala1 40. reply HELP for further information"
-#~ msgstr ""
-#~ "Votre message n'a pas pu etre traduit. Priere de nous envoyer un autre "
-#~ "SMS. Example: Akwa 43. envoyez AIDE pour plus d'information"
-
-#~ msgid ""
-#~ "You have choosen to report no power cut, if this is not want you wanted "
-#~ "to say, please send us a new message"
-#~ msgstr ""
-#~ "Vous n'avez reporte aucune coupure. Si vous voulez reporter une coupure, "
-#~ "prirere de nous envoyer un autre SMS"
-
-#~ msgid ""
-#~ "To report a powercut, send the district name and it's\n"
-#~ "        duration in mn(ex: PC douala10). Please wait for Feowl asking you "
-#~ "by\n"
-#~ "        sms before answer."
-#~ msgstr ""
-#~ "Pour reporter des coupures, lorsque Feowl vous pose la question par SMS, "
-#~ "envoyez REP puis le nom du distrinct et la durée en min séparée par des "
-#~ "espaces (ex:REP akwa 70)"
-
-#~ msgid ""
-#~ "To report many powercuts, separate it with a comma(ex:\n"
-#~ "        pc akwa10, deido70)"
-#~ msgstr ""
-#~ "pour reporter plusieurs coupures, separez les par des virgules ex: REP "
-#~ "akwa 30, deido 60"

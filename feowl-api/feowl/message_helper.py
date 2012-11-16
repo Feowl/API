@@ -286,7 +286,7 @@ def invalid(mobile_number, message_array):
 
 def test(message_array, mobile_number):
     save_message(message_array, SMS, parsed=Message.YES)
-    send_message(mobile_number, "it works - " + str(datetime.today().time()))
+    send_message(mobile_number, "Fatah ça a marché -- it works - " + str(datetime.today().time()))
 
 
 def send_message(mobile_number, message):

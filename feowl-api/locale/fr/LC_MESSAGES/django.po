@@ -26,7 +26,7 @@ msgstr "mot de passe modifié avec succès"
 #: feowl/admin.py:59
 #, python-format
 msgid "Change password: %s"
-msgstr "Changer mot de passe"
+msgstr "Changer mot de passe : %s"
 
 #: feowl/email_helper.py:13
 msgid "Welcome to Feowl"
@@ -57,19 +57,13 @@ msgstr ""
 
 #: feowl/message_helper.py:113
 #, fuzzy
-msgid ""
-"Hello, your message couldn't be translated - please send us another SMS, e."
-g. PC Akwa 40. reply HELP for further information"
+msgid "Hello, your message couldn't be translated - please send us another SMS, e.g. PC Akwa 40. reply HELP for further information"
 msgstr "Votre message n'a pas pu etre traduit. Priere de nous envoyer un autre SMS. Example: Akwa 43. envoyez AIDE pour plus d'information"
 
 #: feowl/message_helper.py:120
 #, fuzzy
-msgid ""
-"You have choosen to report no power cut, if this is not want you wanted to "
-"say, please send us a new SMS"
-msgstr ""
-"Vous n'avez reporté aucune coupure. Si vous voulez reporter une coupure, "
-"prirere de nous envoyer un autre SMS"
+msgid "You have choosen to report no power cut, if this is not want you wanted to say, please send us a new SMS"
+msgstr "Vous n'avez reporté aucune coupure. Si vous voulez reporter une coupure, prirere de nous envoyer un autre SMS"
 
 #: feowl/message_helper.py:123
 msgid "You had {0} powercuts yesterday. Durations : "

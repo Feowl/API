@@ -12,7 +12,11 @@ logger = logging.getLogger(__name__)
 def send_sms(mobile_number, message):
     if (is_phone_number(mobile_number)):
         #Check handling of accents
-        params = {'UserName': settings.SMS_USERNAME, 'Password': settings.SMS_PASSWORD, 'SOA': settings.SMS_SENDER, 'MN': mobile_number, 'SM': message.decode("utf-8").encode("latin-1")}
+        try:
+            params = {'UserName': settings.SMS_USERNAME, 'Password': settings.SMS_PASSWORD, 'SOA': settings.SMS_SENDER, 'MN': mobile_number, 'SM': message.encode("latin-1")}
+        except Exception, e:
+            logger.error("Error: {0} --- Wrong Message: {1}".format(e, message))
+
         url = "http://lmtgroup.dyndns.org/sendsms/sendsms.php"
         req = urllib2.Request(url + "?" + urlencode(params))
         f = urllib2.urlopen(req)

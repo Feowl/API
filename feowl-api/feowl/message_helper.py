@@ -63,8 +63,9 @@ def read_message(mobile_number, message):
     logger.debug("associating incoming message with "+str(device)+" // "+str(contributor))
 
     # set the language for upcoming messages
-    language = contributor.language or (kw2lang.has_key(keyword) and kw2lang[keyword]) or "en"
+    language =(kw2lang.has_key(keyword) and kw2lang[keyword]) or contributor.language or "en"
     activate(language.lower())
+    logging.info("switching languages: Active Language is: {0}".format(language))
 
     # invariant: if we arrive here, we are sure that we have a device
     #  and a contributor. now, do the processing
@@ -285,7 +286,7 @@ def test(message_array, mobile_number):
         Message: TEST
     """
     save_message(message_array, SMS, parsed=Message.YES)
-    send_message(mobile_number, "Fatah ça marche -- it works - " + str(datetime.today().time()))
+    send_message(mobile_number, u"Fatah ça marche -- it works - " + str(datetime.today().time()))
 
 
 def send_message(mobile_number, message):

@@ -246,14 +246,9 @@ def help(message_array, device):
     """
         Message: help
     """
-    first_help_msg = _("""To report a powercut, send the district name and it's
-        duration in mn(ex: PC douala10). Please wait for Feowl asking you by
-        sms before answer.""")
-    second_help_msg = _("""To report many powercuts, separate it with a comma(ex:
-        pc akwa10, deido70)""")
-    third_help_msg = _("""To unsuscribe, send STOP. If you wasn't in Douala, send
-         OUT. For each valid sms that you send,you'll receive a confirmation
-         and your sms will be refunded""")
+    first_help_msg = _("""To report a powercut, send PC + the district name + it's duration in mn(ex: PC douala 10). Please wait for Feowl asking you by sms before answering.""")
+    second_help_msg = _("""To report many powercuts, separate them with a comma(ex: pc akwa10, deido70)""")
+    third_help_msg = _("""To unsuscribe, send STOP. If you wasn't in Douala, send OUT. For each valid sms that you send,you'll receive a confirmation""")
 
     send_message(device.phone_number, first_help_msg)
     send_message(device.phone_number, second_help_msg)
@@ -290,7 +285,7 @@ def test(message_array, mobile_number):
         Message: TEST
     """
     save_message(message_array, SMS, parsed=Message.YES)
-    send_message(mobile_number, "Fatah ça a marché -- it works - " + str(datetime.today().time()))
+    send_message(mobile_number, "Fatah ça marche -- it works - " + str(datetime.today().time()))
 
 
 def send_message(mobile_number, message):

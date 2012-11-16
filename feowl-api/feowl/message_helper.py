@@ -1,3 +1,4 @@
+# -*- encoding:utf-8 -*-
 from django.db import IntegrityError
 from django.db.models import F
 from django.utils.translation import activate, ugettext as _
@@ -285,8 +286,11 @@ def invalid(mobile_number, message_array):
 
 
 def test(message_array, mobile_number):
+    """
+        Message: TEST
+    """
     save_message(message_array, SMS, parsed=Message.YES)
-    send_message(mobile_number, "Fatah ça a marché -- it works - " + str(datetime.today().time()))
+    send_message(mobile_number, "Fatah ça a marche -- it works - " + str(datetime.today().time()))
 
 
 def send_message(mobile_number, message):

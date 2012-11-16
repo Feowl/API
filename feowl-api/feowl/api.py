@@ -361,20 +361,20 @@ class IncomingSmsResource(Resource):
         authorization = DjangoAuthorization()
 
     def obj_create(self, bundle, request=None, **kwargs):
-        read_sms_from_url(request)
+        self.read_sms_from_url(request)
         bundle.obj = bundle = self.build_bundle(request=request)
         return bundle
 
     def obj_get_list(self, request=None, **kwargs):
-        return read_sms_from_url()
+        return self.read_sms_from_url(request)
 
     def read_sms_from_url(request):
         response = []
         msg = request.GET.get('in_message', '')
-        #try:
-        #    msg = msg.decode("latin-1").encode("utf-8")
-        #except:
-        #    msg = request.GET.get('in_message', '')
+        try:
+            msg = msg.decode("latin-1").encode("utf-8")
+        except:
+            msg = request.GET.get('in_message', '')
         phone = request.GET.get('mobile_phone', '')
         if (not phone) or (not msg):
             logger.error('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))

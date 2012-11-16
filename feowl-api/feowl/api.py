@@ -368,7 +368,7 @@ class IncomingSmsResource(Resource):
     def obj_get_list(self, request=None, **kwargs):
         return self.read_sms_from_url(request)
 
-    def read_sms_from_url(request):
+    def read_sms_from_url(self, request):
         response = []
         msg = request.GET.get('in_message', '')
         try:

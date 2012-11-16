@@ -373,11 +373,11 @@ class IncomingSmsResource(Resource):
         response = []
         msg = request.GET.get('in_message', '')
         try:
-            msg = msg.decode("ascii").encode("utf-8")
+            msg = msg.decode("latin-1").encode("utf-8")
             logger.info('Decoded Message is: {0}'.format(msg))
         except:
-            msg = request.GET.get('in_message', 'unknowm')
-            logger.info('Undecoded Message is: {0}'.format(msg))
+            msg = request.GET.get('in_message', 'no message')
+            logger.info('Undecoded Message')
         phone = request.GET.get('mobile_phone', '')
         if (not phone) or (not msg):
             logger.error('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))

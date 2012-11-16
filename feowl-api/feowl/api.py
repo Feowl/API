@@ -372,9 +372,9 @@ class IncomingSmsResource(Resource):
         response = []
         msg = request.GET.get('in_message', '')
         try:
-            msg = msg.decode("latin-1").encode("utf-8")
+            msg = msg.decode("ascii").encode("utf-8")
         except:
-            msg = request.GET.get('in_message', '')
+            msg = request.GET.get('in_message', 'unknowm')
         phone = request.GET.get('mobile_phone', '')
         if (not phone) or (not msg):
             logger.error('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))

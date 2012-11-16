@@ -110,14 +110,14 @@ def contribute(message_array, device):
         list = parse_contribute(message_array)
         #If we haven't been able to parse the message
         if list is None:
-            msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""Douala1 40"". reply HELP for further information")
+            msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC Akwa 40"". reply HELP for further information")
         #If user sent PC No - then no outage has been experienced
         elif list[0][0] == 0:
             report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
                     area=list[0][1], happened_at=today)
             report.save()
             increment_refund(device.contributor.id)
-            msg = _("You have choosen to report no power cut, if this is not want you wanted to say, please send us a new message")
+            msg = _("You have choosen to report no power cut, if this is not want you wanted to say, please send us a new SMS")
             #logger.warning(report)
         else:
             msg = _("You had {0} powercuts yesterday. Durations : ").format(len(list))
@@ -128,7 +128,7 @@ def contribute(message_array, device):
                 report.save()
                 increment_refund(device.contributor.id)
                 i += 1
-                msg += str(item[0]) + "min, "
+                msg += _(str(item[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
         send_message(device.phone_number, msg)
 
@@ -290,7 +290,7 @@ def test(message_array, mobile_number):
         Message: TEST
     """
     save_message(message_array, SMS, parsed=Message.YES)
-    send_message(mobile_number, "Fatah ça a marche -- it works - " + str(datetime.today().time()))
+    send_message(mobile_number, "Fatah ça a marché -- it works - " + str(datetime.today().time()))
 
 
 def send_message(mobile_number, message):

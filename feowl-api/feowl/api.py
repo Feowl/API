@@ -362,7 +362,8 @@ class IncomingSmsResource(Resource):
 
     def obj_create(self, bundle, request=None, **kwargs):
         response = []
-        msg = request.GET.get('in_message', '')
+        msg = request.GET.get('in_message', '').decode("latin-1").encode("utf-8")
+
         phone = request.GET.get('mobile_phone', '')
         if (not phone) or (not msg):
             response.append(GenericResponseObject({'response': 'Mobile Phone or Message are incorrects'}))
@@ -376,7 +377,7 @@ class IncomingSmsResource(Resource):
 
     def obj_get_list(self, request=None, **kwargs):
         response = []
-        msg = request.GET.get('in_message', '')
+        msg = request.GET.get('in_message', '').decode("latin-1").encode("utf-8")
         phone = request.GET.get('mobile_phone', '')
         if (not phone) or (not msg):
             response.append(GenericResponseObject({'response': 'Mobile Phone or Message are incorrects'}))

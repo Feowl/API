@@ -1,3 +1,4 @@
+# -*- encoding:utf-8 -*-
 from tastypie import fields
 from tastypie.authorization import DjangoAuthorization
 #TODO: Should changed back with Version 0.9.12 of tastypie

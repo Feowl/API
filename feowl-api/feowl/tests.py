@@ -192,7 +192,7 @@ class AreaResourceTest(ResourceTestCase):
     
     def test_accent(self):
         url = '/api/v1/incoming-sms/?username=' + self.username + '&api_key=' + self.api_key + '&in_message=' + u'régistèr' + '&mobile_phone=4915738710431'
-        resp = self.c.get(url)
+        resp = self.c.get(url, charset='utf-8')
         print url
         self.assertValidJSONResponse(resp)
 

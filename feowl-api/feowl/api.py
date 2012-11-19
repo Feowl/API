@@ -371,12 +371,12 @@ class IncomingSmsResource(Resource):
 
     def read_sms_from_url(self, request):
         response = []
+        request.encoding = 'latin-1'
         msg = request.GET.get('in_message', '')
         try:
             logger.info('Before Request encoding - Type: {0}'.format(type(msg)))
-            request.encoding = 'utf-8'
             logger.info('Before Message decoding- Type: {0}'.format(type(msg)))
-            msg = msg.encode('utf-8')
+            msg = msg.encode('latin-1')
             logger.info('After decoding - Type: {0}'.format(type(msg)))
         except Exception, e:
             msg = request.GET.get('in_message', 'no message')

@@ -155,6 +155,11 @@ class PowerReportResourceTest(ResourceTestCase):
     def test_delete_detail(self):
         """Delete a single report is not allowed from the API with authenticated"""
         self.assertHttpMethodNotAllowed(self.c.delete(self.detail_url, self.get_credentials()))
+    
+    def test_accent(self):
+        
+        self.assertHttpCreated(self.c.get(self.url + '?username=' + self.username + '&api_key=' + self.api_key + '&in_message='+ u'régisèter' + '&mobile_phone=4915738710431'))
+
 
 
 class AreaResourceTest(ResourceTestCase):
@@ -184,10 +189,18 @@ class AreaResourceTest(ResourceTestCase):
         # We also build a detail URI, since we will be using it all over.
         # DRY, baby. DRY.
         self.detail_url = '/api/v1/areas/{0}/'.format(self.area_1.pk)
+    
+    def test_accent(self):
+        url = '/api/v1/incoming-sms/?username=' + self.username + '&api_key=' + self.api_key + '&in_message=' + u'régistèr' + '&mobile_phone=4915738710431'
+        resp = self.c.get(url)
+        print url
+        self.assertValidJSONResponse(resp)
 
+
+    '''
     def get_credentials(self):
         return {"username": self.username, "api_key": self.api_key}
-
+    
     def test_get_list_unauthorzied(self):
         """Get areas from the API without authenticated"""
         self.assertHttpUnauthorized(self.c.get('/api/v1/areas/'))
@@ -237,7 +250,7 @@ class AreaResourceTest(ResourceTestCase):
     def test_delete_detail(self):
         """Try to Delete a single area is not allowed from the API with authenticated"""
         self.assertHttpMethodNotAllowed(self.c.delete(self.detail_url, self.get_credentials()))
-
+    '''
 
 class ContributorResourceTest(ResourceTestCase):
 

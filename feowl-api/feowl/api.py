@@ -374,9 +374,9 @@ class IncomingSmsResource(Resource):
         msg = request.GET.get('in_message', '')
         try:
             logger.info('Before Request encoding - Type: {0}'.format(type(msg)))
-            request.encoding = 'latin-1'
+            request.encoding = 'utf-8'
             logger.info('Before Message decoding- Type: {0}'.format(type(msg)))
-            msg = msg.encode('latin-1')
+            msg = msg.encode('utf-8')
             logger.info('After decoding - Type: {0}'.format(type(msg)))
         except Exception, e:
             msg = request.GET.get('in_message', 'no message')

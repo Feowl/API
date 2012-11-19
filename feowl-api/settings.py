@@ -9,6 +9,7 @@ PROJECT_ROOT = here('.')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 TASTYPIE_FULL_DEBUG = DEBUG
+DEFAULT_CHARSET= 'utf-8'
 
 ADMINS = (
      ('Alexander Slabiak', 'alex@tesobe.com'),

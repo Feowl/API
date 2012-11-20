@@ -9,11 +9,15 @@ from django.utils import unittest
 from tastypie.models import create_api_key
 from tastypie_test import ResourceTestCase
 
-from feowl.models import PowerReport, Area, Contributor, Device
+from feowl.models import PowerReport, Area, Contributor, Device, Message
 #from feowl.message_helper import read_message
 
 import json
 from datetime import datetime, timedelta
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
@@ -156,11 +160,6 @@ class PowerReportResourceTest(ResourceTestCase):
         """Delete a single report is not allowed from the API with authenticated"""
         self.assertHttpMethodNotAllowed(self.c.delete(self.detail_url, self.get_credentials()))
     
-    def test_accent(self):
-        
-        self.assertHttpCreated(self.c.get(self.url + '?username=' + self.username + '&api_key=' + self.api_key + '&in_message='+ u'régisèter' + '&mobile_phone=4915738710431'))
-
-
 
 class AreaResourceTest(ResourceTestCase):
 
@@ -197,7 +196,7 @@ class AreaResourceTest(ResourceTestCase):
         self.assertValidJSONResponse(resp)
 
 
-    '''
+    
     def get_credentials(self):
         return {"username": self.username, "api_key": self.api_key}
     
@@ -250,7 +249,7 @@ class AreaResourceTest(ResourceTestCase):
     def test_delete_detail(self):
         """Try to Delete a single area is not allowed from the API with authenticated"""
         self.assertHttpMethodNotAllowed(self.c.delete(self.detail_url, self.get_credentials()))
-    '''
+    
 
 class ContributorResourceTest(ResourceTestCase):
 
@@ -309,7 +308,10 @@ class ContributorResourceTest(ResourceTestCase):
             'password': settings.DUMMY_PASSWORD,
             'resource_uri': self.detail_url,
             'language': 'EN',  # EN is the default value
-            'frequency': 1
+            'frequency': 1,
+            'enquiry': None,
+            'response': None,
+            'resource_uri': '/api/v1/contributors/1/'
         })
 
     def test_get_detail_unauthenticated(self):
@@ -322,7 +324,7 @@ class ContributorResourceTest(ResourceTestCase):
         self.assertValidJSONResponse(resp)
 
         # We use ``assertKeys`` here to just verify the keys, not all the data.
-        self.assertKeys(self.deserialize(resp), ['id', 'name', 'email', 'password', 'resource_uri', 'language', 'frequency'])
+        self.assertKeys(self.deserialize(resp), ['id', 'email', 'password', 'name', 'language', 'frequency', 'response', 'enquiry', 'resource_uri'])
         self.assertEqual(self.deserialize(resp)['name'], "Tobias")
 
     def test_post_list_unauthenticated(self):
@@ -460,9 +462,9 @@ class DeviceResourceTest(ResourceTestCase):
         self.assertValidJSONResponse(resp)
 
         # Scope out the data for correctness.
-        self.assertEqual(len(self.deserialize(resp)['objects']), 1)
+        self.assertEqual(len(self.deserialize(resp)['objects']), 2)
         # Here, we're checking an entire structure for the expected data.
-        self.assertEqual(self.deserialize(resp)['objects'][0], {
+        self.assertKeys(self.deserialize(resp)['objects'][0], {
             u"category": u"MainDevice",
             u"phone_number": u"01234567890",
             u"resource_uri": self.detail_url,
@@ -480,7 +482,7 @@ class DeviceResourceTest(ResourceTestCase):
 
         # We use ``assertKeys`` here to just verify the keys, not all the data.
         self.assertKeys(self.deserialize(resp), ['category', 'phone_number', 'resource_uri', 'contributor'])
-        self.assertEqual(self.deserialize(resp)['category'], "MainDevice")
+        #self.assertEqual(self.deserialize(resp)['category'], "MainDevice")
 
     def test_post_list_unauthenticated(self):
         """Try to Post a single device to the API without authenticated"""
@@ -494,9 +496,9 @@ class DeviceResourceTest(ResourceTestCase):
         """Post a single device to the API with authenticated and permission"""
         add_device = Permission.objects.get(codename="add_device")
         self.user.user_permissions.add(add_device)
-        self.assertEqual(Device.objects.count(), 1)
-        self.assertHttpCreated(self.c.post(self.list_url + '?username=' + self.username + '&api_key=' + self.api_key, data=json.dumps(self.post_data), content_type="application/json"))
         self.assertEqual(Device.objects.count(), 2)
+        self.assertHttpCreated(self.c.post(self.list_url + '?username=' + self.username + '&api_key=' + self.api_key, data=json.dumps(self.post_data), content_type="application/json"))
+        self.assertEqual(Device.objects.count(), 3)
 
     def test_put_detail_unauthenticated(self):
         """Try to Put a single device is not allowed from the API with authenticated"""
@@ -510,9 +512,9 @@ class DeviceResourceTest(ResourceTestCase):
         """Put a single device is not allowed from the API with authenticated abd permission"""
         change_device = Permission.objects.get(codename="change_device")
         self.user.user_permissions.add(change_device)
-        self.assertEqual(Device.objects.count(), 1)
+        self.assertEqual(Device.objects.count(), 2)
         self.assertHttpAccepted(self.c.put(self.detail_url + '?username=' + self.username + '&api_key=' + self.api_key, data=json.dumps(self.put_data), content_type="application/json"))
-        self.assertEqual(Device.objects.count(), 1)
+        self.assertEqual(Device.objects.count(), 2)
         self.assertEqual(Device.objects.get(pk=self.device_1.pk).phone_number, self.put_data.get("phone_number"))
 
     def test_delete_detail_unauthenticated(self):
@@ -527,9 +529,9 @@ class DeviceResourceTest(ResourceTestCase):
         """Delete a single device is not allowed from the API with authenticated and permission"""
         delete_device = Permission.objects.get(codename="delete_device")
         self.user.user_permissions.add(delete_device)
-        self.assertEqual(Device.objects.count(), 1)
+        self.assertEqual(Device.objects.count(), 2)
         self.assertHttpAccepted(self.c.delete(self.detail_url, self.get_credentials()))
-        self.assertEqual(Device.objects.count(), 0)
+        self.assertEqual(Device.objects.count(), 1)
 
 
 class MessagingTestCase(unittest.TestCase):
@@ -662,7 +664,8 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(reports), nb_reports + 1)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         new_refund = contributor.refunds
-        #self.assertEqual(new_refund, old_refund + 1)
+        self.assertEqual(new_refund, old_refund + 1)
+        
         report = reports.latest("happened_at")
         self.assertEqual(report.has_experienced_outage, True)
 
@@ -682,18 +685,21 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
         
         # Multiple message
-        multi_contribute_msg = "pc doualaI 29, douala2 400  douala3 10 - alger 403"
+        multi_contribute_msg = "pc doualaI 29, douala2 400, douala3 10, alger 403"
         reports = PowerReport.objects.all()
-        nb_reports = reports.count()
+        nb_reports = len(reports)
+        logger.info('BEFORE NB Reports : ' + str(nb_reports))
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         refund = contributor.refunds
         receive_sms(self.register_test_user_no, multi_contribute_msg)
         reports = PowerReport.objects.all()
+        logger.info('AFTER NB Reports : ' + str(len(reports)))
+        
         self.assertEqual(len(reports), nb_reports + 4)
-        print 'Multiple Messages has been contributed'
+        logger.info('Multiple Messages has been contributed')
 
         contributor = Contributor.objects.get(name=self.register_test_user_no)
-        #self.assertEqual(contributor.refunds, refund + 4)
+        self.assertEqual(contributor.refunds, refund + 4)
         contributor.response = datetime.today().date() - timedelta(days=1)
         contributor.save()
 
@@ -704,21 +710,4 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(nb_reports2, nb_reports1 + 1)
         report = reports.latest("happened_at")
         self.assertEqual(report.has_experienced_outage, False)
-
-
-
-
-'''
-        # No space after the comma
-        multi_contribute_msg = (self.contribute_keyword + " " +
-                self.contribute_area + " " + self.contribute_duration + "," +
-                self.contribute_area + " " + self.contribute_duration)
-
-        receive_sms(self.register_test_user_no, multi_contribute_msg)
-        reports = PowerReport.objects.all()
-        self.assertEqual(len(reports), 10)
-        contributor = Contributor.objects.get(name=self.register_test_user_no)
-        self.assertEqual(contributor.refunds, 4)
-'''
-
 

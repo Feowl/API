@@ -30,10 +30,10 @@ def send_sms(mobile_number, message):
 def send_sms_nexmo(mobile_number, message):
     if (is_phone_number(mobile_number)):
         req = "json"
-        key = "ff33ed3f"
-        secret = "eddd3f0c"
-        sender = "88002014"
-        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': smart_str(message,encoding='latin-1'), 'username': key}
+        key = SMS_NEXMO_KEY
+        secret = SMS_NEXMO_SECRET
+        sender = settings.SMS_SENDER
+        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': smart_str(message), 'username': key}
         sms = NexmoMessage(msg)
         sms.send_request()
         logger.info("SMS Sent. Number = {0}".format(mobile_number))

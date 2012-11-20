@@ -197,7 +197,7 @@ class AreaResourceTest(ResourceTestCase):
         self.assertValidJSONResponse(resp)
 
 
-    '''
+    
     def get_credentials(self):
         return {"username": self.username, "api_key": self.api_key}
     
@@ -250,7 +250,7 @@ class AreaResourceTest(ResourceTestCase):
     def test_delete_detail(self):
         """Try to Delete a single area is not allowed from the API with authenticated"""
         self.assertHttpMethodNotAllowed(self.c.delete(self.detail_url, self.get_credentials()))
-    '''
+    
 
 class ContributorResourceTest(ResourceTestCase):
 

@@ -388,6 +388,8 @@ class IncomingSmsResource(Resource):
             response.append(GenericResponseObject({'response': 'Mobile Phone or Message are incorrects'}))
             raise ValueError('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))
         else:
+            logger.info('Before decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
+            
             sms_helper.receive_sms(phone, msg)
             response.append(GenericResponseObject({'response': 'message received succesfully'}))
             logger.info('message received successfully')

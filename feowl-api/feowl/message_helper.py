@@ -88,7 +88,11 @@ def read_message(mobile_number, message):
 
 def parse(message):
     # Instead of split using we regex to find all words
-    message_array = re.findall(r'\w+', message)
+    logger.info('Parse Function - Type: {0} - Message: {1}'.format(type(message), message))
+            
+    #message_array = re.findall(r'\w+', message)
+    message_array = message.split()
+    logger.info('After Parse Function - Type: {0} - Message-Array: {1}'.format(type(message_array), message_array))
     for index, keyword in enumerate(message_array):
         if keyword.lower() in keywords:
             return index, keyword.lower(), message_array
@@ -277,6 +281,7 @@ def invalid(mobile_number, message_array):
     """
         Message: <something wrong>
     """
+    logger.info("----------- Message to be saved: " + " ".join(message_array))
     msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO)
     msg.save()
 

@@ -64,4 +64,6 @@ def special_batch_sms(mobile_numbers_list, message="template"):
 
 
 def receive_sms(mobile_number, message):
+    logger.info('SMS Receve - Type: {0} - Message: {1}'.format(type(message), message))
+            
     read_message(mobile_number, message)

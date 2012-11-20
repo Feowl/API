@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-16 15:04+0100\n"
+"POT-Creation-Date: 2012-11-20 11:51+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,48 +54,48 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: feowl/message_helper.py:113
+#: feowl/message_helper.py:114
 msgid ""
 "Hello, your message couldn't be translated - please send us another SMS, e."
 "g. PC Akwa 40. reply HELP for further information"
 msgstr ""
 
-#: feowl/message_helper.py:120
+#: feowl/message_helper.py:121
 msgid ""
 "You have choosen to report no power cut, if this is not want you wanted to "
 "say, please send us a new SMS"
 msgstr ""
 
-#: feowl/message_helper.py:123
+#: feowl/message_helper.py:124
 msgid "You had {0} powercuts yesterday. Durations : "
 msgstr ""
 
-#: feowl/message_helper.py:131
+#: feowl/message_helper.py:132
 msgid "min, "
 msgstr ""
 
-#: feowl/message_helper.py:132
+#: feowl/message_helper.py:133
 msgid "If the data have been misunderstood, please send us another SMS."
 msgstr ""
 
-#: feowl/message_helper.py:223
+#: feowl/message_helper.py:224
 msgid ""
 "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP "
 "for further informations. "
 msgstr ""
 
-#: feowl/message_helper.py:249
+#: feowl/message_helper.py:250
 msgid ""
 "To report a powercut, send PC + the district name + it's duration in mn(ex: "
 "PC douala 10). Please wait for Feowl asking you by sms before answering."
 msgstr ""
 
-#: feowl/message_helper.py:250
+#: feowl/message_helper.py:251
 msgid ""
 "To report many powercuts, separate them with a comma(ex: pc akwa10, deido70)"
 msgstr ""
 
-#: feowl/message_helper.py:251
+#: feowl/message_helper.py:252
 msgid ""
 "To unsuscribe, send STOP. If you wasn't in Douala, send OUT. For each valid "
 "sms that you send,you'll receive a confirmation"
@@ -105,10 +105,10 @@ msgstr ""
 msgid "Hello from Feowl"
 msgstr ""
 
-#: templates/sms.txt:4
+#: templates/sms.txt:3
 msgid ""
 "Hi, did u witness powercuts in Douala yesterday? Reply with \"pc no\" or "
-"\"pc districtname duration (in min)\". Ex: pc doual2 10, douala3 70"
+"\"pc districtname duration (in min)\". Ex: pc akwa 10, bonaberrie 70"
 msgstr ""
 
 #: templates/email/newsletter.html:4

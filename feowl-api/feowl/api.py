@@ -20,6 +20,7 @@ from serializers import CSVSerializer
 import sms_helper
 import simplejson
 import logging
+from django.utils.encoding import smart_str
 
 logger = logging.getLogger(__name__)
 
@@ -372,12 +373,12 @@ class IncomingSmsResource(Resource):
     def read_sms_from_url(self, request):
         response = []
         request.encoding = 'latin-1'
-        msg = smart_str(request.GET.get('in_message', ''), encoding='latin-1')
+        msg = smart_str(request.GET.get('in_message', ''))
         #KNOW-BUG: doesn't support SMS send with special caracters due to an issue in Django.
         try:
             logger.info('Before decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
-            msg = msg.encode('latin-1')
-            logger.info('After decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
+            #msg = msg.decode('latin-1')
+            #logger.info('After decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
         except Exception, e:
             msg = request.GET.get('in_message', 'no message')
             logger.info('Undecoded Message: {0}'.format(e))

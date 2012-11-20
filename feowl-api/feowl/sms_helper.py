@@ -1,9 +1,11 @@
+# -*- encoding:utf-8 -*-
 from message_helper import read_message
 import logging
 from urllib import urlencode
 import urllib2
 import settings
 from nexmomessage import NexmoMessage
+from django.utils.encoding import smart_str
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +33,7 @@ def send_sms_nexmo(mobile_number, message):
         key = "ff33ed3f"
         secret = "eddd3f0c"
         sender = "88002014"
-        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': message, 'username': key}
+        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': smart_str(message,encoding='latin-1'), 'username': key}
         sms = NexmoMessage(msg)
         sms.send_request()
         logger.info("SMS Sent. Number = {0}".format(mobile_number))

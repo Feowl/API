@@ -372,9 +372,10 @@ class IncomingSmsResource(Resource):
     def read_sms_from_url(self, request):
         response = []
         request.encoding = 'latin-1'
-        msg = request.GET.get('in_message', '')
+        msg = smart_str(request.GET.get('in_message', ''), encoding='latin-1')
+        #KNOW-BUG: doesn't support SMS send with special caracters due to an issue in Django.
         try:
-            logger.info('Before Message decoding- Type: {0}'.format(type(msg)))
+            logger.info('Before decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
             msg = msg.encode('latin-1')
             logger.info('After decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
         except Exception, e:

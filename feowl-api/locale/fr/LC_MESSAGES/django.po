@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-16 15:04+0100\n"
+"POT-Creation-Date: 2012-11-20 11:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,76 +55,57 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: feowl/message_helper.py:113
-#, fuzzy
+#: feowl/message_helper.py:114
 msgid "Hello, your message couldn't be translated - please send us another SMS, e.g. PC Akwa 40. reply HELP for further information"
 msgstr "Votre message n'a pas pu etre traduit. Priere de nous envoyer un autre SMS. Example: Akwa 43. envoyez AIDE pour plus d'information"
 
-#: feowl/message_helper.py:120
-#, fuzzy
+#: feowl/message_helper.py:121
 msgid "You have choosen to report no power cut, if this is not want you wanted to say, please send us a new SMS"
 msgstr "Vous n'avez reporté aucune coupure. Si vous voulez reporter une coupure, prirere de nous envoyer un autre SMS"
 
-#: feowl/message_helper.py:123
+#: feowl/message_helper.py:124
 msgid "You had {0} powercuts yesterday. Durations : "
 msgstr "Vous avez eu {0} coupure(s) hier. Durée : "
 
-#: feowl/message_helper.py:131
+#: feowl/message_helper.py:132
 msgid "min, "
 msgstr ""
 
-#: feowl/message_helper.py:132
+#: feowl/message_helper.py:133
 msgid "If the data have been misunderstood, please send us another SMS."
-msgstr ""
-"Si nous n'avons pas bien compris votre message, priere de nous envoyer un autre "
-"SMS"
+msgstr "Si nous n'avons pas bien compris votre message, priere de nous envoyer un autre SMS"
 
-#: feowl/message_helper.py:223
-msgid ""
-"Thanks for texting! You've joined our team. Your password is {0}. Reply HELP "
+#: feowl/message_helper.py:224
+msgid "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP "
 "for further informations. "
-msgstr ""
-"Merci pour votre message! vous avez rejoint notre équipe. Votre mot de passe "
+msgstr "Merci pour votre message! vous avez rejoint notre équipe. Votre mot de passe "
 "est {0}. Répondre AIDE pour plus d'info"
 
-#: feowl/message_helper.py:249
-#, fuzzy
-msgid ""
-"To report a powercut, send PC + the district name + it's duration in mn(ex: "
-"PC douala 10). Please wait for Feowl asking you by sms before answering."
-msgstr ""
-"Pour reporter des coupures, lorsque Feowl vous pose la question par SMS, "
+#: feowl/message_helper.py:250
+msgid "To report a powercut, send PC + the district name + it's duration in mn(ex: PC douala 10). Please wait for Feowl asking you by sms before answering."
+msgstr "Pour reporter des coupures, lorsque Feowl vous pose la question par SMS, "
 "envoyez REP puis le nom du distrinct et la durée en min séparée par des "
 "espaces (ex:REP akwa 70)"
 
-#: feowl/message_helper.py:250
-#, fuzzy
-msgid ""
-"To report many powercuts, separate them with a comma(ex: pc akwa10, deido70)"
-msgstr ""
-"pour reporter plusieurs coupures, separez les par des virgules ex: REP akwa "
+#: feowl/message_helper.py:251
+msgid "To report many powercuts, separate them with a comma(ex: pc akwa10, deido70)"
+msgstr "pour reporter plusieurs coupures, separez les par des virgules ex: REP akwa "
 "30, deido 60"
 
-#: feowl/message_helper.py:251
-#, fuzzy
-msgid ""
-"To unsuscribe, send STOP. If you wasn't in Douala, send OUT. For each valid "
+#: feowl/message_helper.py:252
+msgid "To unsuscribe, send STOP. If you wasn't in Douala, send OUT. For each valid "
 "sms that you send,you'll receive a confirmation"
-msgstr ""
-"Pour vous désinscrire, envoyez STOP. Si vous n'étiez pas à Douala, envoyez "
+msgstr "Pour vous désinscrire, envoyez STOP. Si vous n'étiez pas à Douala, envoyez "
 "OUT"
 
 #: feowl/management/commands/newsletter.py:36
 msgid "Hello from Feowl"
 msgstr "Bonjour de Feowl"
 
-#: templates/sms.txt:4
-#, fuzzy
-msgid ""
-"Hi, did u witness powercuts in Douala yesterday? Reply with \"pc no\" or "
-"\"pc districtname duration (in min)\". Ex: pc doual2 10, douala3 70"
-msgstr ""
-"Avez-vous eu des coupures à Douala hier ? Envoyez REP NO ou REP et leur "
+#: templates/sms.txt:3
+msgid "Hi, did u witness powercuts in Douala yesterday? Reply with \"pc no\" or "
+"\"pc districtname duration (in min)\". Ex: pc akwa 10, bonaberrie 70"
+msgstr "Avez-vous eu des coupures à Douala hier ? Envoyez REP NO ou REP et leur "
 "durée en min, en les séparant par un espace (ex: REP Akwa 70)"
 
 #: templates/email/newsletter.html:4
@@ -159,4 +140,3 @@ msgstr ""
 #: templates/email/registration_confirmation.txt:4
 msgid "Welcome to feowl"
 msgstr "Bievenu"
-

@@ -65,8 +65,7 @@ def read_message(mobile_number, message):
     # set the language for upcoming messages
     language =(kw2lang.has_key(keyword) and kw2lang[keyword]) or contributor.language or "en"
     activate(language.lower())
-    logging.info("switching languages: Active Language is: {0}".format(language))
-
+    
     # invariant: if we arrive here, we are sure that we have a device
     #  and a contributor. now, do the processing
     if keyword in ("pc", "rep"):
@@ -87,12 +86,9 @@ def read_message(mobile_number, message):
 
 
 def parse(message):
-    # Instead of split using we regex to find all words
-    logger.info('Parse Function - Type: {0} - Message: {1}'.format(type(message), message))
-            
-    #message_array = re.findall(r'\w+', message)
+    #Using split instead of regex to avoid problem with Unicode encoded / special caracters
     message_array = message.split()
-    logger.info('After Parse Function - Type: {0} - Message-Array: {1}'.format(type(message_array), message_array))
+    logger.info("---- Message to be parsed is {0} ".format(message_array))
     for index, keyword in enumerate(message_array):
         if keyword.lower() in keywords:
             return index, keyword.lower(), message_array
@@ -121,7 +117,7 @@ def contribute(message_array, device):
             report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
                     area=list[0][1], happened_at=today)
             report.save()
-            increment_refund(device.contributor.id)
+            increment_refund(device.contributor)
             msg = _("You have choosen to report no power cut, if this is not want you wanted to say, please send us a new SMS")
             #logger.warning(report)
         else:
@@ -131,20 +127,25 @@ def contribute(message_array, device):
                 report = PowerReport(duration=item[0], contributor=device.contributor, device=device,
                     area=item[1], happened_at=today)
                 report.save()
-                increment_refund(device.contributor.id)
+                increment_refund(device.contributor)
                 i += 1
                 msg += _(str(item[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
         send_message(device.phone_number, msg)
 
 
-def increment_refund(user_id):
+def increment_refund(c):
     #add +1 to the refund counter for the current user
-    c = Contributor.objects.get(pk=user_id)
-    c.refunds += 1
-    c.save()
-    #c.update(refunds=F('refunds') + 1)
-
+    try:
+        #c = Contributor.objects.get(pk=user_id)
+        logger.info("BEFORE Contribtuor {0} has an updated refund of {1} ".format(c.name, c.refunds))
+        c.refunds += 1
+        logger.info("AFTER Contribtuor {0} has an updated refund of {1} ".format(c.name, c.refunds))
+        c.save()
+        #logger.info("Contribtuor {0} has an updated refund of {1} ".format(c.name, c.refunds))
+    except Exception, e:
+        logger.error("Error while updating Contributor's refund counter - {0} ".format(e))
+    
 
 def parse_contribute(message_array):
     #TODO:algorithme to be improved
@@ -155,14 +156,18 @@ def parse_contribute(message_array):
             list.append([0, get_area("other")])
         #Contributor wants to report a power cut
         else:
-            i = 1
+            i = 0
             for word in message_array[1:]:
-                if word.isdigit():
-                    duration = word
+                i +=1
+                if word.isdigit() or word[:-1].isdigit():
+                    if word.isdigit():
+                        duration = word
+                    else:
+                        duration = word[:-1]
                     area = get_area(message_array[i - 1])
                     save_message(message_array, SMS, parsed=Message.YES)
                     list.append([duration, area])
-                i += 1
+                    logger.info("Contribution added at {0}".format(message_array[i - 1]))
             if len(list) == 0:
                 #No report could be added
                 save_message(message_array, SMS, parsed=Message.NO)
@@ -224,7 +229,7 @@ def register(message_array, device):
         device.contributor.password = pwd
         device.contributor.channel = SMS
         device.contributor.save()
-        increment_refund(device.contributor.id)
+        increment_refund(device.contributor)
         msg = _("Thanks for texting! You've joined our team. Your password is {0}. Reply HELP for further informations. ").format(pwd)
         send_message(device.phone_number, msg)
 
@@ -281,7 +286,6 @@ def invalid(mobile_number, message_array):
     """
         Message: <something wrong>
     """
-    logger.info("----------- Message to be saved: " + " ".join(message_array))
     msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO)
     msg.save()
 

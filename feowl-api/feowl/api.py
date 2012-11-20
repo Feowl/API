@@ -374,22 +374,13 @@ class IncomingSmsResource(Resource):
         response = []
         request.encoding = 'latin-1'
         msg = smart_str(request.GET.get('in_message', ''))
-        #KNOW-BUG: doesn't support SMS send with special caracters due to an issue in Django.
-        try:
-            logger.info('Before decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
-            #msg = msg.decode('latin-1')
-            #logger.info('After decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
-        except Exception, e:
-            msg = request.GET.get('in_message', 'no message')
-            logger.info('Undecoded Message: {0}'.format(e))
-        phone = request.GET.get('mobile_phone', '')
+        phone = smart_str(request.GET.get('mobile_phone', ''))
         if (not phone) or (not msg):
             logger.error('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))
             response.append(GenericResponseObject({'response': 'Mobile Phone or Message are incorrects'}))
             raise ValueError('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))
         else:
-            logger.info('Before decoding - Type: {0} - Message: {1}'.format(type(msg), msg))
-            
+            logger.info('Message Received: {0}'.format(msg))
             sms_helper.receive_sms(phone, msg)
             response.append(GenericResponseObject({'response': 'message received succesfully'}))
             logger.info('message received successfully')

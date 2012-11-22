@@ -266,10 +266,15 @@ class PowerReportAggregatedResource(Resource):
             if len(area_reports) and len(actual_powercut_reports):
                 pos_neg_ratio = Decimal(len(actual_powercut_reports)) / Decimal(len(area_reports))
 
+            nb_reports = 0
             #Total number of reports
             if len(area_reports):
                 nb_reports = len(actual_powercut_reports)
 
+            nb_reports_t0 = 0
+            nb_reports_t1 = 0
+            nb_reports_t2 = 0
+            nb_reports_t3 = 0
             #Number of contributions per duration level
             if len(area_reports) and len(actual_powercut_reports):
                 nb_reports_t0 = len(actual_powercut_reports.filter(duration__lt=30))

@@ -231,11 +231,8 @@ def register(message_array, device):
         device.contributor.save()
         increment_refund(device.contributor)
         msg = _("Thanks for texting! You've joined our team. Your password is {0}. Reply HELP for further informations. ").format(pwd)
+        save_message(message_array, SMS, parsed=Message.YES)
         send_message(device.phone_number, msg)
-
-
-#def register(mobile_number, message_array):
-#    print "hello world"
 
 
 def unregister(message_array, device):

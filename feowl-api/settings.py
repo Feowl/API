@@ -231,8 +231,8 @@ LOGGING = {
 DUMMY_PASSWORD = u'✌ & ♥'           # peace and love, yo!
 ANONYMOUS_USER_NAME = "Anonymous"
 ANONYMOUS_EMAIL = "anonymous@feowl.com"
-NEWSLETTER_FROM = "contact@feowl.com"
-REGISTRATION_FROM = "contact@feowl.com"
+NEWSLETTER_FROM = "Feowl<contact@feowl.com>"
+REGISTRATION_FROM = "Feowl<contact@feowl.com>"
 
 try:
         from local import *

@@ -1,5 +1,5 @@
 {% load i18n %}
 {% language newsletter_language %}
-{% trans 'Hi, did u witness powercuts in Douala yesterday? Reply with "pc no" or "pc districtname duration (in min)". Ex: pc akwa 10, bonaberrie 70' %}
+{% trans 'Hi, did you witness powercuts in Douala yesterday? Reply with "PC no" or "PC arrondissement & duration (in min)". Ex: PC douala1 10, douala3 70' %}
 Feowl
 {% endlanguage %}

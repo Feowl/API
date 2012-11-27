@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-26 18:59+0100\n"
+"POT-Creation-Date: 2012-11-27 17:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr "Changer mot de passe : %s"
 
 #: feowl/email_helper.py:13
 msgid "Welcome to Feowl"
-msgstr "Bienvenu sur Feowl"
+msgstr "Bienvenue sur Feowl"
 
 #: feowl/forms.py:10
 msgid "Name"
@@ -38,15 +38,15 @@ msgstr "Nom"
 
 #: feowl/forms.py:11
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
-msgstr "Requis. 30 caracters ou moins."
+msgstr "Requis. 30 caractères min."
 
 #: feowl/forms.py:14
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
-msgstr ""
+msgstr "Cette entrée ne peut contenir que des lettres, des chiffre et les caractères /./+/-/_ "
 
 #: feowl/forms.py:16
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: feowl/forms.py:17
 msgid ""
@@ -58,18 +58,18 @@ msgstr ""
 #: feowl/message_helper.py:114
 msgid ""
 "Hello, your message couldn't be translated - please send us another SMS, e."
-"g. PC Akwa 40. reply HELP for further information"
+"g. PC douala1 40. reply HELP for further information"
 msgstr ""
-"Votre message n'a pas pu etre traduit. Priere de nous envoyer un autre SMS. "
-"Example: Akwa 43. envoyez AIDE pour plus d'information"
+"Votre message n'a pas pu etre compris. Merci de nous envoyer un autre SMS. "
+"Example: REP douala1 43. Envoyez AIDE pour plus d'informations"
 
 #: feowl/message_helper.py:121
 msgid ""
-"You have choosen to report no power cut, if this is not want you wanted to "
-"say, please send us a new SMS"
+"You chose to report no power cut. If this is not what you wanted to say, "
+"please send us a new SMS"
 msgstr ""
 "Vous n'avez reporté aucune coupure. Si vous voulez reporter une coupure, "
-"prirere de nous envoyer un autre SMS"
+"merci de nous envoyer un autre SMS"
 
 #: feowl/message_helper.py:124
 msgid "You had {0} powercuts yesterday. Durations : "
@@ -77,12 +77,12 @@ msgstr "Vous avez eu {0} coupure(s) hier. Durée : "
 
 #: feowl/message_helper.py:132
 msgid "min, "
-msgstr ""
+msgstr "min, "
 
 #: feowl/message_helper.py:133
 msgid "If the data have been misunderstood, please send us another SMS."
 msgstr ""
-"Si nous n'avons pas bien compris votre message, priere de nous envoyer un "
+"Si nous n'avons pas bien compris votre message, merci de nous envoyer un "
 "autre SMS"
 
 #: feowl/message_helper.py:233
@@ -95,19 +95,20 @@ msgstr ""
 
 #: feowl/message_helper.py:256
 msgid ""
-"To report a powercut, send PC + the district name + it's duration in mn(ex: "
-"PC douala 10). Please wait for Feowl asking you by sms before answering."
+"To report a powercut, send PC + the arrondissement name + it's duration in mn"
+"(ex: PC douala5 10). Please wait for Feowl asking you by sms before "
+"answering."
 msgstr ""
-"Pour reporter des coupures, lorsque Feowl vous pose la question par SMS, "
-"envoyez REP puis le nom du distrinct et la durée en min séparée par des "
-"espaces (ex:REP akwa 70)"
+"Pour reporter des coupures, lorsque Feowl vous envoie un SMS, "
+"envoyez REP & l'arrondissement & durée en min."
+"(ex:REP douala5 70)"
 
 #: feowl/message_helper.py:257
 msgid ""
-"To report many powercuts, separate them with a comma(ex: pc akwa10, deido70)"
+"To report many powercuts, separate them with a comma(ex: PC douala3 10, "
+"douala3 45)"
 msgstr ""
-"pour reporter plusieurs coupures, separez les par des virgules ex: REP akwa "
-"30, deido 60"
+"pour reporter plusieurs coupures, separez les par des virgules (ex:REP douala5 70, douala1 15)"
 
 #: feowl/message_helper.py:258
 msgid ""
@@ -121,51 +122,55 @@ msgstr ""
 msgid "Hello from Feowl"
 msgstr "Bonjour de Feowl"
 
-#: templates/sms.txt:3
+#: templates/sms.txt:3 templates/special_sms.txt:3
 msgid ""
-"Hi, did u witness powercuts in Douala yesterday? Reply with \"pc no\" or "
-"\"pc districtname duration (in min)\". Ex: pc akwa 10, bonaberrie 70"
+"Hi, did you witness powercuts in Douala yesterday? Reply with \"PC no\" or "
+"\"PC arrondissement & duration (in min)\". Ex: PC douala1 10, douala3 70"
 msgstr ""
-"Avez-vous eu des coupures à Douala hier ? Envoyez REP NO ou REP et leur "
-"durée en min, en les séparant par un espace (ex: REP Akwa 70)"
+"Avez-vous eu des coupures à Douala hier ? Envoyez REP NON ou REP arrondissement & "
+"durée en min (ex:REP douala5 70, douala1 15)"
 
-#: templates/email/newsletter.html:4
+#: templates/email/newsletter.html:4 templates/email/newsletter.txt:4
 msgid "Hello"
 msgstr "Bonjour"
 
-#: templates/email/newsletter.html:6
+#: templates/email/newsletter.html:6 templates/email/newsletter.txt:6
 msgid "The Feowl team needs your help!"
-msgstr ""
+msgstr "L'équipe Feowl a besoin de votre aide ! "
 
-#: templates/email/newsletter.html:7
+#: templates/email/newsletter.html:7 templates/email/newsletter.txt:7
 msgid "We want to know if you experienced powercuts in Douala yesterday."
 msgstr ""
+"Nous aimerions savoir si vous avez eu des coupures de courant à Douala hier."
 
 #: templates/email/newsletter.html:8
 msgid "To help us,please connect to your"
-msgstr ""
+msgstr "Pour nous aider, merci de vous connecter sur votre "
 
 #: templates/email/newsletter.html:8
 msgid "and click "
-msgstr ""
+msgstr "puis cliquez sur le lien"
 
 #: templates/email/newsletter.html:9
 msgid ""
 "Reminder: If you have lost your password, you can reset it using this link:"
 msgstr ""
+"Rappel : si vous avez perdu votre mot de passe, vous pouvez le réinitialiser "
+"en utilisant ce lien :"
 
-#: templates/email/newsletter.html:10
+#: templates/email/newsletter.html:10 templates/email/newsletter.txt:10
 msgid "Thank you for your contribution,"
-msgstr ""
+msgstr "Merci de votre contribution,"
 
-#: templates/email/newsletter.html:11
+#: templates/email/newsletter.html:11 templates/email/newsletter.txt:11
 msgid "See you soon,"
-msgstr ""
+msgstr "A très bientôt"
 
-#: templates/email/newsletter.html:12
+#: templates/email/newsletter.html:12 templates/email/newsletter.txt:12
 #: templates/email/registration_confirmation.html:18
+#: templates/email/registration_confirmation.txt:18
 msgid "The Feowl team"
-msgstr ""
+msgstr "L'équipe Feowl"
 
 #: templates/email/newsletter.html:13
 #: templates/email/registration_confirmation.html:20
@@ -173,63 +178,105 @@ msgid ""
 "You received this message because this email address was used to register to "
 "Feowl."
 msgstr ""
+"Vous recevez ce message car vous êtes enregistré sur la plate-forme Feowl."
 
 #: templates/email/newsletter.html:13
 #: templates/email/registration_confirmation.html:20
 msgid "You can unsubscribe at anytime on this page."
-msgstr ""
-
-#: templates/email/newsletter.txt:4
-msgid "Hey"
-msgstr ""
-
-#: templates/email/newsletter.txt:6
-msgid ""
-"I’m a Feowl, and I help provide a better monitor electricity supply in "
-"Douala thanks to your contribution."
-msgstr ""
-"Je suis Feowl et j'aide à mieux suivre les coupures élèctriques a Douala. "
-"Merci de votre contribution"
-
-#: templates/email/newsletter.txt:7
-msgid "Did you experience a power cut today? "
-msgstr "Avez-vous eu une coupure éléctrique aujourd'hui?"
+msgstr "Vous pouvez vous désinscire à tout moment sur cette page."
 
 #: templates/email/newsletter.txt:8
-msgid "Please let us know by following this link: "
-msgstr "Merci de nous le faire savoir en suivant ce lien: "
+msgid ""
+"To help us,please connect to your profile page http://www.feowl.com/profile "
+"and click "
+msgstr ""
 
 #: templates/email/newsletter.txt:9
-msgid "Many Thanks"
-msgstr "Merci"
+msgid ""
+"Reminder: If you have lost your password, you can reset it using this link: "
+"http://www.feowl.com"
+msgstr ""
+"Rappel : si vous avez perdu votre mot de passe, vous pouvez le réinitialiser "
+"en utilisant ce lien :"
+
+#: templates/email/newsletter.txt:13
+msgid ""
+"You received this message because this email address was used to register to "
+"Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/"
+"profile"
+msgstr ""
+"Vous recevez ce message car vous êtes enregistré sur la plate-forme Feowl."
 
 #: templates/email/registration_confirmation.html:4
-#, fuzzy
+#: templates/email/registration_confirmation.txt:4
 msgid "Hello,"
 msgstr "Bonjour"
 
-#: templates/email/registration_confirmation.html:8
-msgid "To connect to Feowl, visit"
+#: templates/email/registration_confirmation.html:6
+msgid ""
+"Thank you for registering on Feowl.com, the platform producing accurate and "
+"usable public data on the supply of electricity in Douala. You are now "
+"registered under the name"
 msgstr ""
 
+#: templates/email/registration_confirmation.html:8
+msgid "To connect to Feowl, visit"
+msgstr "Pour vous connecter à Feowl, rendez-vous sur : "
+
 #: templates/email/registration_confirmation.html:10
+#: templates/email/registration_confirmation.txt:10
 msgid ""
 "We will contact you very soon by e-mail to ask you about your experience "
 "with electricity in Douala."
 msgstr ""
+"Un premier appel à contribution vous sera envoyé très bientôt par mail pour "
+"connaitre la fréquence des coupures d'électricité que vous rencontrez à "
+"Douala."
 
 #: templates/email/registration_confirmation.html:12
+#: templates/email/registration_confirmation.txt:12
 msgid "Any question? You can contact us at contact@feowl.com"
 msgstr ""
+"Si vous avez des questions, n'hésitez pas à nous contacter à l'adresse "
+"contact@feowl.com"
 
 #: templates/email/registration_confirmation.html:14
+#: templates/email/registration_confirmation.txt:14
 msgid "Many thanks, looking forward to your contributions!"
-msgstr ""
+msgstr "Merci de votre contribution !"
 
 #: templates/email/registration_confirmation.html:16
+#: templates/email/registration_confirmation.txt:16
 msgid "Sincerely,"
-msgstr ""
+msgstr "A très bientôt,"
 
-#: templates/email/registration_confirmation.txt:4
-msgid "Welcome to feowl"
-msgstr "Bievenu"
+#: templates/email/registration_confirmation.txt:8
+msgid "To connect to Feowl, visit http://www.feowl.com"
+msgstr "Pour vous connecter à Feowl, rendez-vous sur : "
+
+#: templates/email/registration_confirmation.txt:19
+msgid ""
+"You received this message because this email address was used to register to "
+"Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/"
+"profile."
+msgstr ""
+"Vous recevez ce message car vous êtes enregistré sur la plate-forme Feowl."
+
+#~ msgid ""
+#~ "I’m a Feowl, and I help provide a better monitor electricity supply in "
+#~ "Douala thanks to your contribution."
+#~ msgstr ""
+#~ "Je suis Feowl et j'aide à mieux suivre les coupures élèctriques a Douala. "
+#~ "Merci de votre contribution"
+
+#~ msgid "Did you experience a power cut today? "
+#~ msgstr "Avez-vous eu une coupure éléctrique aujourd'hui?"
+
+#~ msgid "Please let us know by following this link: "
+#~ msgstr "Merci de nous le faire savoir en suivant ce lien: "
+
+#~ msgid "Many Thanks"
+#~ msgstr "Merci"
+
+#~ msgid "Welcome to feowl"
+#~ msgstr "Bievenu"

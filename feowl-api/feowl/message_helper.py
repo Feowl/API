@@ -111,14 +111,14 @@ def contribute(message_array, device):
         list = parse_contribute(message_array)
         #If we haven't been able to parse the message
         if list is None:
-            msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC Akwa 40"". reply HELP for further information")
+            msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC douala1 40"". reply HELP for further information")
         #If user sent PC No - then no outage has been experienced
         elif list[0][0] == 0:
             report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
                     area=list[0][1], happened_at=today)
             report.save()
             increment_refund(device.contributor)
-            msg = _("You have choosen to report no power cut, if this is not want you wanted to say, please send us a new SMS")
+            msg = _("You chose to report no power cut. If this is not what you wanted to say, please send us a new SMS")
             #logger.warning(report)
         else:
             msg = _("You had {0} powercuts yesterday. Durations : ").format(len(list))
@@ -253,8 +253,8 @@ def help(message_array, device):
     """
         Message: help
     """
-    first_help_msg = _("""To report a powercut, send PC + the district name + it's duration in mn(ex: PC douala 10). Please wait for Feowl asking you by sms before answering.""")
-    second_help_msg = _("""To report many powercuts, separate them with a comma(ex: pc akwa10, deido70)""")
+    first_help_msg = _("""To report a powercut, send PC + the arrondissement name + it's duration in mn(ex: PC douala5 10). Please wait for Feowl asking you by sms before answering.""")
+    second_help_msg = _("""To report many powercuts, separate them with a comma(ex: PC douala3 10, douala3 45)""")
     third_help_msg = _("""To unsuscribe, send STOP. If you wasn't in Douala, send OUT. For each valid sms that you send,you'll receive a confirmation""")
 
     send_message(device.phone_number, first_help_msg)

@@ -135,49 +135,49 @@ msgstr "Bonjour"
 
 #: templates/email/newsletter.html:6
 msgid "The Feowl team needs your help!"
-msgstr ""
+msgstr "L'équipe Feowl a besoin de votre aide ! "
 
 #: templates/email/newsletter.html:7
 msgid "We want to know if you experienced powercuts in Douala yesterday."
-msgstr ""
+msgstr "Nous aimerions savoir si vous avez eu des coupures de courant à Douala hier."
 
 #: templates/email/newsletter.html:8
 msgid "To help us,please connect to your"
-msgstr ""
+msgstr "Pour nous aider, merci de vous connecter sur votre "
 
 #: templates/email/newsletter.html:8
 msgid "and click "
-msgstr ""
+msgstr "puis cliquez sur le lien"
 
 #: templates/email/newsletter.html:9
 msgid ""
 "Reminder: If you have lost your password, you can reset it using this link:"
-msgstr ""
+msgstr "Rappel : si vous avez perdu votre mot de passe, vous pouvez le réinitialiser en utilisant ce lien :"
 
 #: templates/email/newsletter.html:10
 msgid "Thank you for your contribution,"
-msgstr ""
+msgstr "Merci de votre contribution,"
 
 #: templates/email/newsletter.html:11
 msgid "See you soon,"
-msgstr ""
+msgstr "A très bientôt"
 
 #: templates/email/newsletter.html:12
 #: templates/email/registration_confirmation.html:18
 msgid "The Feowl team"
-msgstr ""
+msgstr "L'équipe Feowl"
 
 #: templates/email/newsletter.html:13
 #: templates/email/registration_confirmation.html:20
 msgid ""
 "You received this message because this email address was used to register to "
 "Feowl."
-msgstr ""
+msgstr "Vous recevez ce message car vous êtes enregistré sur la plate-forme Feowl."
 
 #: templates/email/newsletter.html:13
 #: templates/email/registration_confirmation.html:20
 msgid "You can unsubscribe at anytime on this page."
-msgstr ""
+msgstr "Vous pouvez vous désinscire à tout moment sur cette page."
 
 #: templates/email/newsletter.txt:4
 msgid "Hey"
@@ -210,25 +210,26 @@ msgstr "Bonjour"
 
 #: templates/email/registration_confirmation.html:8
 msgid "To connect to Feowl, visit"
-msgstr ""
+msgstr "Pour vous connecter à Feowl, rendez-vous sur : "
 
 #: templates/email/registration_confirmation.html:10
 msgid ""
 "We will contact you very soon by e-mail to ask you about your experience "
 "with electricity in Douala."
-msgstr ""
+msgstr "Un premier appel à contribution vous sera envoyé très bientôt par mail pour connaitre la fréquence des coupures d'électricité que vous rencontrez à Douala."
 
 #: templates/email/registration_confirmation.html:12
 msgid "Any question? You can contact us at contact@feowl.com"
-msgstr ""
+msgstr "En attendant, vous pouvez trouver un petit guide vous indiquant comment procéder pour nous aider au mieux à produire et obtenir des données fiables.
+http://www.feowl.com/aide"
 
 #: templates/email/registration_confirmation.html:14
 msgid "Many thanks, looking forward to your contributions!"
-msgstr ""
+msgstr "Merci de votre contribution !"
 
 #: templates/email/registration_confirmation.html:16
 msgid "Sincerely,"
-msgstr ""
+msgstr "A très bientôt,"
 
 #: templates/email/registration_confirmation.txt:4
 msgid "Welcome to feowl"

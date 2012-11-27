@@ -3,13 +3,13 @@
 
 {% trans "Hello" %} {{ name }},
 
-<p>{% trans "The Feowl team needs your help!" %}</p>
-<p>{% trans "We want to know if you experienced powercuts in Douala yesterday." %}</p>
-<p>{% trans "To help us,please connect to your profile page http://www.feowl.com/profile and click "Contribute"." %}</p>
-<p>{% trans "Reminder: If you have lost your password, you can reset it using this link: http://www.feowl.com">feowl.com" %}</p>
-<p>{% trans "Thank you for your contribution," %}</p>
-<p>{% trans "See you soon," %}</p>
-<p>{% trans "The Feowl team" %}</p>
-<p>{% trans "You received this message because this email address was used to register to Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/profile" %}</p>
+{% trans "The Feowl team needs your help!" %}</p>
+{% trans "We want to know if you experienced powercuts in Douala yesterday." %}
+{% trans "To help us,please connect to your profile page http://www.feowl.com/profile and click "Contribute"." %}
+{% trans "Reminder: If you have lost your password, you can reset it using this link: http://www.feowl.com">feowl.com" %}
+{% trans "Thank you for your contribution," %}
+{% trans "See you soon," %}
+{% trans "The Feowl team" %}
+{% trans "You received this message because this email address was used to register to Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/profile" %}
 
 {% endlanguage %}

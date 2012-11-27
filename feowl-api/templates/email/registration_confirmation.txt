@@ -1,6 +1,21 @@
 {% load i18n %}
 {% language newsletter_language %}
 
-{% trans "Welcome to feowl" %} {{ name }}
+{% trans "Hello," %}
+
+{% trans "Thank you for registering on Feowl.com, the platform producing accurate and usable public data on the supply of electricity in Douala. You are now registered under the name %} {{ name }}
+
+{% trans "To connect to Feowl, visit http://www.feowl.com">feowl.com %}
+
+{% trans "We will contact you very soon by e-mail to ask you about your experience with electricity in Douala." %}
+
+{% trans "Any question? You can contact us at contact@feowl.com" %}
+
+{% trans "Many thanks, looking forward to your contributions!" %}
+
+{% trans "Sincerely," %}
+
+{% trans "The Feowl team" %}
+{% trans "You received this message because this email address was used to register to Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/profile." %}
 
 {% endlanguage %}

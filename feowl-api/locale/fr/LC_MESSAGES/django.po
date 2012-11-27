@@ -69,7 +69,7 @@ msgid ""
 "say, please send us a new SMS"
 msgstr ""
 "Vous n'avez reporté aucune coupure. Si vous voulez reporter une coupure, "
-"prirere de nous envoyer un autre SMS"
+"merci de nous envoyer un autre SMS"
 
 #: feowl/message_helper.py:124
 msgid "You had {0} powercuts yesterday. Durations : "
@@ -220,8 +220,7 @@ msgstr "Un premier appel à contribution vous sera envoyé très bientôt par ma
 
 #: templates/email/registration_confirmation.html:12
 msgid "Any question? You can contact us at contact@feowl.com"
-msgstr "En attendant, vous pouvez trouver un petit guide vous indiquant comment procéder pour nous aider au mieux à produire et obtenir des données fiables.
-http://www.feowl.com/aide"
+msgstr "Si vous avez des questions, n'hésitez pas à nous contacter à l'adresse contact@feowl.com"
 
 #: templates/email/registration_confirmation.html:14
 msgid "Many thanks, looking forward to your contributions!"

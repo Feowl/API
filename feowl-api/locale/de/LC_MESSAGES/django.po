@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-27 15:11+0100\n"
+"POT-Creation-Date: 2012-11-27 17:26+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,13 +57,13 @@ msgstr ""
 #: feowl/message_helper.py:114
 msgid ""
 "Hello, your message couldn't be translated - please send us another SMS, e."
-"g. PC Akwa 40. reply HELP for further information"
+"g. PC douala1 40. reply HELP for further information"
 msgstr ""
 
 #: feowl/message_helper.py:121
 msgid ""
-"You have choosen to report no power cut, if this is not want you wanted to "
-"say, please send us a new SMS"
+"You chose to report no power cut. If this is not what you wanted to say, "
+"please send us a new SMS"
 msgstr ""
 
 #: feowl/message_helper.py:124
@@ -86,13 +86,15 @@ msgstr ""
 
 #: feowl/message_helper.py:256
 msgid ""
-"To report a powercut, send PC + the district name + it's duration in mn(ex: "
-"PC douala 10). Please wait for Feowl asking you by sms before answering."
+"To report a powercut, send PC + the arrondissement name + it's duration in mn"
+"(ex: PC douala5 10). Please wait for Feowl asking you by sms before "
+"answering."
 msgstr ""
 
 #: feowl/message_helper.py:257
 msgid ""
-"To report many powercuts, separate them with a comma(ex: pc akwa10, deido70)"
+"To report many powercuts, separate them with a comma(ex: PC douala3 10, "
+"douala3 45)"
 msgstr ""
 
 #: feowl/message_helper.py:258
@@ -105,21 +107,21 @@ msgstr ""
 msgid "Hello from Feowl"
 msgstr ""
 
-#: templates/sms.txt:3
+#: templates/sms.txt:3 templates/special_sms.txt:3
 msgid ""
-"Hi, did u witness powercuts in Douala yesterday? Reply with \"pc no\" or "
-"\"pc districtname duration (in min)\". Ex: pc akwa 10, bonaberrie 70"
+"Hi, did you witness powercuts in Douala yesterday? Reply with \"PC no\" or "
+"\"PC arrondissement & duration (in min)\". Ex: PC douala1 10, douala3 70"
 msgstr ""
 
-#: templates/email/newsletter.html:4
+#: templates/email/newsletter.html:4 templates/email/newsletter.txt:4
 msgid "Hello"
 msgstr "Hallo"
 
-#: templates/email/newsletter.html:6
+#: templates/email/newsletter.html:6 templates/email/newsletter.txt:6
 msgid "The Feowl team needs your help!"
 msgstr ""
 
-#: templates/email/newsletter.html:7
+#: templates/email/newsletter.html:7 templates/email/newsletter.txt:7
 msgid "We want to know if you experienced powercuts in Douala yesterday."
 msgstr ""
 
@@ -136,16 +138,17 @@ msgid ""
 "Reminder: If you have lost your password, you can reset it using this link:"
 msgstr ""
 
-#: templates/email/newsletter.html:10
+#: templates/email/newsletter.html:10 templates/email/newsletter.txt:10
 msgid "Thank you for your contribution,"
 msgstr ""
 
-#: templates/email/newsletter.html:11
+#: templates/email/newsletter.html:11 templates/email/newsletter.txt:11
 msgid "See you soon,"
 msgstr ""
 
-#: templates/email/newsletter.html:12
+#: templates/email/newsletter.html:12 templates/email/newsletter.txt:12
 #: templates/email/registration_confirmation.html:18
+#: templates/email/registration_confirmation.txt:18
 msgid "The Feowl team"
 msgstr ""
 
@@ -161,30 +164,27 @@ msgstr ""
 msgid "You can unsubscribe at anytime on this page."
 msgstr ""
 
-#: templates/email/newsletter.txt:4
-msgid "Hey"
-msgstr ""
-
-#: templates/email/newsletter.txt:6
-msgid ""
-"I’m a Feowl, and I help provide a better monitor electricity supply in "
-"Douala thanks to your contribution."
-msgstr ""
-
-#: templates/email/newsletter.txt:7
-#, fuzzy
-msgid "Did you experience a power cut today? "
-msgstr "Hatten sie in letzter Zeit einen Stromausfall?"
-
 #: templates/email/newsletter.txt:8
-msgid "Please let us know by following this link: "
+msgid ""
+"To help us,please connect to your profile page http://www.feowl.com/profile "
+"and click "
 msgstr ""
 
 #: templates/email/newsletter.txt:9
-msgid "Many Thanks"
+msgid ""
+"Reminder: If you have lost your password, you can reset it using this link: "
+"http://www.feowl.com"
+msgstr ""
+
+#: templates/email/newsletter.txt:13
+msgid ""
+"You received this message because this email address was used to register to "
+"Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/"
+"profile"
 msgstr ""
 
 #: templates/email/registration_confirmation.html:4
+#: templates/email/registration_confirmation.txt:4
 #, fuzzy
 msgid "Hello,"
 msgstr "Hallo"
@@ -201,26 +201,41 @@ msgid "To connect to Feowl, visit"
 msgstr ""
 
 #: templates/email/registration_confirmation.html:10
+#: templates/email/registration_confirmation.txt:10
 msgid ""
 "We will contact you very soon by e-mail to ask you about your experience "
 "with electricity in Douala."
 msgstr ""
 
 #: templates/email/registration_confirmation.html:12
+#: templates/email/registration_confirmation.txt:12
 msgid "Any question? You can contact us at contact@feowl.com"
 msgstr ""
 
 #: templates/email/registration_confirmation.html:14
+#: templates/email/registration_confirmation.txt:14
 msgid "Many thanks, looking forward to your contributions!"
 msgstr ""
 
 #: templates/email/registration_confirmation.html:16
+#: templates/email/registration_confirmation.txt:16
 msgid "Sincerely,"
 msgstr ""
 
-#: templates/email/registration_confirmation.txt:4
-msgid "Welcome to feowl"
+#: templates/email/registration_confirmation.txt:8
+msgid "To connect to Feowl, visit http://www.feowl.com"
 msgstr ""
+
+#: templates/email/registration_confirmation.txt:19
+msgid ""
+"You received this message because this email address was used to register to "
+"Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/"
+"profile."
+msgstr ""
+
+#, fuzzy
+#~ msgid "Did you experience a power cut today? "
+#~ msgstr "Hatten sie in letzter Zeit einen Stromausfall?"
 
 #~ msgid "Hallo"
 #~ msgstr "Hallo"

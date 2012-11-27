@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-26 18:59+0100\n"
+"POT-Creation-Date: 2012-11-27 15:11+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -188,6 +188,13 @@ msgstr ""
 #, fuzzy
 msgid "Hello,"
 msgstr "Hallo"
+
+#: templates/email/registration_confirmation.html:6
+msgid ""
+"Thank you for registering on Feowl.com, the platform producing accurate and "
+"usable public data on the supply of electricity in Douala. You are now "
+"registered under the name"
+msgstr ""
 
 #: templates/email/registration_confirmation.html:8
 msgid "To connect to Feowl, visit"

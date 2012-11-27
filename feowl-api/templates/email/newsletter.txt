@@ -1,11 +1,15 @@
 {% load i18n %}
 {% language newsletter_language %}
 
-{% trans "Hey" %} {{ name }},
+{% trans "Hello" %} {{ name }},
 
-{% trans "I’m a Feowl, and I help provide a better monitor electricity supply in Douala thanks to your contribution." %}
-{% trans "Did you experience a power cut today? " %}
-{% trans "Please let us know by following this link: " %}http://dev.feowl.com/contribute
-{% trans "Many Thanks"%}
-Feowl
+{% trans "The Feowl team needs your help!" %}</p>
+{% trans "We want to know if you experienced powercuts in Douala yesterday." %}
+{% trans "To help us,please connect to your profile page http://www.feowl.com/profile and click "Contribute"." %}
+{% trans "Reminder: If you have lost your password, you can reset it using this link: http://www.feowl.com">feowl.com" %}
+{% trans "Thank you for your contribution," %}
+{% trans "See you soon," %}
+{% trans "The Feowl team" %}
+{% trans "You received this message because this email address was used to register to Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/profile" %}
+
 {% endlanguage %}

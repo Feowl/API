@@ -99,18 +99,16 @@ msgid ""
 "(ex: PC douala5 10). Please wait for Feowl asking you by sms before "
 "answering."
 msgstr ""
-"Pour reporter des coupures, lorsque Feowl vous pose la question par SMS, "
-"envoyez REP puis le nom du distrinct et la durée en min séparée par des "
-"espaces (ex:REP douala5 70)"
+"Pour reporter des coupures, lorsque Feowl vous envoie un SMS, "
+"envoyez REP & l'arrondissement & durée en min."
+"(ex:REP douala5 70)"
 
 #: feowl/message_helper.py:257
-#, fuzzy
 msgid ""
 "To report many powercuts, separate them with a comma(ex: PC douala3 10, "
 "douala3 45)"
 msgstr ""
-"pour reporter plusieurs coupures, separez les par des virgules ex: REP douala3 "
-"30, douala3 60"
+"pour reporter plusieurs coupures, separez les par des virgules (ex:REP douala5 70, douala1 15)"
 
 #: feowl/message_helper.py:258
 msgid ""
@@ -129,8 +127,8 @@ msgid ""
 "Hi, did you witness powercuts in Douala yesterday? Reply with \"PC no\" or "
 "\"PC arrondissement & duration (in min)\". Ex: PC douala1 10, douala3 70"
 msgstr ""
-"Avez-vous eu des coupures à Douala hier ? Envoyez REP NON ou REP nom de l'arrondissement et leur "
-"durée en min (ex: REP douala1 70)"
+"Avez-vous eu des coupures à Douala hier ? Envoyez REP NON ou REP arrondissement & "
+"durée en min (ex:REP douala5 70, douala1 15)"
 
 #: templates/email/newsletter.html:4 templates/email/newsletter.txt:4
 msgid "Hello"
@@ -194,7 +192,6 @@ msgid ""
 msgstr ""
 
 #: templates/email/newsletter.txt:9
-#, fuzzy
 msgid ""
 "Reminder: If you have lost your password, you can reset it using this link: "
 "http://www.feowl.com"
@@ -203,7 +200,6 @@ msgstr ""
 "en utilisant ce lien :"
 
 #: templates/email/newsletter.txt:13
-#, fuzzy
 msgid ""
 "You received this message because this email address was used to register to "
 "Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/"
@@ -255,7 +251,6 @@ msgid "Sincerely,"
 msgstr "A très bientôt,"
 
 #: templates/email/registration_confirmation.txt:8
-#, fuzzy
 msgid "To connect to Feowl, visit http://www.feowl.com"
 msgstr "Pour vous connecter à Feowl, rendez-vous sur : "
 

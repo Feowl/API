@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-27 17:26+0100\n"
+"POT-Creation-Date: 2012-11-28 12:43+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,14 +153,13 @@ msgid "The Feowl team"
 msgstr ""
 
 #: templates/email/newsletter.html:13
-#: templates/email/registration_confirmation.html:20
+#: templates/email/registration_confirmation.html:21
 msgid ""
 "You received this message because this email address was used to register to "
 "Feowl."
 msgstr ""
 
 #: templates/email/newsletter.html:13
-#: templates/email/registration_confirmation.html:20
 msgid "You can unsubscribe at anytime on this page."
 msgstr ""
 
@@ -190,6 +189,7 @@ msgid "Hello,"
 msgstr "Hallo"
 
 #: templates/email/registration_confirmation.html:6
+#: templates/email/registration_confirmation.txt:6
 msgid ""
 "Thank you for registering on Feowl.com, the platform producing accurate and "
 "usable public data on the supply of electricity in Douala. You are now "
@@ -220,6 +220,10 @@ msgstr ""
 #: templates/email/registration_confirmation.html:16
 #: templates/email/registration_confirmation.txt:16
 msgid "Sincerely,"
+msgstr ""
+
+#: templates/email/registration_confirmation.html:22
+msgid "You can unsubscribe at anytime on this page"
 msgstr ""
 
 #: templates/email/registration_confirmation.txt:8

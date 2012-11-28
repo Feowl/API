@@ -3,9 +3,9 @@
 
 {% trans "Hello," %}
 
-{% trans "Thank you for registering on Feowl.com, the platform producing accurate and usable public data on the supply of electricity in Douala. You are now registered under the name %} {{ name }}
+{% trans "Thank you for registering on Feowl.com, the platform producing accurate and usable public data on the supply of electricity in Douala. You are now registered under the name" %} {{ name }}
 
-{% trans "To connect to Feowl, visit http://www.feowl.com">feowl.com %}
+{% trans "To connect to Feowl, visit http://www.feowl.com" %}
 
 {% trans "We will contact you very soon by e-mail to ask you about your experience with electricity in Douala." %}
 

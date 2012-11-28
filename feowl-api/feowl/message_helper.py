@@ -189,7 +189,7 @@ def get_area(area_name):
     areas = get_all_areas_name()
     corrected_area_name = get_close_matches(area_name.lower(), areas, 1)
     try:
-        area = Area.objects.get(name__iexact=corrected_area_name)
+        area = Area.objects.get(name=corrected_area_name)
     except Area.DoesNotExist:
         poly = Polygon(((0, 0), (0, 0), (0, 0), (0, 0), (0, 0)), ((0, 0), (0, 0), (0, 0), (0, 0), (0, 0)))
         area = Area.objects.create(name=area_name, overall_population=0, pop_per_sq_km=0, city="Douala", country="Cameroon", geometry=poly)

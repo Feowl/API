@@ -1,0 +1,394 @@
+[
+	{
+		"Quartier": "AEROPORT",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "AKWA",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "ATELIERS CAMRAIL",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "BABYLONE",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "BALI",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BANGUE",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "BASSA",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "BEEDI",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "BEPANDA",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "BEPELE",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BESSEKE",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BESSENGUE",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BILINGUE",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BOBONGO",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "BODJONGO",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BOIS DES SINGES",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "BOKO",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "BONADIBONG",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONADOUMA",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "BONAJINJE",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONAKOUAMOUANG",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONAMATOUMBE",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BONAMBAPE",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BONAMINKANO",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BONAMOUANG",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONAMOUSSADI",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "BONANE",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "BONANJO",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONANLOKA",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "BONANTONE",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONAPRISO",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONASSAMA",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BONATEKI",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONEBONG",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONELEKE",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONELEKE",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "BONENDALE",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "BONEWONDA",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "BRAZZAVILLE",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "C C C",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "CAMP YABASSI",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "CCC",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "CITE BERGE",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "CITE CICA",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "CITE DES PALMIERS",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "CITE-SIC",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "CONGO",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "DIBOM",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "GENDARMERIE MBOPI",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "GENIE MILITAIRE",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "GRAND HANGAR",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "GRAND MOULIN",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "GRDE TRAME MBANGA JAP",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "JAPOMA",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "KAMBO",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "KM 5",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "KOTTONGOMA",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "LOBE",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "LOGBABA",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "LOGBESSOU",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "LOGPOM",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "MABANDA",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "MADAGASCAR",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "MAKEANGANGUE",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "MAKEPE",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "MALANGUE",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "MBANGA",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "MBONANGANG",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "NDOBO",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "NDOGBATI",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "NDOGMBE",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "NDOGPASSI",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "NDOGSIMBI",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "NDOKOTI",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "NEW BELL",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "NEW-DEIDO",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "NEWTOWN",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "NGODI",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "NGWELE",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "NKOLB",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "NKOLMINTA",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "NKOLOLOUN",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "NKOMBA",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "NKONDO",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "NKONGMONDO",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "NYALA BASSA",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "NYLON",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "OKOUMASSI",
+		"Arrondissement": "Douala1"
+	},
+	{
+		"Quartier": "OYACK",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "PINDO",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "SIC  CACAO",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "SODIKO",
+		"Arrondissement": "Douala4"
+	},
+	{
+		"Quartier": "SODIKOMBO",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "SONGBIKAKO",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "TERGAL",
+		"Arrondissement": "Douala3"
+	},
+	{
+		"Quartier": "VILLAGE",
+		"Arrondissement": "Douala2"
+	},
+	{
+		"Quartier": "YIKENDOGBONG",
+		"Arrondissement": "Douala5"
+	},
+	{
+		"Quartier": "YOUPWE",
+		"Arrondissement": "Douala2"
+	}
+]

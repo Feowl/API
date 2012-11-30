@@ -62,3 +62,4 @@ class Command(BaseCommand):
 
         connection.send_messages(messages)
         connection.close()
+        logger.info("Poll of {0} sent".format(datetime.today().date()))

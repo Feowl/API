@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-28 12:43+0100\n"
+"POT-Creation-Date: 2012-11-30 17:34+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,53 +54,57 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: feowl/message_helper.py:114
+#: feowl/message_helper.py:115
 msgid ""
 "Hello, your message couldn't be translated - please send us another SMS, e."
 "g. PC douala1 40. reply HELP for further information"
 msgstr ""
 
-#: feowl/message_helper.py:121
+#: feowl/message_helper.py:122
 msgid ""
 "You chose to report no power cut. If this is not what you wanted to say, "
 "please send us a new SMS"
 msgstr ""
 
-#: feowl/message_helper.py:124
+#: feowl/message_helper.py:125
 msgid "You had {0} powercuts yesterday. Durations : "
 msgstr ""
 
-#: feowl/message_helper.py:132
+#: feowl/message_helper.py:133
 msgid "min, "
 msgstr ""
 
-#: feowl/message_helper.py:133
+#: feowl/message_helper.py:134
 msgid "If the data have been misunderstood, please send us another SMS."
 msgstr ""
 
-#: feowl/message_helper.py:233
+#: feowl/message_helper.py:250
 msgid ""
 "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP "
 "for further informations. "
 msgstr ""
 
-#: feowl/message_helper.py:256
+#: feowl/message_helper.py:273
 msgid ""
 "To report a powercut, send PC + the arrondissement name + it's duration in mn"
 "(ex: PC douala5 10). Please wait for Feowl asking you by sms before "
 "answering."
 msgstr ""
 
-#: feowl/message_helper.py:257
+#: feowl/message_helper.py:274
 msgid ""
 "To report many powercuts, separate them with a comma(ex: PC douala3 10, "
 "douala3 45)"
 msgstr ""
 
-#: feowl/message_helper.py:258
+#: feowl/message_helper.py:275
 msgid ""
 "To unsuscribe, send STOP. If you wasn't in Douala, send OUT. For each valid "
 "sms that you send,you'll receive a confirmation"
+msgstr ""
+
+#: feowl/message_helper.py:312
+msgid "Thanks for trying FEOWL! Send Help for more info"
 msgstr ""
 
 #: feowl/management/commands/newsletter.py:36
@@ -129,44 +133,44 @@ msgstr ""
 msgid "To help us,please connect to your"
 msgstr ""
 
-#: templates/email/newsletter.html:8
-msgid "and click "
+#: templates/email/newsletter.html:9
+msgid "and click Contribute."
 msgstr ""
 
-#: templates/email/newsletter.html:9
+#: templates/email/newsletter.html:10
 msgid ""
 "Reminder: If you have lost your password, you can reset it using this link:"
 msgstr ""
 
-#: templates/email/newsletter.html:10 templates/email/newsletter.txt:10
+#: templates/email/newsletter.html:11 templates/email/newsletter.txt:10
 msgid "Thank you for your contribution,"
 msgstr ""
 
-#: templates/email/newsletter.html:11 templates/email/newsletter.txt:11
+#: templates/email/newsletter.html:12 templates/email/newsletter.txt:11
 msgid "See you soon,"
 msgstr ""
 
-#: templates/email/newsletter.html:12 templates/email/newsletter.txt:12
+#: templates/email/newsletter.html:13 templates/email/newsletter.txt:12
 #: templates/email/registration_confirmation.html:18
 #: templates/email/registration_confirmation.txt:18
 msgid "The Feowl team"
 msgstr ""
 
-#: templates/email/newsletter.html:13
+#: templates/email/newsletter.html:14
 #: templates/email/registration_confirmation.html:21
 msgid ""
 "You received this message because this email address was used to register to "
 "Feowl."
 msgstr ""
 
-#: templates/email/newsletter.html:13
+#: templates/email/newsletter.html:14
 msgid "You can unsubscribe at anytime on this page."
 msgstr ""
 
 #: templates/email/newsletter.txt:8
 msgid ""
 "To help us,please connect to your profile page http://www.feowl.com/profile "
-"and click "
+"and click Contribute."
 msgstr ""
 
 #: templates/email/newsletter.txt:9

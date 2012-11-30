@@ -184,16 +184,19 @@ def get_all_areas_name():
 
 def get_district_name(area_name):
         from difflib import get_close_matches
-        json_data=open('feowl/douala-districts.json')
-        table = json.load(json_data)
-        quartier = area_name.upper()
-        district = ''
-        for item in table:
-            if quartier == item["Quartier"].upper() or quartier == item["Arrondissement"].upper():
-                district = item["Arrondissement"]
-                break
-        if not district:
-            logger.info('Area does not exist')
+        try:
+            json_data=open('feowl/douala-districts.json')
+            table = json.load(json_data)
+            quartier = area_name.upper()
+            district = ''
+            for item in table:
+                if quartier == item["Quartier"].upper() or quartier == item["Arrondissement"].upper():
+                    district = item["Arrondissement"]
+                    break
+            if not district:
+                logger.info('Area does not exist')
+        except Exception, e:
+            logger.info('Error while computing the district name - {0}'.format(e))
         return district
 
 def get_area(area_name):

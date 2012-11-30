@@ -309,7 +309,7 @@ def test(message_array, mobile_number):
         Message: TEST
     """
     save_message(message_array, SMS, parsed=Message.YES)
-    send_message(mobile_number, u"ça marché -- it works - " + str(datetime.today().time()))
+    send_message(mobile_number, _("Thanks for trying FEOWL! Send Help for more info"))
 
 
 def send_message(mobile_number, message):

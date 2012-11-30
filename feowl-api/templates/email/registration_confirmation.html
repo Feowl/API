@@ -3,9 +3,9 @@
 
 {% trans "Hello," %}
 
-<p>{% trans "Thank you for registering on Feowl.com, the platform producing accurate and usable public data on the supply of electricity in Douala. You are now registered under the name" %} {{ name }} </p>
+<p>{% trans "Thank you for registering on Feowl.com, the platform producing accurate and usable public data on the supply of electricity in Douala. You are now registered under the name" %} {{ name }} </p> 
 
-<p>{% trans "To connect to Feowl, visit" <a href="http://www.feowl.com">feowl.com</a></p> %} 
+<p>{% trans "To connect to Feowl, visit" %}  <a href="http://www.feowl.com">feowl.com</a></p> 
 
 <p>{% trans "We will contact you very soon by e-mail to ask you about your experience with electricity in Douala." %}</p>
 
@@ -17,6 +17,9 @@
 
 <p>{% trans "The Feowl team" %}</p>
 
-<p><small>{% trans "You received this message because this email address was used to register to Feowl." %} <a href="http://www.feowl.com/user/profile">{% trans "You can unsubscribe at anytime on this page." %}</a></small></p>
+<p><small>
+	{% trans "You received this message because this email address was used to register to Feowl." %} 
+	<a href="http://www.feowl.com/user/profile"> {% trans "You can unsubscribe at anytime on this page" %}
+</small></p>
 
 {% endlanguage %}

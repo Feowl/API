@@ -9,6 +9,7 @@ from pwgen import pwgen
 import re
 import logging
 import sms_helper
+import json
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -138,9 +139,7 @@ def increment_refund(c):
     #add +1 to the refund counter for the current user
     try:
         #c = Contributor.objects.get(pk=user_id)
-        logger.info("BEFORE Contribtuor {0} has an updated refund of {1} ".format(c.name, c.refunds))
         c.refunds += 1
-        logger.info("AFTER Contribtuor {0} has an updated refund of {1} ".format(c.name, c.refunds))
         c.save()
         #logger.info("Contribtuor {0} has an updated refund of {1} ".format(c.name, c.refunds))
     except Exception, e:
@@ -167,7 +166,7 @@ def parse_contribute(message_array):
                     area = get_area(message_array[i - 1])
                     save_message(message_array, SMS, parsed=Message.YES)
                     list.append([duration, area])
-                    logger.info("Contribution added at {0}".format(message_array[i - 1]))
+                    #logger.info("Contribution added at {0}".format(area.name))
             if len(list) == 0:
                 #No report could be added
                 save_message(message_array, SMS, parsed=Message.NO)
@@ -179,20 +178,38 @@ def get_all_areas_name():
     areas = Area.objects.all()
     list = []
     for a in areas:
-        list.append(a.name)
+        list.append(a.name.lower())
     return list
 
 
+def get_district_name(area_name):
+        from difflib import get_close_matches
+        district = ''
+        try:
+            json_data=open('feowl/douala-districts.json')
+            table = json.load(json_data)
+            quartier = area_name.upper()
+            
+            for item in table:
+                if quartier == item["Quartier"].upper() or quartier == item["Arrondissement"].upper():
+                    district = item["Arrondissement"]
+                    break
+            if not district:
+                logger.info('Area does not exist')
+        except Exception, e:
+            logger.info('Error while computing the district name - {0}'.format(e))
+        return district
+
 def get_area(area_name):
-    from difflib import get_close_matches
-    from django.contrib.gis.geos import Polygon
-    areas = get_all_areas_name()
-    corrected_area_name = get_close_matches(area_name, areas, 1)
+    #areas = get_all_areas_name()
+    #corrected_area_name = get_close_matches(area_name.lower(), areas, 1)
+    logger.info("Given Area name is {0}".format(area_name))
+    corrected_area_name = get_district_name(area_name)
     try:
-        area = Area.objects.get(name=corrected_area_name)
+        area = Area.objects.get(name__iexact=corrected_area_name)
     except Area.DoesNotExist:
-        poly = Polygon(((0, 0), (0, 0), (0, 0), (0, 0), (0, 0)), ((0, 0), (0, 0), (0, 0), (0, 0), (0, 0)))
-        area = Area.objects.create(name=area_name, overall_population=0, pop_per_sq_km=0, city="Douala", country="Cameroon", geometry=poly)
+        area = Area.objects.get(name='other')
+    logger.info("Saved area name is {0}".format(area.name))
     return area
 
 

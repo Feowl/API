@@ -688,12 +688,10 @@ class MessagingTestCase(unittest.TestCase):
         multi_contribute_msg = "pc doualaI 29, douala2 400, douala3 10, alger 403"
         reports = PowerReport.objects.all()
         nb_reports = len(reports)
-        logger.info('BEFORE NB Reports : ' + str(nb_reports))
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         refund = contributor.refunds
         receive_sms(self.register_test_user_no, multi_contribute_msg)
         reports = PowerReport.objects.all()
-        logger.info('AFTER NB Reports : ' + str(len(reports)))
         
         self.assertEqual(len(reports), nb_reports + 4)
         logger.info('Multiple Messages has been contributed')
@@ -710,4 +708,20 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(nb_reports2, nb_reports1 + 1)
         report = reports.latest("happened_at")
         self.assertEqual(report.has_experienced_outage, False)
+
+        # Reset the response time in the db
+        contributor.response = datetime.today().date() - timedelta(days=1)
+        contributor.save()
+        
+        # Multiple message
+        multi_contribute_msg = "pc douala1 29, akwa 400, Bilongue 10, BONAMOUSSADI 403"
+        reports = PowerReport.objects.all()
+        nb_reports = len(reports)
+        contributor = Contributor.objects.get(name=self.register_test_user_no)
+        refund = contributor.refunds
+        receive_sms(self.register_test_user_no, multi_contribute_msg)
+        reports = PowerReport.objects.all()
+        
+        self.assertEqual(len(reports), nb_reports + 4)
+        logger.info('Multiple Messages has been contributed')
 

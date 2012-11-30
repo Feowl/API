@@ -254,6 +254,7 @@ msgid "Sincerely,"
 msgstr "A très bientôt,"
 
 #: templates/email/registration_confirmation.html:22
+
 msgid "You can unsubscribe at anytime on this page"
 msgstr "Vous pouvez vous désinscire à tout moment sur cette page."
 

@@ -44,6 +44,7 @@ class Command(BaseCommand):
                     msg = EmailMultiAlternatives(subject, text_content, settings.NEWSLETTER_FROM, [user.email], connection=connection)
                     msg.attach_alternative(html_content, "text/html")
                     messages.append(msg)
+                    logger.info("Poll Email sent to {0}".format(user.email))
 
                 else:
                     if user.channel == SMS:
@@ -53,6 +54,7 @@ class Command(BaseCommand):
                         try:
                             mobile = Device.objects.get(contributor=user)
                             send_sms(mobile.phone_number, content)
+                            logger.info("Poll SMS sent to {0}".format(mobile.phone_number))
                         except:
                             logger.error("Impossible to send an SMS")
 

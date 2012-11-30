@@ -185,7 +185,7 @@ def get_all_areas_name():
 def get_district_name(area_name):
         from difflib import get_close_matches
         try:
-            json_data=open('feowl/douala-districts.json')
+            json_data=open('douala-districts.json')
             table = json.load(json_data)
             quartier = area_name.upper()
             district = ''

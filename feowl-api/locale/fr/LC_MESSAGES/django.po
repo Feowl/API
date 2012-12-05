@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-27 17:26+0100\n"
+"POT-Creation-Date: 2012-12-05 11:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,9 @@ msgstr "Requis. 30 caractères min."
 
 #: feowl/forms.py:14
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
-msgstr "Cette entrée ne peut contenir que des lettres, des chiffre et les caractères /./+/-/_ "
+msgstr ""
+"Cette entrée ne peut contenir que des lettres, des chiffre et les "
+"caractères /./+/-/_ "
 
 #: feowl/forms.py:16
 msgid "Password"
@@ -99,16 +101,16 @@ msgid ""
 "(ex: PC douala5 10). Please wait for Feowl asking you by sms before "
 "answering."
 msgstr ""
-"Pour reporter des coupures, lorsque Feowl vous envoie un SMS, "
-"envoyez REP & l'arrondissement & durée en min."
-"(ex:REP douala5 70)"
+"Pour reporter des coupures, lorsque Feowl vous envoie un SMS, envoyez REP & "
+"l'arrondissement & durée en min.(ex:REP douala5 70)"
 
 #: feowl/message_helper.py:257
 msgid ""
 "To report many powercuts, separate them with a comma(ex: PC douala3 10, "
 "douala3 45)"
 msgstr ""
-"pour reporter plusieurs coupures, separez les par des virgules (ex:REP douala5 70, douala1 15)"
+"pour reporter plusieurs coupures, separez les par des virgules (ex:REP "
+"douala5 70, douala1 15)"
 
 #: feowl/message_helper.py:258
 msgid ""
@@ -127,8 +129,8 @@ msgid ""
 "Hi, did you witness powercuts in Douala yesterday? Reply with \"PC no\" or "
 "\"PC arrondissement & duration (in min)\". Ex: PC douala1 10, douala3 70"
 msgstr ""
-"Avez-vous eu des coupures à Douala hier ? Envoyez REP NON ou REP arrondissement & "
-"durée en min (ex:REP douala5 70, douala1 15)"
+"Avez-vous eu des coupures à Douala hier ? Envoyez REP NON ou REP "
+"arrondissement & durée en min (ex:REP douala5 70, douala1 15)"
 
 #: templates/email/newsletter.html:4 templates/email/newsletter.txt:4
 msgid "Hello"
@@ -146,6 +148,10 @@ msgstr ""
 #: templates/email/newsletter.html:8
 msgid "To help us,please connect to your"
 msgstr "Pour nous aider, merci de vous connecter sur votre "
+
+#: templates/email/newsletter.html:8
+msgid "profile page"
+msgstr ""
 
 #: templates/email/newsletter.html:8
 msgid "and click "
@@ -187,8 +193,8 @@ msgstr "Vous pouvez vous désinscire à tout moment sur cette page."
 
 #: templates/email/newsletter.txt:8
 msgid ""
-"To help us,please connect to your profile page http://www.feowl.com/profile "
-"and click "
+"To help us,please connect to your profile page http://www.feowl.com/user/"
+"profile and click "
 msgstr ""
 
 #: templates/email/newsletter.txt:9

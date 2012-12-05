@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-27 17:26+0100\n"
+"POT-Creation-Date: 2012-12-05 11:08+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,6 +130,10 @@ msgid "To help us,please connect to your"
 msgstr ""
 
 #: templates/email/newsletter.html:8
+msgid "profile page"
+msgstr ""
+
+#: templates/email/newsletter.html:8
 msgid "and click "
 msgstr ""
 
@@ -166,8 +170,8 @@ msgstr ""
 
 #: templates/email/newsletter.txt:8
 msgid ""
-"To help us,please connect to your profile page http://www.feowl.com/profile "
-"and click "
+"To help us,please connect to your profile page http://www.feowl.com/user/"
+"profile and click "
 msgstr ""
 
 #: templates/email/newsletter.txt:9

@@ -151,7 +151,7 @@ msgstr "Pour nous aider, merci de vous connecter sur votre "
 
 #: templates/email/newsletter.html:8
 msgid "profile page"
-msgstr ""
+msgstr "page profil"
 
 #: templates/email/newsletter.html:8
 msgid "and click "
@@ -195,7 +195,7 @@ msgstr "Vous pouvez vous désinscire à tout moment sur cette page."
 msgid ""
 "To help us,please connect to your profile page http://www.feowl.com/user/"
 "profile and click "
-msgstr ""
+msgstr "Afin de nous aider, connectez-vous sur votre page de profil http://www.feowl.com/user/profile et cliquez "
 
 #: templates/email/newsletter.txt:9
 msgid ""
@@ -203,7 +203,7 @@ msgid ""
 "http://www.feowl.com"
 msgstr ""
 "Rappel : si vous avez perdu votre mot de passe, vous pouvez le réinitialiser "
-"en utilisant ce lien :"
+"en utilisant ce lien : http://www.feowl.com"
 
 #: templates/email/newsletter.txt:13
 msgid ""
@@ -211,7 +211,7 @@ msgid ""
 "Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/"
 "profile"
 msgstr ""
-"Vous recevez ce message car vous êtes enregistré sur la plate-forme Feowl."
+"Vous recevez ce message car vous êtes enregistré sur la plate-forme Feowl. Vous pouvez vous désinscrire à tout moment sur cette page http://www.feowl.com/user/profile"
 
 #: templates/email/registration_confirmation.html:4
 #: templates/email/registration_confirmation.txt:4
@@ -258,7 +258,7 @@ msgstr "A très bientôt,"
 
 #: templates/email/registration_confirmation.txt:8
 msgid "To connect to Feowl, visit http://www.feowl.com"
-msgstr "Pour vous connecter à Feowl, rendez-vous sur : "
+msgstr "Pour vous connecter à Feowl, rendez-vous sur : http://www.feowl.com"
 
 #: templates/email/registration_confirmation.txt:19
 msgid ""
@@ -266,7 +266,7 @@ msgid ""
 "Feowl.You can unsubscribe at anytime on this page http://www.feowl.com/user/"
 "profile."
 msgstr ""
-"Vous recevez ce message car vous êtes enregistré sur la plate-forme Feowl."
+"Vous recevez ce message car vous êtes enregistré sur la plate-forme Feowl. Vous pouvez vous désinscrire à tout moment sur cette page http://www.feowl.com/user/profile"
 
 #~ msgid ""
 #~ "I’m a Feowl, and I help provide a better monitor electricity supply in "

@@ -5,8 +5,8 @@
 
 {% trans "The Feowl team needs your help!" %}</p>
 {% trans "We want to know if you experienced powercuts in Douala yesterday." %}
-{% trans "To help us,please connect to your profile page http://www.feowl.com/user/profile and click "Contribute"." %}
-{% trans "Reminder: If you have lost your password, you can reset it using this link: http://www.feowl.com">feowl.com" %}
+{% trans "To help us,please connect to your profile page http://www.feowl.com/user/profile and click "Contribute" %}
+{% trans "Reminder: If you have lost your password, you can reset it using this link: http://www.feowl.com" %}
 {% trans "Thank you for your contribution," %}
 {% trans "See you soon," %}
 {% trans "The Feowl team" %}

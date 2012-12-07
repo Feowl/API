@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-05 11:08+0100\n"
+"POT-Creation-Date: 2012-12-07 13:13+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -133,53 +133,48 @@ msgstr ""
 msgid "To help us,please connect to your"
 msgstr ""
 
-#: templates/email/newsletter.html:9
-msgid "and click Contribute."
-
 #: templates/email/newsletter.html:8
-#, fuzzy
 msgid "profile page"
 msgstr ""
 
 #: templates/email/newsletter.html:8
-#, fuzzy
-msgid "and click "
+msgid "and click Contribute"
 msgstr ""
 
-#: templates/email/newsletter.html:10
+#: templates/email/newsletter.html:9
 msgid ""
 "Reminder: If you have lost your password, you can reset it using this link:"
 msgstr ""
 
-#: templates/email/newsletter.html:11 templates/email/newsletter.txt:10
+#: templates/email/newsletter.html:10 templates/email/newsletter.txt:10
 msgid "Thank you for your contribution,"
 msgstr ""
 
-#: templates/email/newsletter.html:12 templates/email/newsletter.txt:11
+#: templates/email/newsletter.html:11 templates/email/newsletter.txt:11
 msgid "See you soon,"
 msgstr ""
 
-#: templates/email/newsletter.html:13 templates/email/newsletter.txt:12
+#: templates/email/newsletter.html:12 templates/email/newsletter.txt:12
 #: templates/email/registration_confirmation.html:18
 #: templates/email/registration_confirmation.txt:18
 msgid "The Feowl team"
 msgstr ""
 
-#: templates/email/newsletter.html:14
+#: templates/email/newsletter.html:13
 #: templates/email/registration_confirmation.html:21
 msgid ""
 "You received this message because this email address was used to register to "
 "Feowl."
 msgstr ""
 
-#: templates/email/newsletter.html:14
+#: templates/email/newsletter.html:13
 msgid "You can unsubscribe at anytime on this page."
 msgstr ""
 
 #: templates/email/newsletter.txt:8
 msgid ""
 "To help us,please connect to your profile page http://www.feowl.com/user/"
-"profile and click "
+"profile and click Contribute"
 msgstr ""
 
 #: templates/email/newsletter.txt:9

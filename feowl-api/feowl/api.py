@@ -252,7 +252,7 @@ class PowerReportAggregatedResource(Resource):
         for area in areas:
             #get reports in each area
             area_reports = filtered_objects.filter(area=area.id)
-            actual_powercut_reports = filtered_objects.filter(area=area.id, has_experienced_outage=True)
+            actual_powercut_reports = filtered_objects.filter(area=area.id)
 
             #average power cut duration
             avg_duration = 0

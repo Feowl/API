@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/jplusplus/feowl.png?branch=master)](http://travis-ci.org/jplusplus/feowl)
+[![Build Status](https://travis-ci.org/Feowl/API.png?branch=develop)](https://travis-ci.org/Feowl/API)
 
 ![Feowl Logo](http://www.feowl.com/comingsoon/assets/feowl_150px.png)
 
@@ -50,5 +50,7 @@ Enter password *passwd123*
 ### Create Database Tables
 
 `python manage.py syncdb --noinput`
+
+`python manage.py migrate`
 
 `python manage.py createsuperuser`

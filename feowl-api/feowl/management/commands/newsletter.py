@@ -29,7 +29,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         limit = options.get("limit")
 
-        contributors = Contributor.objects.exclude(status=Contributor.UNKNOWN).exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
+        contributors = Contributor.objects.filter(status=Contributor.ACTIVE).exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
         messages = []
         plaintext = get_template('email/newsletter.txt')
         html = get_template('email/newsletter.html')

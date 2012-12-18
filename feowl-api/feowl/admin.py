@@ -84,6 +84,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 class PowerReportAdmin(admin.ModelAdmin):
     list_display = ('modified', 'contributor', 'duration', 'happened_at', 'area')
+    list_filter = ('contributor', 'area')
 
 admin.site.unregister(User)
 admin.site.register(User, UserModelAdmin)

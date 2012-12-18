@@ -159,7 +159,7 @@ msgstr "page profil"
 
 #: templates/email/newsletter.html:8
 msgid "and click Contribute"
-msgstr "puis cliquez sur le lien"
+msgstr "puis cliquez sur le lien Contribuer"
 
 #: templates/email/newsletter.html:9
 msgid ""

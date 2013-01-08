@@ -110,27 +110,38 @@ def contribute(message_array, device):
         return
     # else try to parse the contribution and save the report
     else:
-        list = parse_contribute(message_array)
+        parsed_data = parse_contribute(message_array)
         #If we haven't been able to parse the message
-        if list is None:
+        if not parsed_data:
             msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC douala1 40"". reply HELP for further information")
         #If user sent PC No - then no outage has been experienced
-        elif list[0][0] == 0:
-            report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
-                    area=list[0][1], happened_at=today)
+        elif parsed_data[0][0] == 0:
+            report = PowerReport(
+                has_experienced_outage=False,
+                duration=parsed_data[0][0],
+                contributor=device.contributor,
+                device=device,
+                area=parsed_data[0][1],
+                happened_at=today
+            )
             report.save()
+
             increment_refund(device.contributor)
             msg = _("You chose to report no power cut. If this is not what you wanted to say, please send us a new SMS")
             #logger.warning(report)
         else:
-            msg = _("You had {0} powercuts yesterday. Durations : ").format(len(list))
-            i = 1
-            for item in list:
-                report = PowerReport(duration=item[0], contributor=device.contributor, device=device,
-                    area=item[1], happened_at=today)
+            msg = _("You had {0} powercuts yesterday. Durations : ").format(len(parsed_data))
+            for item in parsed_data:
+                report = PowerReport(
+                    duration=item[0],
+                    contributor=device.contributor,
+                    device=device,
+                    area=item[1],
+                    happened_at=today
+                )
                 report.save()
+
                 increment_refund(device.contributor)
-                i += 1
                 msg += _(str(item[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
         send_message(device.phone_number, msg)

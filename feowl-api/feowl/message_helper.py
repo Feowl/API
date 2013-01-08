@@ -173,14 +173,6 @@ def parse_contribute(message_array):
     return report_data
 
 
-def get_all_areas_name():
-    areas = Area.objects.all()
-    list = []
-    for a in areas:
-        list.append(a.name.lower())
-    return list
-
-
 def get_district_name(area_name):
         from difflib import get_close_matches
         district = ''
@@ -200,8 +192,6 @@ def get_district_name(area_name):
         return district
 
 def get_area(area_name):
-    #areas = get_all_areas_name()
-    #corrected_area_name = get_close_matches(area_name.lower(), areas, 1)
     logger.info("Given Area name is {0}".format(area_name))
     corrected_area_name = get_district_name(area_name)
     try:

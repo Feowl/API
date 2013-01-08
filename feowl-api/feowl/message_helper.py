@@ -277,9 +277,9 @@ def cancel(message_array, device):
     """
     today = datetime.today().date()
     reports = PowerReport.objects.filter(contributor=device.contributor, happened_at=today)
-    if (reports != None):
-        if (reports > 0):
-            reports.delete()
+    if reports > 0:
+        reports.delete()
+
     # Reset the response date
     device.contributor.response = today - timedelta(days=1)
     device.contributor.save()

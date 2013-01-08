@@ -30,23 +30,24 @@ kw2lang = {'pc': 'en',
            'test': 'en'}
 keywords = kw2lang.keys() + ['stop']
 
+
 def read_message(mobile_number, message):
     index, keyword, message_array = parse(message)
 
     # *ensure* that there is both a device with that number and a corresponding contributor
     devices = Device.objects.filter(phone_number=mobile_number)
-    if len(devices) > 0 :
+    if len(devices) > 0:
         device = devices[0]
         # check if user exists; otherwise create an unknown user
         if device.contributor is None:
-            logger.error("found mobile device "+str(device)+" without a contributor")
+            logger.error("found mobile device " + str(device) + " without a contributor")
             logger.info("creating a new contributor")
             contributor = Contributor(name=mobile_number,
                         email=mobile_number + "@feowl.com",
                         status=Contributor.UNKNOWN)
             # if we can deduce the language from the current keyword, set
             #  contributor language
-            if kw2lang.has_key(keyword):
+            if keyword in kw2lang:
                 contributor.language = kw2lang[keyword].upper()
             contributor.save()
             device.contributor = contributor
@@ -58,13 +59,13 @@ def read_message(mobile_number, message):
         logger.warning("creating a new device and contributor")
         # create a new user (potentially with language) and device
         (device, contributor) = create_unknown_user(mobile_number)
-        if kw2lang.has_key(keyword):
+        if keyword in kw2lang:
             contributor.language = kw2lang[keyword].upper()
         contributor.save()
-    logger.debug("associating incoming message with "+str(device)+" // "+str(contributor))
+    logger.debug("associating incoming message with " + str(device) + " // " + str(contributor))
 
     # set the language for upcoming messages
-    language =(kw2lang.has_key(keyword) and kw2lang[keyword]) or contributor.language or "en"
+    language = (keyword in kw2lang and kw2lang[keyword]) or contributor.language or "en"
     activate(language.lower())
 
     # invariant: if we arrive here, we are sure that we have a device
@@ -174,10 +175,9 @@ def parse_contribute(message_array):
 
 
 def get_district_name(area_name):
-        from difflib import get_close_matches
         district = ''
         try:
-            json_data=open('feowl/douala-districts.json')
+            json_data = open('feowl/douala-districts.json')
             table = json.load(json_data)
             quartier = area_name.upper()
 
@@ -190,6 +190,7 @@ def get_district_name(area_name):
         except Exception, e:
             logger.info('Error while computing the district name - {0}'.format(e))
         return district
+
 
 def get_area(area_name):
     logger.info("Given Area name is {0}".format(area_name))
@@ -221,7 +222,7 @@ def create_unknown_user(mobile_number):
         logger.error("Unkown Error please try later to register")
         return
     logger.info("User is created")
-    return (device, contributor) # END
+    return (device, contributor)
 
 
 def register(message_array, device):
@@ -251,7 +252,7 @@ def unregister(message_array, device):
         contributor.delete()
         save_message(message_array, SMS, parsed=Message.YES)
     except Exception, e:
-        logger.error("Error while deleting device/contributor: "+str(e))
+        logger.error("Error while deleting device/contributor: " + str(e))
         return
 
 
@@ -309,4 +310,3 @@ def send_message(mobile_number, message):
 def save_message(message_array, src, parsed=Message.NO):
     msg = Message(message=" ".join(message_array), source=src, keyword=message_array[0], parsed=parsed)
     msg.save()
-

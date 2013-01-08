@@ -1,12 +1,10 @@
 # -*- encoding:utf-8 -*-
 from django.db import IntegrityError
-from django.db.models import F
 from django.utils.translation import activate, ugettext as _
 from feowl.models import Device, PowerReport, Area, Message, SMS, Contributor
 from django.contrib.gis.db import *
 from datetime import datetime, timedelta
 from pwgen import pwgen
-import re
 import logging
 import sms_helper
 import json

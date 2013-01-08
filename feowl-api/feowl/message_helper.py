@@ -66,7 +66,7 @@ def read_message(mobile_number, message):
     # set the language for upcoming messages
     language =(kw2lang.has_key(keyword) and kw2lang[keyword]) or contributor.language or "en"
     activate(language.lower())
-    
+
     # invariant: if we arrive here, we are sure that we have a device
     #  and a contributor. now, do the processing
     if keyword in ("pc", "rep"):
@@ -144,34 +144,33 @@ def increment_refund(c):
         #logger.info("Contribtuor {0} has an updated refund of {1} ".format(c.name, c.refunds))
     except Exception, e:
         logger.error("Error while updating Contributor's refund counter - {0} ".format(e))
-    
 
+
+#TODO: algorithm to be improved
 def parse_contribute(message_array):
-    #TODO:algorithme to be improved
-        #Contributors reports that he hasn't witnessed a power cut
-        list = []
-        if message_array[1] == "no":
-            save_message(message_array, SMS, parsed=Message.YES)
-            list.append([0, get_area("other")])
+    #Contributors reports that he hasn't witnessed a power cut
+    report_data = []
+    if message_array[1] == "no":
+        save_message(message_array, SMS, parsed=Message.YES)
+        report_data.append([0, get_area("other")])
+    else:
         #Contributor wants to report a power cut
-        else:
-            i = 0
-            for word in message_array[1:]:
-                i +=1
-                if word.isdigit() or word[:-1].isdigit():
-                    if word.isdigit():
-                        duration = word
-                    else:
-                        duration = word[:-1]
-                    area = get_area(message_array[i - 1])
-                    save_message(message_array, SMS, parsed=Message.YES)
-                    list.append([duration, area])
-                    #logger.info("Contribution added at {0}".format(area.name))
-            if len(list) == 0:
-                #No report could be added
-                save_message(message_array, SMS, parsed=Message.NO)
-                return None
-        return list
+        for index, data in enumerate(message_array[1:]):
+            if data.isdigit() or data[:-1].isdigit():
+                if data.isdigit():
+                    duration = data
+                else:
+                    duration = data[:-1]
+
+                area = get_area(message_array[index])
+
+                save_message(message_array, SMS, parsed=Message.YES)
+                report_data.append([duration, area])
+        if not report_data:
+            #No report could be added
+            save_message(message_array, SMS, parsed=Message.NO)
+            return None
+    return report_data
 
 
 def get_all_areas_name():
@@ -189,7 +188,7 @@ def get_district_name(area_name):
             json_data=open('feowl/douala-districts.json')
             table = json.load(json_data)
             quartier = area_name.upper()
-            
+
             for item in table:
                 if quartier == item["Quartier"].upper() or quartier == item["Arrondissement"].upper():
                     district = item["Arrondissement"]
@@ -240,7 +239,7 @@ def register(message_array, device):
         Message: register
     """
     pwd = pwgen(10, no_symbols=True)
-    
+
     if (device.contributor.status == Contributor.UNKNOWN) or (device.contributor.status == Contributor.INACTIVE):
         device.contributor.status = Contributor.ACTIVE
         device.contributor.password = pwd

@@ -18,12 +18,10 @@ from models import PowerReport, Device, Contributor, Area
 from validation import ModelFormValidation
 from serializers import CSVSerializer
 import sms_helper
-import simplejson
 import logging
 from django.utils.encoding import smart_str
 
 logger = logging.getLogger(__name__)
-
 
 
 class ContributorResource(ModelResource):

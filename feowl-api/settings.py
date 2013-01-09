@@ -135,8 +135,6 @@ TEMPLATE_DIRS = (
    here('templates'),
 )
 
-TEMPLATESADMIN_TEMPLATE_DIRS = TEMPLATE_DIRS
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -152,7 +150,6 @@ INSTALLED_APPS = (
     'django_extensions',
     'south',
     'rosetta',
-    'templatesadmin'
 )
 
 # A sample logging configuration. The only tangible logging

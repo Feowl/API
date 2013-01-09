@@ -1,3 +1,5 @@
+from __future__ import division
+
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.auth.hashers import make_password
@@ -48,7 +50,7 @@ class Contributor(models.Model):
 
     name = models.CharField('name', max_length=30, unique=True,
         help_text='Required. 30 characters or fewer. Letters, numbers and '
-                    '@/./+/-/_ characters', blank=True, editable=False)
+                    '@/./+/-/_ characters', blank=True)
     password = models.CharField('password', max_length=128, blank=True)
     email = models.EmailField('e-mail address', blank=True, unique=True, editable=False)
 
@@ -60,6 +62,17 @@ class Contributor(models.Model):
     channel = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL, blank=True)
     refunds = models.PositiveIntegerField(default=0, blank=True)
     status = models.PositiveIntegerField(choices=STATUS_CHOICES, default=ACTIVE, blank=True)
+
+    total_response = models.PositiveIntegerField(default=0, blank=True)
+    total_enquiry = models.PositiveIntegerField(default=0, blank=True)
+
+    def get_percentage_of_response(self):
+        if self.total_enquiry > 0:
+            percentage = self.total_response / self.total_enquiry
+            return "{0}%".format(percentage)
+        else:
+            return "N/A"
+    get_percentage_of_response.short_description = "% of Response"
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
@@ -73,7 +86,6 @@ class Contributor(models.Model):
          # Send an email if this are a new contributor
         if not created:
             email_helper.send_email(self.name, self.email, self.language)
-
 
 
 class Device(models.Model):
@@ -146,10 +158,11 @@ class PowerReport(models.Model):
             logger.error(msg)
         elif (self.contributor.enquiry == today):
                 self.contributor.response = today
+                self.contributor.total_response = +1
                 self.contributor.save()
                 super(PowerReport, self).save(*args, **kwargs)
                 msg = "PowerReport Saved"
-                logger.error(msg)
+                logger.info(msg)
         else:
             msg = "PowerReport not saved because the contributor wasn't polled today"
             logger.error(msg)
@@ -166,6 +179,8 @@ class Message(models.Model):
         (NO, "No")
     )
 
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    modified = models.DateTimeField(auto_now=True, null=True)
     message = models.TextField()
     source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)

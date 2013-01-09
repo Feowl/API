@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.test.client import Client
-from feowl.sms_helper import receive_sms, send_sms
+from feowl.sms_helper import receive_sms
 from django.utils import unittest
 
 from tastypie.models import create_api_key
@@ -42,8 +42,6 @@ class PowerReportResourceTest(ResourceTestCase):
            "has_experienced_outage": True,
            "duration": 60
         }
-
-        
 
         # Fetch the ``Entry`` object we'll use in testing.
         # Note that we aren't using PKs because they can change depending
@@ -159,7 +157,7 @@ class PowerReportResourceTest(ResourceTestCase):
     def test_delete_detail(self):
         """Delete a single report is not allowed from the API with authenticated"""
         self.assertHttpMethodNotAllowed(self.c.delete(self.detail_url, self.get_credentials()))
-    
+
 
 class AreaResourceTest(ResourceTestCase):
 
@@ -188,18 +186,16 @@ class AreaResourceTest(ResourceTestCase):
         # We also build a detail URI, since we will be using it all over.
         # DRY, baby. DRY.
         self.detail_url = '/api/v1/areas/{0}/'.format(self.area_1.pk)
-    
+
     def test_accent(self):
         url = '/api/v1/incoming-sms/?username=' + self.username + '&api_key=' + self.api_key + '&in_message=' + u'régistèr' + '&mobile_phone=4915738710431'
         resp = self.c.get(url, charset='utf-8')
         print url
         self.assertValidJSONResponse(resp)
 
-
-    
     def get_credentials(self):
         return {"username": self.username, "api_key": self.api_key}
-    
+
     def test_get_list_unauthorzied(self):
         """Get areas from the API without authenticated"""
         self.assertHttpUnauthorized(self.c.get('/api/v1/areas/'))
@@ -211,7 +207,6 @@ class AreaResourceTest(ResourceTestCase):
 
         # Scope out the data for correctness.
         self.assertEqual(len(self.deserialize(resp)['objects']), 6)
-
 
     def test_get_detail_unauthenticated(self):
         """Try to Get a single area from the API without authenticated"""
@@ -249,7 +244,7 @@ class AreaResourceTest(ResourceTestCase):
     def test_delete_detail(self):
         """Try to Delete a single area is not allowed from the API with authenticated"""
         self.assertHttpMethodNotAllowed(self.c.delete(self.detail_url, self.get_credentials()))
-    
+
 
 class ContributorResourceTest(ResourceTestCase):
 
@@ -558,11 +553,8 @@ class MessagingTestCase(unittest.TestCase):
         contributors = Contributor.objects.all()
         nb_contributors = len(contributors)
 
-        devices = Device.objects.all()
-        nb_devices = len(devices)
         receive_sms(self.register_test_user_no, self.register_keyword)
         contributors = Contributor.objects.all()
-        devices = Device.objects.all()
         self.assertEqual(len(contributors), nb_contributors + 1)
 
         device = Device.objects.get(phone_number=self.register_test_user_no)
@@ -600,7 +592,7 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
         device = Device(phone_number=self.help_no, contributor=contributor)
         device.save()
-                            
+
         receive_sms(self.help_no, "help")
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
@@ -625,17 +617,15 @@ class MessagingTestCase(unittest.TestCase):
         receive_sms("789383849", "ça a marché")
         messages = Message.objects.all()
         self.assertEqual(len(messages), nb_messages + 1)
-    
-    
-    def test_sendSMS(self):
-        msg = "hi from feowl"
-        bad_phone = "915738710431"
-        send_sms(bad_phone, msg)
 
-        good_phone = "4915738710431"
-        #send_sms(good_phone, "lmt")
-        #send_sms(good_phone, "nexmo")
+    # def test_sendSMS(self):
+    #     msg = "hi from feowl"
+    #     bad_phone = "915738710431"
+    #     send_sms(bad_phone, msg)
 
+    #     good_phone = "4915738710431"
+    #     #send_sms(good_phone, "lmt")
+    #     #send_sms(good_phone, "nexmo")
 
 #############################################
 
@@ -656,16 +646,19 @@ class MessagingTestCase(unittest.TestCase):
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         contributor.enquiry = datetime.today().date()
         contributor.save()
-        
+
         old_refund = contributor.refunds
+        old_total_response = contributor.total_response
 
         receive_sms(self.register_test_user_no, contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports + 1)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         new_refund = contributor.refunds
+        new_total_response = contributor.total_response
         self.assertEqual(new_refund, old_refund + 1)
-        
+        self.assertEqual(new_total_response, old_total_response + 1)
+
         report = reports.latest("happened_at")
         self.assertEqual(report.has_experienced_outage, True)
 
@@ -679,11 +672,11 @@ class MessagingTestCase(unittest.TestCase):
         receive_sms(self.register_test_user_no, "pc doulan malskd oskjajhads33 d akjs")
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports)
-        
+
         # Reset the response time in the db
         contributor.response = datetime.today().date() - timedelta(days=1)
         contributor.save()
-        
+
         # Multiple message
         multi_contribute_msg = "pc doualaI 29, douala2 400, douala3 10, alger 403"
         reports = PowerReport.objects.all()
@@ -692,7 +685,7 @@ class MessagingTestCase(unittest.TestCase):
         refund = contributor.refunds
         receive_sms(self.register_test_user_no, multi_contribute_msg)
         reports = PowerReport.objects.all()
-        
+
         self.assertEqual(len(reports), nb_reports + 4)
         logger.info('Multiple Messages has been contributed')
 
@@ -712,7 +705,7 @@ class MessagingTestCase(unittest.TestCase):
         # Reset the response time in the db
         contributor.response = datetime.today().date() - timedelta(days=1)
         contributor.save()
-        
+
         # Multiple message
         multi_contribute_msg = "pc douala1 29, akwa 400, Bilongue 10, BONAMOUSSADI 403"
         reports = PowerReport.objects.all()
@@ -721,7 +714,6 @@ class MessagingTestCase(unittest.TestCase):
         refund = contributor.refunds
         receive_sms(self.register_test_user_no, multi_contribute_msg)
         reports = PowerReport.objects.all()
-        
+
         self.assertEqual(len(reports), nb_reports + 4)
         logger.info('Multiple Messages has been contributed')
-

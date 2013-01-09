@@ -1,12 +1,10 @@
 # -*- encoding:utf-8 -*-
 from django.db import IntegrityError
-from django.db.models import F
 from django.utils.translation import activate, ugettext as _
 from feowl.models import Device, PowerReport, Area, Message, SMS, Contributor
 from django.contrib.gis.db import *
 from datetime import datetime, timedelta
 from pwgen import pwgen
-import re
 import logging
 import sms_helper
 import json
@@ -30,23 +28,24 @@ kw2lang = {'pc': 'en',
            'test': 'en'}
 keywords = kw2lang.keys() + ['stop']
 
+
 def read_message(mobile_number, message):
     index, keyword, message_array = parse(message)
 
     # *ensure* that there is both a device with that number and a corresponding contributor
     devices = Device.objects.filter(phone_number=mobile_number)
-    if len(devices) > 0 :
+    if len(devices) > 0:
         device = devices[0]
         # check if user exists; otherwise create an unknown user
         if device.contributor is None:
-            logger.error("found mobile device "+str(device)+" without a contributor")
+            logger.error("found mobile device " + str(device) + " without a contributor")
             logger.info("creating a new contributor")
             contributor = Contributor(name=mobile_number,
                         email=mobile_number + "@feowl.com",
                         status=Contributor.UNKNOWN)
             # if we can deduce the language from the current keyword, set
             #  contributor language
-            if kw2lang.has_key(keyword):
+            if keyword in kw2lang:
                 contributor.language = kw2lang[keyword].upper()
             contributor.save()
             device.contributor = contributor
@@ -58,15 +57,15 @@ def read_message(mobile_number, message):
         logger.warning("creating a new device and contributor")
         # create a new user (potentially with language) and device
         (device, contributor) = create_unknown_user(mobile_number)
-        if kw2lang.has_key(keyword):
+        if keyword in kw2lang:
             contributor.language = kw2lang[keyword].upper()
         contributor.save()
-    logger.debug("associating incoming message with "+str(device)+" // "+str(contributor))
+    logger.debug("associating incoming message with " + str(device) + " // " + str(contributor))
 
     # set the language for upcoming messages
-    language =(kw2lang.has_key(keyword) and kw2lang[keyword]) or contributor.language or "en"
+    language = (keyword in kw2lang and kw2lang[keyword]) or contributor.language or "en"
     activate(language.lower())
-    
+
     # invariant: if we arrive here, we are sure that we have a device
     #  and a contributor. now, do the processing
     if keyword in ("pc", "rep"):
@@ -109,27 +108,38 @@ def contribute(message_array, device):
         return
     # else try to parse the contribution and save the report
     else:
-        list = parse_contribute(message_array)
+        parsed_data = parse_contribute(message_array)
         #If we haven't been able to parse the message
-        if list is None:
+        if not parsed_data:
             msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC douala1 40"". reply HELP for further information")
         #If user sent PC No - then no outage has been experienced
-        elif list[0][0] == 0:
-            report = PowerReport(has_experienced_outage=False, duration=list[0][0], contributor=device.contributor, device=device,
-                    area=list[0][1], happened_at=today)
+        elif parsed_data[0][0] == 0:
+            report = PowerReport(
+                has_experienced_outage=False,
+                duration=parsed_data[0][0],
+                contributor=device.contributor,
+                device=device,
+                area=parsed_data[0][1],
+                happened_at=today
+            )
             report.save()
+
             increment_refund(device.contributor)
             msg = _("You chose to report no power cut. If this is not what you wanted to say, please send us a new SMS")
             #logger.warning(report)
         else:
-            msg = _("You had {0} powercuts yesterday. Durations : ").format(len(list))
-            i = 1
-            for item in list:
-                report = PowerReport(duration=item[0], contributor=device.contributor, device=device,
-                    area=item[1], happened_at=today)
+            msg = _("You had {0} powercuts yesterday. Durations : ").format(len(parsed_data))
+            for item in parsed_data:
+                report = PowerReport(
+                    duration=item[0],
+                    contributor=device.contributor,
+                    device=device,
+                    area=item[1],
+                    happened_at=today
+                )
                 report.save()
+
                 increment_refund(device.contributor)
-                i += 1
                 msg += _(str(item[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
         send_message(device.phone_number, msg)
@@ -144,52 +154,42 @@ def increment_refund(c):
         #logger.info("Contribtuor {0} has an updated refund of {1} ".format(c.name, c.refunds))
     except Exception, e:
         logger.error("Error while updating Contributor's refund counter - {0} ".format(e))
-    
 
+
+#TODO: algorithm to be improved
 def parse_contribute(message_array):
-    #TODO:algorithme to be improved
-        #Contributors reports that he hasn't witnessed a power cut
-        list = []
-        if message_array[1] == "no":
-            save_message(message_array, SMS, parsed=Message.YES)
-            list.append([0, get_area("other")])
+    #Contributors reports that he hasn't witnessed a power cut
+    report_data = []
+    if message_array[1] == "no":
+        save_message(message_array, SMS, parsed=Message.YES)
+        report_data.append([0, get_area("other")])
+    else:
         #Contributor wants to report a power cut
-        else:
-            i = 0
-            for word in message_array[1:]:
-                i +=1
-                if word.isdigit() or word[:-1].isdigit():
-                    if word.isdigit():
-                        duration = word
-                    else:
-                        duration = word[:-1]
-                    area = get_area(message_array[i - 1])
-                    save_message(message_array, SMS, parsed=Message.YES)
-                    list.append([duration, area])
-                    #logger.info("Contribution added at {0}".format(area.name))
-            if len(list) == 0:
-                #No report could be added
-                save_message(message_array, SMS, parsed=Message.NO)
-                return None
-        return list
+        for index, data in enumerate(message_array[1:]):
+            if data.isdigit() or data[:-1].isdigit():
+                if data.isdigit():
+                    duration = data
+                else:
+                    duration = data[:-1]
 
+                area = get_area(message_array[index])
 
-def get_all_areas_name():
-    areas = Area.objects.all()
-    list = []
-    for a in areas:
-        list.append(a.name.lower())
-    return list
+                save_message(message_array, SMS, parsed=Message.YES)
+                report_data.append([duration, area])
+        if not report_data:
+            #No report could be added
+            save_message(message_array, SMS, parsed=Message.NO)
+            return None
+    return report_data
 
 
 def get_district_name(area_name):
-        from difflib import get_close_matches
         district = ''
         try:
-            json_data=open('feowl/douala-districts.json')
+            json_data = open('feowl/douala-districts.json')
             table = json.load(json_data)
             quartier = area_name.upper()
-            
+
             for item in table:
                 if quartier == item["Quartier"].upper() or quartier == item["Arrondissement"].upper():
                     district = item["Arrondissement"]
@@ -200,9 +200,8 @@ def get_district_name(area_name):
             logger.info('Error while computing the district name - {0}'.format(e))
         return district
 
+
 def get_area(area_name):
-    #areas = get_all_areas_name()
-    #corrected_area_name = get_close_matches(area_name.lower(), areas, 1)
     logger.info("Given Area name is {0}".format(area_name))
     corrected_area_name = get_district_name(area_name)
     try:
@@ -232,7 +231,7 @@ def create_unknown_user(mobile_number):
         logger.error("Unkown Error please try later to register")
         return
     logger.info("User is created")
-    return (device, contributor) # END
+    return (device, contributor)
 
 
 def register(message_array, device):
@@ -240,7 +239,7 @@ def register(message_array, device):
         Message: register
     """
     pwd = pwgen(10, no_symbols=True)
-    
+
     if (device.contributor.status == Contributor.UNKNOWN) or (device.contributor.status == Contributor.INACTIVE):
         device.contributor.status = Contributor.ACTIVE
         device.contributor.password = pwd
@@ -262,7 +261,7 @@ def unregister(message_array, device):
         contributor.delete()
         save_message(message_array, SMS, parsed=Message.YES)
     except Exception, e:
-        logger.error("Error while deleting device/contributor: "+str(e))
+        logger.error("Error while deleting device/contributor: " + str(e))
         return
 
 
@@ -287,9 +286,9 @@ def cancel(message_array, device):
     """
     today = datetime.today().date()
     reports = PowerReport.objects.filter(contributor=device.contributor, happened_at=today)
-    if (reports != None):
-        if (reports > 0):
-            reports.delete()
+    if reports > 0:
+        reports.delete()
+
     # Reset the response date
     device.contributor.response = today - timedelta(days=1)
     device.contributor.save()
@@ -320,4 +319,3 @@ def send_message(mobile_number, message):
 def save_message(message_array, src, parsed=Message.NO):
     msg = Message(message=" ".join(message_array), source=src, keyword=message_array[0], parsed=parsed)
     msg.save()
-

@@ -60,6 +60,7 @@ class Command(BaseCommand):
 
                 # Update the list of targeted users
                 user.enquiry = datetime.today().date()
+                user.total_enquiry += 1
                 user.save()
 
         connection.send_messages(messages)

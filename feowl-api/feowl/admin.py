@@ -78,7 +78,7 @@ class ContributorAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('message', 'source', 'keyword', 'parsed')
+    list_display = ('message', 'source', 'keyword', 'parsed', 'created', 'modified')
     list_filter = ('keyword', 'parsed')
 
 

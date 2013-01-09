@@ -179,6 +179,8 @@ class Message(models.Model):
         (NO, "No")
     )
 
+    created = models.DateTimeField(auto_now_add=True, null=True)
+    modified = models.DateTimeField(auto_now=True, null=True)
     message = models.TextField()
     source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)

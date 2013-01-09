@@ -158,10 +158,11 @@ class PowerReport(models.Model):
             logger.error(msg)
         elif (self.contributor.enquiry == today):
                 self.contributor.response = today
+                self.contributor.total_response = +1
                 self.contributor.save()
                 super(PowerReport, self).save(*args, **kwargs)
                 msg = "PowerReport Saved"
-                logger.error(msg)
+                logger.info(msg)
         else:
             msg = "PowerReport not saved because the contributor wasn't polled today"
             logger.error(msg)

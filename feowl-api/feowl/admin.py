@@ -28,7 +28,7 @@ class ContributorAdmin(admin.ModelAdmin):
     form = ContributorAdminForm
     change_password_form = AdminPasswordChangeForm
     change_user_password_template = None
-    list_display = ('name', 'password', 'email', 'channel', 'status', 'enquiry', 'response', 'total_response', 'total_enquiry', 'get_percentage_of_response')
+    list_display = ('name', 'password', 'email', 'channel', 'status', 'enquiry', 'response', 'total_response', 'total_enquiry', 'get_percentage_of_response', 'refunds')
 
     def get_urls(self):
         from django.conf.urls import patterns

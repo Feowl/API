@@ -3,7 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.test.client import Client
-from feowl.sms_helper import receive_sms, send_sms
+from feowl.sms_helper import receive_sms
 from django.utils import unittest
 
 from tastypie.models import create_api_key
@@ -648,13 +648,16 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
 
         old_refund = contributor.refunds
+        old_total_response = contributor.total_response
 
         receive_sms(self.register_test_user_no, contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports + 1)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         new_refund = contributor.refunds
+        new_total_response = contributor.total_response
         self.assertEqual(new_refund, old_refund + 1)
+        self.assertEqual(new_total_response, old_total_response + 1)
 
         report = reports.latest("happened_at")
         self.assertEqual(report.has_experienced_outage, True)

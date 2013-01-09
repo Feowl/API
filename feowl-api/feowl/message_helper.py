@@ -141,6 +141,8 @@ def contribute(message_array, device):
 
                 increment_refund(device.contributor)
                 msg += _(str(item[0]) + "min, ")
+            device.contributor.total_response = +1
+            device.contributor.save()
             msg += _("If the data have been misunderstood, please send us another SMS.")
         send_message(device.phone_number, msg)
 

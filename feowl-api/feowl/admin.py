@@ -80,7 +80,7 @@ class ContributorAdmin(admin.ModelAdmin):
 class MessageAdmin(admin.ModelAdmin):
     change_list_template = "admin/change_list_filter_sidebar.html"
     change_list_filter_template = "admin/filter_listing.html"
-    list_display = ('message', 'source', 'keyword', 'parsed', 'created', 'modified')
+    list_display = ('message', 'source', 'keyword', 'parsed', 'created', 'modified', 'device')
     list_filter = ('keyword', 'parsed')
 
 

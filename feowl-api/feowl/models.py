@@ -97,8 +97,8 @@ class Device(models.Model):
 
     def __unicode__(self):
         if self.contributor:
-            return "{0}'s {1}".format(self.contributor, self.category)
-        return self.phone_number
+            return u"{0}'s {1}".format(self.contributor, self.category)
+        return u"{0}".format(self.phone_number)
 
 
 class Area(models.Model):

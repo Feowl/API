@@ -78,11 +78,14 @@ class ContributorAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
+    change_list_template = "admin/change_list_filter_sidebar.html"
+    change_list_filter_template = "admin/filter_listing.html"
     list_display = ('message', 'source', 'keyword', 'parsed', 'created', 'modified')
     list_filter = ('keyword', 'parsed')
 
 
 class PowerReportAdmin(admin.ModelAdmin):
+    change_list_template = "admin/change_list_filter_sidebar.html"
     list_display = ('modified', 'contributor', 'duration', 'happened_at', 'area')
     list_filter = ('contributor', 'area')
 

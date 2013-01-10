@@ -97,8 +97,8 @@ class Device(models.Model):
 
     def __unicode__(self):
         if self.contributor:
-            return "{0}'s {1}".format(self.contributor, self.category)
-        return self.category
+            return u"{0}'s {1}".format(self.contributor, self.category)
+        return u"{0}".format(self.phone_number)
 
 
 class Area(models.Model):
@@ -162,7 +162,7 @@ class PowerReport(models.Model):
                 self.contributor.save()
                 super(PowerReport, self).save(*args, **kwargs)
                 msg = "PowerReport Saved"
-                logger.info(msg)
+                logger.debug(msg)
         else:
             msg = "PowerReport not saved because the contributor wasn't polled today"
             logger.error(msg)
@@ -185,3 +185,4 @@ class Message(models.Model):
     source = models.PositiveIntegerField(choices=CHANNEL_CHOICES, default=EMAIL)
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)
     keyword = models.CharField(max_length=30, default="No Keyword")
+    device = models.ForeignKey(Device, null=True)

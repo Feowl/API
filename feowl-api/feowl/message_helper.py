@@ -79,9 +79,9 @@ def read_message(mobile_number, message):
     elif keyword in ("cancel", "annule"):
         cancel(message_array, device)
     elif keyword in ("test"):
-        test(message_array, mobile_number)
+        test(message_array, device)
     elif index == -1:  # Should send an error messages and maybe plus help
-        invalid(mobile_number, message_array)
+        invalid(message_array, device)
         return "Something went wrong"
 
 
@@ -104,11 +104,11 @@ def contribute(message_array, device):
 
     # If this user hasn't been asked today OR If has already answered today, then save the message and ignore contribution
     if (device.contributor.enquiry != today) or (device.contributor.response == today):
-        save_message(message_array, SMS)
+        save_message(message_array, device)
         return
     # else try to parse the contribution and save the report
     else:
-        parsed_data = parse_contribute(message_array)
+        parsed_data = parse_contribute(message_array, device)
         #If we haven't been able to parse the message
         if not parsed_data:
             msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC douala1 40"". reply HELP for further information")
@@ -157,11 +157,11 @@ def increment_refund(c):
 
 
 #TODO: algorithm to be improved
-def parse_contribute(message_array):
+def parse_contribute(message_array, device):
     #Contributors reports that he hasn't witnessed a power cut
     report_data = []
     if message_array[1] == "no":
-        save_message(message_array, SMS, parsed=Message.YES)
+        save_message(message_array, device, Message.YES)
         report_data.append([0, get_area("other")])
     else:
         #Contributor wants to report a power cut
@@ -174,11 +174,11 @@ def parse_contribute(message_array):
 
                 area = get_area(message_array[index])
 
-                save_message(message_array, SMS, parsed=Message.YES)
+                save_message(message_array, device, Message.YES)
                 report_data.append([duration, area])
         if not report_data:
             #No report could be added
-            save_message(message_array, SMS, parsed=Message.NO)
+            save_message(message_array, device)
             return None
     return report_data
 
@@ -247,7 +247,7 @@ def register(message_array, device):
         device.contributor.save()
         increment_refund(device.contributor)
         msg = _("Thanks for texting! You've joined our team. Your password is {0}. Reply HELP for further informations. ").format(pwd)
-        save_message(message_array, SMS, parsed=Message.YES)
+        save_message(message_array, device, Message.YES)
         send_message(device.phone_number, msg)
 
 
@@ -259,9 +259,10 @@ def unregister(message_array, device):
     try:
         device.delete()
         contributor.delete()
-        save_message(message_array, SMS, parsed=Message.YES)
+        save_message(message_array, parsed=Message.YES)
     except Exception, e:
-        logger.error("Error while deleting device/contributor: " + str(e))
+        error = "Error while deleting device/contributor: {0}".format(e)
+        logger.error(error)
         return
 
 
@@ -277,7 +278,7 @@ def help(message_array, device):
     send_message(device.phone_number, second_help_msg)
     send_message(device.phone_number, third_help_msg)
 
-    save_message(message_array, SMS, parsed=Message.YES)
+    save_message(message_array, device, Message.YES)
 
 
 def cancel(message_array, device):
@@ -292,30 +293,28 @@ def cancel(message_array, device):
     # Reset the response date
     device.contributor.response = today - timedelta(days=1)
     device.contributor.save()
-    save_message(message_array, SMS, parsed=Message.YES)
+    save_message(message_array, device, Message.YES)
 
 
-def invalid(mobile_number, message_array):
+def invalid(message_array, device):
     """
         Message: <something wrong>
     """
-    msg = Message(message=" ".join(message_array), source=SMS, parsed=Message.NO)
-    msg.save()
+    save_message(message_array, device)
 
 
-def test(message_array, mobile_number):
+def test(message_array, device):
     """
         Message: TEST
     """
-    save_message(message_array, SMS, parsed=Message.YES)
-    send_message(mobile_number, _("Thanks for trying FEOWL! Send Help for more info"))
+    save_message(message_array, device, Message.YES)
+    send_message(device.phone_number, _("Thanks for trying FEOWL! Send Help for more info"))
 
 
 def send_message(mobile_number, message):
         sms_helper.send_sms(mobile_number, message)
-        #sms_helper.send_sms_nexmo(mobile_number, message)
 
 
-def save_message(message_array, src, parsed=Message.NO):
-    msg = Message(message=" ".join(message_array), source=src, keyword=message_array[0], parsed=parsed)
+def save_message(message_array, device=None, parsed=Message.NO, src=SMS):
+    msg = Message(message=" ".join(message_array), source=src, device=device, keyword=message_array[0], parsed=parsed)
     msg.save()

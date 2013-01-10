@@ -593,7 +593,7 @@ class MessagingTestCase(unittest.TestCase):
         device = Device(phone_number=self.help_no, contributor=contributor)
         device.save()
 
-        receive_sms(self.help_no, "help")
+        receive_sms(device.phone_number, "help")
         devices = Device.objects.all()
         contributors = Contributor.objects.all()
         self.assertEqual(len(devices), nb_devices + 1)

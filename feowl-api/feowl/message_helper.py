@@ -6,7 +6,7 @@ from django.contrib.gis.db import *
 from datetime import datetime, timedelta
 from pwgen import pwgen
 import logging
-import sms_helper
+from feowl.sms_helper import send_sms
 import json
 
 # Get an instance of a logger
@@ -38,8 +38,8 @@ def read_message(mobile_number, message):
         device = devices[0]
         # check if user exists; otherwise create an unknown user
         if device.contributor is None:
-            logger.error("found mobile device " + str(device) + " without a contributor")
-            logger.info("creating a new contributor")
+            logger.debug("found mobile device " + str(device) + " without a contributor")
+            logger.debug("creating a new contributor")
             contributor = Contributor(name=mobile_number,
                         email=mobile_number + "@feowl.com",
                         status=Contributor.UNKNOWN)
@@ -53,8 +53,8 @@ def read_message(mobile_number, message):
         else:
             contributor = device.contributor
     else:
-        logger.warning("device does not exist")
-        logger.warning("creating a new device and contributor")
+        logger.debug("device does not exist")
+        logger.debug("creating a new device and contributor")
         # create a new user (potentially with language) and device
         (device, contributor) = create_unknown_user(mobile_number)
         if keyword in kw2lang:
@@ -88,7 +88,7 @@ def read_message(mobile_number, message):
 def parse(message):
     #Using split instead of regex to avoid problem with Unicode encoded / special caracters
     message_array = message.split()
-    logger.info("---- Message to be parsed is {0} ".format(message_array))
+    logger.debug("---- Message to be parsed is {0} ".format(message_array))
     for index, keyword in enumerate(message_array):
         if keyword.lower() in keywords:
             return index, keyword.lower(), message_array
@@ -195,20 +195,20 @@ def get_district_name(area_name):
                     district = item["Arrondissement"]
                     break
             if not district:
-                logger.info('Area does not exist')
+                logger.warning('Area does not exist: {0}'.format(quartier))
         except Exception, e:
-            logger.info('Error while computing the district name - {0}'.format(e))
+            logger.error('Error while computing the district name  {0}- {1}'.format(quartier, e))
         return district
 
 
 def get_area(area_name):
-    logger.info("Given Area name is {0}".format(area_name))
+    logger.debug("Given Area name is {0}".format(area_name))
     corrected_area_name = get_district_name(area_name)
     try:
         area = Area.objects.get(name__iexact=corrected_area_name)
     except Area.DoesNotExist:
         area = Area.objects.get(name='other')
-    logger.info("Saved area name is {0}".format(area.name))
+    logger.debug("Saved area name is {0}".format(area.name))
     return area
 
 
@@ -230,7 +230,7 @@ def create_unknown_user(mobile_number):
             return
         logger.error("Unkown Error please try later to register")
         return
-    logger.info("User is created")
+    logger.debug("User is created")
     return (device, contributor)
 
 
@@ -312,7 +312,7 @@ def test(message_array, device):
 
 
 def send_message(mobile_number, message):
-        sms_helper.send_sms(mobile_number, message)
+        send_sms(mobile_number, message)
 
 
 def save_message(message_array, device=None, parsed=Message.NO, src=SMS):

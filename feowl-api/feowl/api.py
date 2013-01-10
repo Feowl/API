@@ -17,7 +17,7 @@ from forms import PowerReportForm, DeviceForm, ContributorForm, AreaForm
 from models import PowerReport, Device, Contributor, Area
 from validation import ModelFormValidation
 from serializers import CSVSerializer
-import sms_helper
+from sms_helper import receive_sms
 import logging
 from django.utils.encoding import smart_str
 
@@ -384,7 +384,7 @@ class IncomingSmsResource(Resource):
             raise ValueError('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))
         else:
             logger.info('Message Received: {0}'.format(msg))
-            sms_helper.receive_sms(phone, msg)
+            receive_sms(phone, msg)
             response.append(GenericResponseObject({'response': 'message received succesfully'}))
             logger.info('message received successfully')
         return response

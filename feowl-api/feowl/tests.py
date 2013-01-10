@@ -14,10 +14,6 @@ from feowl.models import PowerReport, Area, Contributor, Device, Message
 
 import json
 from datetime import datetime, timedelta
-import logging
-
-# Get an instance of a logger
-logger = logging.getLogger(__name__)
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
@@ -687,7 +683,6 @@ class MessagingTestCase(unittest.TestCase):
         reports = PowerReport.objects.all()
 
         self.assertEqual(len(reports), nb_reports + 4)
-        logger.info('Multiple Messages has been contributed')
 
         contributor = Contributor.objects.get(name=self.register_test_user_no)
         self.assertEqual(contributor.refunds, refund + 4)
@@ -716,4 +711,3 @@ class MessagingTestCase(unittest.TestCase):
         reports = PowerReport.objects.all()
 
         self.assertEqual(len(reports), nb_reports + 4)
-        logger.info('Multiple Messages has been contributed')

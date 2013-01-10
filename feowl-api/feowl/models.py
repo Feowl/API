@@ -162,7 +162,7 @@ class PowerReport(models.Model):
                 self.contributor.save()
                 super(PowerReport, self).save(*args, **kwargs)
                 msg = "PowerReport Saved"
-                logger.info(msg)
+                logger.debug(msg)
         else:
             msg = "PowerReport not saved because the contributor wasn't polled today"
             logger.error(msg)

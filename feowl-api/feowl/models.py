@@ -198,10 +198,9 @@ class Message(models.Model):
         super(Message, self).save(*args, **kwargs)
 
     def manual_parse(self):
-        parsed = """{0}<img style="float:right" src="admin/img/icon-no.gif"/>""".format(self.SOURCE_CHOICES[self.parsed][1])
+        icon = "no"
         if self.parsed == self.YES:
-            parsed = """{0}<img style="float:right" src="admin/img/icon-yes.gif"/>""".format(self.SOURCE_CHOICES[self.parsed][1])
-        link = """<a href="{0}">{1}</a>""".format(self.id, parsed)
-        return link
+            icon = "yes"
+        return """<a href="{0}">{1}<img style="float:right" src="admin/img/icon-{2}.gif"/></a>""".format(self.id, self.SOURCE_CHOICES[self.parsed][1], icon)
     manual_parse.allow_tags = True
     manual_parse.admin_order_field = "parsed"

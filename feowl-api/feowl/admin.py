@@ -77,14 +77,14 @@ class ContributorAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
-    fields = ('created', 'modified', 'keyword', 'message')
-    list_display = ('message', 'keyword', 'parsed', 'manual_parse', 'source', 'device')
-    list_filter = ('keyword', 'parsed',)
-    readonly_fields = ('created', 'modified', 'keyword')
+    fields = ('created', 'modified', 'keyword', 'message',)
+    list_display = ('message', 'keyword', 'manual_parse', 'source', 'device',)
+    list_filter = ('keyword',)
+    readonly_fields = ('created', 'modified', 'keyword',)
 
     def get_readonly_fields(self, request, obj=None):
         if obj and obj.parsed == 0:  # editing an existing object
-            return self.readonly_fields + ('message', )
+            return self.readonly_fields + ('message',)
         return self.readonly_fields
 
 

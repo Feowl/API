@@ -190,11 +190,11 @@ def parse_contribute(message_array, device, auto_mode):
 
 
 def get_district_name(area_name):
+        quartier = area_name.upper()
         district = ''
         try:
             json_data = open('feowl/douala-districts.json')
             table = json.load(json_data)
-            quartier = area_name.upper()
 
             for item in table:
                 if quartier == item["Quartier"].upper() or quartier == item["Arrondissement"].upper():

@@ -15,13 +15,12 @@ def send_sms(mobile_number, message):
         #Check handling of accents
         try:
             params = {'UserName': settings.SMS_USERNAME, 'Password': settings.SMS_PASSWORD, 'SOA': settings.SMS_SENDER, 'MN': mobile_number, 'SM': message.encode("latin-1")}
+            url = "http://lmtgroup.dyndns.org/sendsms/sendsms.php"
+            req = urllib2.Request(url + "?" + urlencode(params))
+            f = urllib2.urlopen(req)
+            logger.debug(f.read())
         except Exception, e:
             logger.error("Error: {0} --- Wrong Message: {1}".format(e, message))
-
-        url = "http://lmtgroup.dyndns.org/sendsms/sendsms.php"
-        req = urllib2.Request(url + "?" + urlencode(params))
-        f = urllib2.urlopen(req)
-        logger.warning(f.read())
     else:
         logger.error("SMS not sent - Invalid phone number")
 

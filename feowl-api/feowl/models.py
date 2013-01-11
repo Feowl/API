@@ -192,8 +192,9 @@ class Message(models.Model):
          # Send an email if this are a new contributor
         if created:
             # Contribute
-            read_message(self.device.phone_number, self.message, auto_mode=False)
+            parsed = read_message(self.device.phone_number, self.message, auto_mode=False)
             self.keyword = self.message.split()[0]
+            self.parsed = parsed
         super(Message, self).save(*args, **kwargs)
 
     def manual_parse(self):
@@ -203,4 +204,4 @@ class Message(models.Model):
         link = """<a href="{0}">{1}</a>""".format(self.id, parsed)
         return link
     manual_parse.allow_tags = True
-    manual_parse.admin_order_field = "id"
+    manual_parse.admin_order_field = "parsed"

@@ -69,20 +69,19 @@ def read_message(mobile_number, message, auto_mode=True):
     # invariant: if we arrive here, we are sure that we have a device
     #  and a contributor. now, do the processing
     if keyword in ("pc", "rep"):
-        contribute(message_array, device, auto_mode)
+        return contribute(message_array, device, auto_mode)
     elif keyword in ("help", "aide"):
-        help(message_array, device, auto_mode)
+        return help(message_array, device, auto_mode)
     elif keyword in ("register", "inscription"):
-        register(message_array, device, auto_mode)
+        return register(message_array, device, auto_mode)
     elif keyword == "stop":
-        unregister(message_array, device, auto_mode)
+        return unregister(message_array, device, auto_mode)
     elif keyword in ("cancel", "annule"):
-        cancel(message_array, device. auto_mode)
+        return cancel(message_array, device. auto_mode)
     elif keyword in ("test"):
-        test(message_array, device, auto_mode)
+        return test(message_array, device, auto_mode)
     elif index == -1:  # Should send an error messages and maybe plus help
-        invalid(message_array, device, auto_mode)
-        return "Something went wrong"
+        return invalid(message_array, device, auto_mode)
 
 
 def parse(message):
@@ -106,10 +105,10 @@ def contribute(message_array, device, auto_mode):
     if (device.contributor.enquiry != today) or (device.contributor.response == today):
         if auto_mode:
             save_message(message_array, device)
-        return
+        return Message.NO
     # else try to parse the contribution and save the report
     else:
-        parsed_data = parse_contribute(message_array, device, auto_mode)
+        (parsed_data, parsed) = parse_contribute(message_array, device, auto_mode)
         #If we haven't been able to parse the message
         if not parsed_data:
             msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC douala1 40"". reply HELP for further information")
@@ -143,6 +142,7 @@ def contribute(message_array, device, auto_mode):
                 msg += _(str(item[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
         send_message(device.phone_number, msg)
+    return parsed
 
 
 def increment_refund(c):
@@ -164,6 +164,7 @@ def parse_contribute(message_array, device, auto_mode):
         if auto_mode:
             save_message(message_array, device, Message.YES)
         report_data.append([0, get_area("other")])
+        parsed = Message.YES
     else:
         #Contributor wants to report a power cut
         for index, data in enumerate(message_array[1:]):
@@ -178,12 +179,14 @@ def parse_contribute(message_array, device, auto_mode):
                 if auto_mode:
                     save_message(message_array, device, Message.YES)
                 report_data.append([duration, area])
+                parsed = Message.YES
         if not report_data:
             #No report could be added
             if auto_mode:
                 save_message(message_array, device)
-            return None
-    return report_data
+            report_data = None
+            parsed = Message.NO
+    return (report_data, parsed)
 
 
 def get_district_name(area_name):
@@ -253,6 +256,7 @@ def register(message_array, device, auto_mode):
         if auto_mode:
             save_message(message_array, device, Message.YES)
         send_message(device.phone_number, msg)
+        return Message.YES
 
 
 def unregister(message_array, device, auto_mode):
@@ -265,10 +269,10 @@ def unregister(message_array, device, auto_mode):
         contributor.delete()
         if auto_mode:
             save_message(message_array, parsed=Message.YES)
+        return Message.YES
     except Exception, e:
         error = "Error while deleting device/contributor: {0}".format(e)
         logger.error(error)
-        return
 
 
 def help(message_array, device, auto_mode):
@@ -285,6 +289,7 @@ def help(message_array, device, auto_mode):
 
     if auto_mode:
         save_message(message_array, device, Message.YES)
+    return Message.YES
 
 
 def cancel(message_array, device, auto_mode):
@@ -302,6 +307,7 @@ def cancel(message_array, device, auto_mode):
 
     if auto_mode:
         save_message(message_array, device, Message.YES)
+    return Message.YES
 
 
 def invalid(message_array, device, auto_mode):
@@ -310,6 +316,8 @@ def invalid(message_array, device, auto_mode):
     """
     if auto_mode:
         save_message(message_array, device)
+    logger.warning("Something went wrong: Bad keyword")
+    return Message.NO
 
 
 def test(message_array, device, auto_mode):
@@ -319,6 +327,7 @@ def test(message_array, device, auto_mode):
     if auto_mode:
         save_message(message_array, device, Message.YES)
     send_message(device.phone_number, _("Thanks for trying FEOWL! Send Help for more info"))
+    return Message.YES
 
 
 def send_message(mobile_number, message):

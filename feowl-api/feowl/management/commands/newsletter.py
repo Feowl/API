@@ -21,6 +21,8 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--limit', '-l', dest='limit', default=100,
             help='Pass the Range of contributors you want to send a newsletter'),
+        make_option('--frequency', '-f', dest='frequency', default=1,
+            help='Pass the frequency. OFF = 0, DAILY = 1, WEEKLY = 2, MONTHLY = 3'),
     )
     help = 'Send poll to a range of contributors'
 
@@ -28,8 +30,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         limit = options.get("limit")
+        frequency = options.get("frequency")
 
-        contributors = Contributor.objects.filter(status=Contributor.ACTIVE).exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
+        contributors = Contributor.objects.filter(status=Contributor.ACTIVE, frequency=frequency).exclude(name=settings.ANONYMOUS_USER_NAME).order_by('-enquiry')[:limit]
         messages = []
         plaintext = get_template('email/newsletter.txt')
         html = get_template('email/newsletter.html')

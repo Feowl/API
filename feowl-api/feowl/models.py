@@ -3,15 +3,14 @@ from __future__ import division
 from django.contrib.auth.models import User
 from django.contrib.gis.db import models
 from django.contrib.auth.hashers import make_password
-import email_helper
 from datetime import datetime
-
+from email_helper import send_email
 import settings
-import logging
 
 from tastypie.models import create_api_key
 models.signals.post_save.connect(create_api_key, sender=User)
 
+import logging
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +84,7 @@ class Contributor(models.Model):
         super(Contributor, self).save(*args, **kwargs)
          # Send an email if this are a new contributor
         if not created:
-            email_helper.send_email(self.name, self.email, self.language)
+            send_email(self.name, self.email, self.language)
 
 
 class Device(models.Model):
@@ -186,3 +185,22 @@ class Message(models.Model):
     parsed = models.PositiveIntegerField(choices=SOURCE_CHOICES, default=NO)
     keyword = models.CharField(max_length=30, default="No Keyword")
     device = models.ForeignKey(Device, null=True)
+
+    def save(self, *args, **kwargs):
+        from message_helper import read_message
+        created = self.id is not None
+         # Send an email if this are a new contributor
+        if created:
+            # Contribute
+            read_message(self.device.phone_number, self.message, auto_mode=False)
+            self.keyword = self.message.split()[0]
+        super(Message, self).save(*args, **kwargs)
+
+    def manual_parse(self):
+        parsed = """{0}<img style="float:right" src="admin/img/icon-no.gif"/>""".format(self.SOURCE_CHOICES[self.parsed][1])
+        if self.parsed == self.YES:
+            parsed = """{0}<img style="float:right" src="admin/img/icon-yes.gif"/>""".format(self.SOURCE_CHOICES[self.parsed][1])
+        link = """<a href="{0}">{1}</a>""".format(self.id, parsed)
+        return link
+    manual_parse.allow_tags = True
+    manual_parse.admin_order_field = "id"

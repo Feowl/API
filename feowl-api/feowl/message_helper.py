@@ -29,7 +29,7 @@ kw2lang = {'pc': 'en',
 keywords = kw2lang.keys() + ['stop']
 
 
-def read_message(mobile_number, message):
+def read_message(mobile_number, message, auto_mode=True):
     index, keyword, message_array = parse(message)
 
     # *ensure* that there is both a device with that number and a corresponding contributor
@@ -69,19 +69,19 @@ def read_message(mobile_number, message):
     # invariant: if we arrive here, we are sure that we have a device
     #  and a contributor. now, do the processing
     if keyword in ("pc", "rep"):
-        contribute(message_array, device)
+        contribute(message_array, device, auto_mode)
     elif keyword in ("help", "aide"):
-        help(message_array, device)
+        help(message_array, device, auto_mode)
     elif keyword in ("register", "inscription"):
-        register(message_array, device)
+        register(message_array, device, auto_mode)
     elif keyword == "stop":
-        unregister(message_array, device)
+        unregister(message_array, device, auto_mode)
     elif keyword in ("cancel", "annule"):
-        cancel(message_array, device)
+        cancel(message_array, device. auto_mode)
     elif keyword in ("test"):
-        test(message_array, device)
+        test(message_array, device, auto_mode)
     elif index == -1:  # Should send an error messages and maybe plus help
-        invalid(message_array, device)
+        invalid(message_array, device, auto_mode)
         return "Something went wrong"
 
 
@@ -95,7 +95,7 @@ def parse(message):
     return -1, "Bad Keyword", message_array
 
 
-def contribute(message_array, device):
+def contribute(message_array, device, auto_mode):
     """
         Message: pc <area> <duration>
         TODO: Message: pc <area> <duration>, <area> <duration>
@@ -104,11 +104,12 @@ def contribute(message_array, device):
 
     # If this user hasn't been asked today OR If has already answered today, then save the message and ignore contribution
     if (device.contributor.enquiry != today) or (device.contributor.response == today):
-        save_message(message_array, device)
+        if auto_mode:
+            save_message(message_array, device)
         return
     # else try to parse the contribution and save the report
     else:
-        parsed_data = parse_contribute(message_array, device)
+        parsed_data = parse_contribute(message_array, device, auto_mode)
         #If we haven't been able to parse the message
         if not parsed_data:
             msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC douala1 40"". reply HELP for further information")
@@ -126,7 +127,6 @@ def contribute(message_array, device):
 
             increment_refund(device.contributor)
             msg = _("You chose to report no power cut. If this is not what you wanted to say, please send us a new SMS")
-            #logger.warning(report)
         else:
             msg = _("You had {0} powercuts yesterday. Durations : ").format(len(parsed_data))
             for item in parsed_data:
@@ -157,11 +157,12 @@ def increment_refund(c):
 
 
 #TODO: algorithm to be improved
-def parse_contribute(message_array, device):
+def parse_contribute(message_array, device, auto_mode):
     #Contributors reports that he hasn't witnessed a power cut
     report_data = []
     if message_array[1] == "no":
-        save_message(message_array, device, Message.YES)
+        if auto_mode:
+            save_message(message_array, device, Message.YES)
         report_data.append([0, get_area("other")])
     else:
         #Contributor wants to report a power cut
@@ -174,11 +175,13 @@ def parse_contribute(message_array, device):
 
                 area = get_area(message_array[index])
 
-                save_message(message_array, device, Message.YES)
+                if auto_mode:
+                    save_message(message_array, device, Message.YES)
                 report_data.append([duration, area])
         if not report_data:
             #No report could be added
-            save_message(message_array, device)
+            if auto_mode:
+                save_message(message_array, device)
             return None
     return report_data
 
@@ -234,7 +237,7 @@ def create_unknown_user(mobile_number):
     return (device, contributor)
 
 
-def register(message_array, device):
+def register(message_array, device, auto_mode):
     """
         Message: register
     """
@@ -247,11 +250,12 @@ def register(message_array, device):
         device.contributor.save()
         increment_refund(device.contributor)
         msg = _("Thanks for texting! You've joined our team. Your password is {0}. Reply HELP for further informations. ").format(pwd)
-        save_message(message_array, device, Message.YES)
+        if auto_mode:
+            save_message(message_array, device, Message.YES)
         send_message(device.phone_number, msg)
 
 
-def unregister(message_array, device):
+def unregister(message_array, device, auto_mode):
     """
         Message: stop
     """
@@ -259,14 +263,15 @@ def unregister(message_array, device):
     try:
         device.delete()
         contributor.delete()
-        save_message(message_array, parsed=Message.YES)
+        if auto_mode:
+            save_message(message_array, parsed=Message.YES)
     except Exception, e:
         error = "Error while deleting device/contributor: {0}".format(e)
         logger.error(error)
         return
 
 
-def help(message_array, device):
+def help(message_array, device, auto_mode):
     """
         Message: help
     """
@@ -278,10 +283,11 @@ def help(message_array, device):
     send_message(device.phone_number, second_help_msg)
     send_message(device.phone_number, third_help_msg)
 
-    save_message(message_array, device, Message.YES)
+    if auto_mode:
+        save_message(message_array, device, Message.YES)
 
 
-def cancel(message_array, device):
+def cancel(message_array, device, auto_mode):
     """
         Message: cancel
     """
@@ -293,21 +299,25 @@ def cancel(message_array, device):
     # Reset the response date
     device.contributor.response = today - timedelta(days=1)
     device.contributor.save()
-    save_message(message_array, device, Message.YES)
+
+    if auto_mode:
+        save_message(message_array, device, Message.YES)
 
 
-def invalid(message_array, device):
+def invalid(message_array, device, auto_mode):
     """
         Message: <something wrong>
     """
-    save_message(message_array, device)
+    if auto_mode:
+        save_message(message_array, device)
 
 
-def test(message_array, device):
+def test(message_array, device, auto_mode):
     """
         Message: TEST
     """
-    save_message(message_array, device, Message.YES)
+    if auto_mode:
+        save_message(message_array, device, Message.YES)
     send_message(device.phone_number, _("Thanks for trying FEOWL! Send Help for more info"))
 
 

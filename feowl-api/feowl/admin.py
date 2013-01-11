@@ -1,23 +1,23 @@
-from django.contrib.gis import admin as admin_gis
-from django.contrib import admin
-from django.utils.translation import ugettext, ugettext_lazy as _
-
+from django.conf.urls import patterns
+from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.gis import admin as admin_gis
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AdminPasswordChangeForm
-from django.views.decorators.debug import sensitive_post_parameters
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.template.response import TemplateResponse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
-from django.template.response import TemplateResponse
-from django.contrib import messages
-from django.core.exceptions import PermissionDenied
-from tastypie.admin import ApiKeyInline
-from tastypie.models import ApiAccess, ApiKey
+from django.utils.translation import ugettext, ugettext_lazy as _
+from django.views.decorators.debug import sensitive_post_parameters
 
 from models import PowerReport, Area, Device, Contributor, Message
 from forms import ContributorAdminForm
+
+from tastypie.admin import ApiKeyInline
+from tastypie.models import ApiAccess, ApiKey
 
 
 class UserModelAdmin(UserAdmin):
@@ -31,7 +31,6 @@ class ContributorAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'channel', 'status', 'enquiry', 'response', 'total_response', 'total_enquiry', 'get_percentage_of_response', 'refunds')
 
     def get_urls(self):
-        from django.conf.urls import patterns
         return patterns('',
             (r'^(\d+)/password/$',
              self.admin_site.admin_view(self.contributor_change_password))
@@ -78,8 +77,15 @@ class ContributorAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('message', 'source', 'keyword', 'parsed', 'created', 'modified', 'device')
-    list_filter = ('keyword', 'parsed')
+    fields = ('created', 'modified', 'keyword', 'message')
+    list_display = ('message', 'keyword', 'parsed', 'manual_parse', 'source', 'device')
+    list_filter = ('keyword', 'parsed',)
+    readonly_fields = ('created', 'modified', 'keyword')
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.parsed == 0:  # editing an existing object
+            return self.readonly_fields + ('message', )
+        return self.readonly_fields
 
 
 class PowerReportAdmin(admin.ModelAdmin):

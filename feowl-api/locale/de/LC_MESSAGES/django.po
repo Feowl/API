@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-07 13:13+0100\n"
+"POT-Creation-Date: 2013-01-17 14:25+0100\n"
 "PO-Revision-Date: 2012-07-17 15:38\n"
 "Last-Translator:   <admin@admin.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Translated-Using: django-rosetta 0.6.8\n"
 
-#: feowl/admin.py:49
+#: feowl/admin.py:48
 msgid "Password changed successfully."
 msgstr ""
 
-#: feowl/admin.py:59
+#: feowl/admin.py:58
 #, python-format
 msgid "Change password: %s"
 msgstr "Passwort ändern: %s"
@@ -54,60 +54,60 @@ msgid ""
 "form</a>."
 msgstr ""
 
-#: feowl/message_helper.py:115
+#: feowl/message_helper.py:114
 msgid ""
 "Hello, your message couldn't be translated - please send us another SMS, e."
 "g. PC douala1 40. reply HELP for further information"
 msgstr ""
 
-#: feowl/message_helper.py:122
+#: feowl/message_helper.py:128
 msgid ""
 "You chose to report no power cut. If this is not what you wanted to say, "
 "please send us a new SMS"
 msgstr ""
 
-#: feowl/message_helper.py:125
+#: feowl/message_helper.py:130
 msgid "You had {0} powercuts yesterday. Durations : "
 msgstr ""
 
-#: feowl/message_helper.py:133
+#: feowl/message_helper.py:142
 msgid "min, "
 msgstr ""
 
-#: feowl/message_helper.py:134
+#: feowl/message_helper.py:143
 msgid "If the data have been misunderstood, please send us another SMS."
 msgstr ""
 
-#: feowl/message_helper.py:250
+#: feowl/message_helper.py:255
 msgid ""
 "Thanks for texting! You've joined our team. Your password is {0}. Reply HELP "
 "for further informations. "
 msgstr ""
 
-#: feowl/message_helper.py:273
+#: feowl/message_helper.py:282
 msgid ""
-"To report a powercut, send PC + the arrondissement name + it's duration in mn"
-"(ex: PC douala5 10). Please wait for Feowl asking you by sms before "
+"To report a powercut, send PC + the arrondissement name + it's duration in "
+"mn(ex: PC douala5 10). Please wait for Feowl asking you by sms before "
 "answering."
 msgstr ""
 
-#: feowl/message_helper.py:274
+#: feowl/message_helper.py:283
 msgid ""
 "To report many powercuts, separate them with a comma(ex: PC douala3 10, "
 "douala3 45)"
 msgstr ""
 
-#: feowl/message_helper.py:275
+#: feowl/message_helper.py:284
 msgid ""
 "To unsuscribe, send STOP. If you wasn't in Douala, send OUT. For each valid "
 "sms that you send,you'll receive a confirmation"
 msgstr ""
 
-#: feowl/message_helper.py:312
+#: feowl/message_helper.py:329
 msgid "Thanks for trying FEOWL! Send Help for more info"
 msgstr ""
 
-#: feowl/management/commands/newsletter.py:36
+#: feowl/management/commands/newsletter.py:39
 msgid "Hello from Feowl"
 msgstr ""
 

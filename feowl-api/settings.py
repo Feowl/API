@@ -69,6 +69,10 @@ LANGUAGES = (
     ('de', u'Deutsch'),
 )
 
+LOCALE_PATHS = (
+    here('locale'),
+)
+
 ROSETTA_STORAGE_CLASS = 'rosetta.storage.CacheRosettaStorage'
 
 # enable Timezone support

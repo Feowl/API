@@ -3,22 +3,19 @@ from django.conf import settings
 from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.test.client import Client
-from feowl.sms_helper import receive_sms
 from django.utils import unittest
+
+from feowl.models import PowerReport, Area, Contributor, Device, Message
+from feowl.sms_helper import receive_sms
 
 from tastypie.models import create_api_key
 from tastypie_test import ResourceTestCase
 
-from feowl.models import PowerReport, Area, Contributor, Device, Message
-#from feowl.message_helper import read_message
-
-import json
 from datetime import datetime, timedelta
+import json
 
 models.signals.post_save.connect(create_api_key, sender=User)
 
-
-#TODO: Isolated the tests from each other
 
 class PowerReportResourceTest(ResourceTestCase):
     fixtures = ['test_data.json']
@@ -613,17 +610,6 @@ class MessagingTestCase(unittest.TestCase):
         receive_sms("789383849", "ça a marché")
         messages = Message.objects.all()
         self.assertEqual(len(messages), nb_messages + 1)
-
-    # def test_sendSMS(self):
-    #     msg = "hi from feowl"
-    #     bad_phone = "915738710431"
-    #     send_sms(bad_phone, msg)
-
-    #     good_phone = "4915738710431"
-    #     #send_sms(good_phone, "lmt")
-    #     #send_sms(good_phone, "nexmo")
-
-#############################################
 
     def test_zcontribute(self):
         #contribute_msg = (self.contribute_keyword + " " +

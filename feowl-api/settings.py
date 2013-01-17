@@ -236,5 +236,5 @@ REGISTRATION_FROM = "Feowl<contact@feowl.com>"
 
 try:
         from local import *
-except:
-        print 'Note: Could not import local settings'
+except ImportError:
+    pass

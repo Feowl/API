@@ -97,6 +97,8 @@ STATIC_URL = '/static/'
 
 GRAPPELLI_ADMIN_TITLE = "FEOWL Admin"
 
+GRAPPELLI_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
+
 SOUTH_TESTS_MIGRATE = False
 
 # Additional locations of static files
@@ -122,6 +124,17 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+TEMPLATE_DIRS = (
+   here('templates'),
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.request",
+    "django.core.context_processors.i18n",
+    'django.contrib.messages.context_processors.messages',
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -132,9 +145,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-TEMPLATE_DIRS = (
-   here('templates'),
-)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -143,6 +153,7 @@ INSTALLED_APPS = (
     #'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'grappelli.dashboard',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.gis',

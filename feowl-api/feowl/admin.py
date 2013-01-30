@@ -105,7 +105,6 @@ class MessageAdmin(admin.ModelAdmin):
 
                 for number in mobile_numbers_list:
                     send_sms(number, voucher_text)
-                    print "yeah"
                 return HttpResponseRedirect('..')
         else:
             form = VoucherForm()  # An unbound form

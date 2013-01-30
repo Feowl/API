@@ -5,7 +5,7 @@ from django.contrib.gis import admin as admin_gis
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.html import escape
@@ -86,6 +86,18 @@ class MessageAdmin(admin.ModelAdmin):
         if obj and obj.parsed == 0:  # editing an existing object
             return self.readonly_fields + ('message',)
         return self.readonly_fields
+
+    def get_urls(self):
+        urls = super(MessageAdmin, self).get_urls()
+        my_urls = patterns('',
+            (r'^send_voucher/$', self.admin_site.admin_view(self.send_voucher))
+        )
+        return my_urls + urls
+
+    def send_voucher(self, request):
+        response = HttpResponse("Here's the text of the Web page.")
+        response = HttpResponse("Text only, please.", content_type="text/plain")
+        return response
 
 
 class PowerReportAdmin(admin.ModelAdmin):

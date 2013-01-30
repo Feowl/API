@@ -5,7 +5,7 @@ from django.contrib.gis import admin as admin_gis
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils.html import escape
@@ -13,8 +13,9 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.views.decorators.debug import sensitive_post_parameters
 
-from models import PowerReport, Area, Device, Contributor, Message
-from forms import ContributorAdminForm
+from feowl.models import PowerReport, Area, Device, Contributor, Message
+from feowl.forms import ContributorAdminForm, VoucherForm
+from feowl.sms_helper import send_sms
 
 from tastypie.admin import ApiKeyInline
 from tastypie.models import ApiAccess, ApiKey
@@ -88,16 +89,45 @@ class MessageAdmin(admin.ModelAdmin):
         return self.readonly_fields
 
     def get_urls(self):
-        urls = super(MessageAdmin, self).get_urls()
-        my_urls = patterns('',
-            (r'^send_voucher/$', self.admin_site.admin_view(self.send_voucher))
-        )
-        return my_urls + urls
+        return patterns('',
+            (r'^send_voucher/$',
+             self.admin_site.admin_view(self.send_voucher))
+        ) + super(MessageAdmin, self).get_urls()
 
     def send_voucher(self, request):
-        response = HttpResponse("Here's the text of the Web page.")
-        response = HttpResponse("Text only, please.", content_type="text/plain")
-        return response
+        if request.method == 'POST':  # If the form has been submitted...
+            form = VoucherForm(request.POST)  # A form bound to the POST data
+            if form.is_valid():  # All validation rules pass
+                mobile_numbers = form.cleaned_data['mobile_numbers']
+                voucher_text = form.cleaned_data['voucher_text']
+
+                mobile_numbers_list = [x.strip() for x in mobile_numbers.split(',')]
+
+                for number in mobile_numbers_list:
+                    send_sms(number, voucher_text)
+                    print "yeah"
+                return HttpResponseRedirect('..')
+        else:
+            form = VoucherForm()  # An unbound form
+
+        fieldsets = [(None, {'fields': form.base_fields.keys()})]
+        adminForm = admin.helpers.AdminForm(form, fieldsets, {})
+
+        context = {
+            'adminForm': adminForm,
+            'form': form,
+            'is_popup': '_popup' in request.REQUEST,
+            'add': True,
+            'change': False,
+            'has_delete_permission': False,
+            'has_change_permission': True,
+            'has_absolute_url': False,
+            'opts': self.model._meta,
+            'save_as': False,
+            'show_save': True,
+        }
+        return TemplateResponse(request, 'admin/send_voucher.html',
+            context, current_app=self.admin_site.name)
 
 
 class PowerReportAdmin(admin.ModelAdmin):

@@ -18,9 +18,8 @@
 {% block breadcrumbs %}
     {% if not is_popup %}
         <ul class="grp-horizontal-list">
-            <li><a href="../../../../">{% trans "Home" %}</a></li>
-            <li><a href="../../">{{ opts.verbose_name_plural|capfirst }}</a></li>
-            <li><a href="../">{{ original|truncatewords:"18" }}</a></li>
+            <li><a href="/admin/">{% trans "Home" %}</a></li>
+            <li><a href="/admin/feowl/message/">{{ opts.verbose_name_plural|capfirst }}</a></li>
             <li>{% trans 'Send Voucher' %}</li>
         </ul>
     {% endif %}

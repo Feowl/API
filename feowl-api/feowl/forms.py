@@ -55,5 +55,5 @@ class AreaForm(forms.ModelForm):
 
 
 class VoucherForm(forms.Form):
-    mobile_numbers = forms.CharField(help_text="Mobile Numbers seperated with commas")
+    mobile_numbers = forms.CharField(help_text="Mobile Numbers seperated with commas, Example: 23796290546,23796390546, 2379690546")
     voucher_text = forms.CharField(max_length=160, widget=forms.Textarea, help_text="The Vocher for you sms. Max Length= 160 characters")

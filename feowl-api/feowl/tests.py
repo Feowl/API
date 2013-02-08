@@ -677,7 +677,7 @@ class MessagingTestCase(unittest.TestCase):
 
         # Test the no method if the reports wrong
         nb_reports1 = PowerReport.objects.all().count()
-        receive_sms(self.register_test_user_no, "pc no")
+        receive_sms(self.register_test_user_no, "PC Non")
         nb_reports2 = PowerReport.objects.all().count()
         self.assertEqual(nb_reports2, nb_reports1 + 1)
         report = reports.latest("happened_at")

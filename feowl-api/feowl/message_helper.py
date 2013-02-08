@@ -28,6 +28,8 @@ kw2lang = {'pc': 'en',
            'test': 'en'}
 keywords = kw2lang.keys() + ['stop']
 
+NO_WORDS = ["no", "non"]
+
 
 def read_message(mobile_number, message, auto_mode=True):
     index, keyword, message_array = parse(message)
@@ -160,7 +162,7 @@ def increment_refund(c):
 def parse_contribute(message_array, device, auto_mode):
     #Contributors reports that he hasn't witnessed a power cut
     report_data = []
-    if message_array[1] == "no":
+    if message_array[1].lower() in NO_WORDS:
         if auto_mode:
             save_message(message_array, device, Message.YES)
         report_data.append([0, get_area("other")])

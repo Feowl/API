@@ -658,7 +658,7 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
 
         # Multiple message
-        multi_contribute_msg = "pc doualaI 29, douala2 400, douala3 10, alger 403"
+        multi_contribute_msg = "pcm doualaI 29, douala2 400, douala3 10, alger 403"
         reports = PowerReport.objects.all()
         nb_reports = len(reports)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
@@ -675,7 +675,7 @@ class MessagingTestCase(unittest.TestCase):
 
         # Test the no method if the reports wrong
         nb_reports1 = PowerReport.objects.all().count()
-        receive_sms(self.register_test_user_no, "PC Non")
+        receive_sms(self.register_test_user_no, "PC no")
         nb_reports2 = PowerReport.objects.all().count()
         self.assertEqual(nb_reports2, nb_reports1 + 1)
         report = reports.latest("happened_at")
@@ -686,7 +686,7 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
 
         # Multiple message
-        multi_contribute_msg = "pc douala1 29, akwa 400, Bilongue 10, BONAMOUSSADI 403"
+        multi_contribute_msg = "pcm douala1 29, akwa 400, Bilongue 10, BONAMOUSSADI 403"
         reports = PowerReport.objects.all()
         nb_reports = len(reports)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
@@ -712,10 +712,19 @@ class FailedSMSTestCase(unittest.TestCase):
         receive_sms(no, msg)
         new_total_reports = PowerReport.objects.all().count()
         self.assertEqual(new_total_reports, total_reports)
+
+        sms = Message.objects.latest('created')
+        if sms.parsed == 2:
+            parsed = 'NO'
+        elif sms.parsed == 1:
+            parsed = 'YES'
+        else:
+            parsed = 'Maybe'
+        #print "--{0}-- Parsed = {1}".format(msg, parsed)
         return
 
     def test_invalid_contribute_1(self):
-        self.contibute_message("pc douala2")
+        self.contibute_message("pc douala20")
 
     def test_invalid_contribute_2(self):
         self.contibute_message("'pc ksdasd sadasdq'")
@@ -743,8 +752,7 @@ class FailedSMSTestCase(unittest.TestCase):
         self.contibute_message("Rep :douala 1")
     def test_invalid_contribute_11(self):
         self.contibute_message("REP 120 min")
-    def test_invalid_contribute_12(self):
-        self.contibute_message("Rep douala3 200, 270")
+
     def test_invalid_contribute_13(self):
         self.contibute_message("REP 3h")
     def test_invalid_contribute_14(self):
@@ -761,6 +769,8 @@ class FailedSMSTestCase(unittest.TestCase):
         self.contibute_message("pc douala2 2h")
     def test_invalid_contribute_20(self):
         self.contibute_message("REP DLA 3 eme. Plus d une heure a partir de 17 h")
+    def test_invalid_contribute_12(self):
+        self.contibute_message("Rep douala3 200, 270")
 
 
 

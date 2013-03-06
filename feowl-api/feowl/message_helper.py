@@ -8,6 +8,7 @@ from pwgen import pwgen
 import logging
 from feowl.sms_helper import send_sms
 import json
+import re
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -73,8 +74,8 @@ def read_message(mobile_number, message, auto_mode=True):
     # invariant: if we arrive here, we are sure that we have a device
     #  and a contributor. now, do the processing
     if keyword in ("pc", "rep"):
-        return contribute_multiple(message_array, device, auto_mode)
-    if keyword in ("pc", "rep"):
+        return contribute(message_array, device, auto_mode)
+    if keyword in ("pcm", "repm"):
         return contribute_multiple(message_array, device, auto_mode)
     elif keyword in ("help", "aide"):
         return help(message_array, device, auto_mode)
@@ -130,14 +131,15 @@ def contribute(message_array, device, auto_mode):
 
             increment_refund(device.contributor)
             msg = _("You chose to report no power cut. If this is not what you wanted to say, please send us a new SMS")
-        elif parsed:
+        else:
             report = PowerReport(duration=parsed_data[0], contributor=device.contributor, device=device, area=parsed_data[1], happened_at=today)
             report.save()
             increment_refund(device.contributor)
             msg = _("You had {0} powercuts yesterday. Durations : ").format(1)
-            msg += _(str(item[0]) + "min, ")
+            msg += _(str(parsed_data[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
         send_message(device.phone_number, msg)
+        logger.info(msg)
     return parsed
 
 
@@ -183,10 +185,11 @@ def contribute_multiple(message_array, device, auto_mode):
                     happened_at=today
                 )
                 report.save()
-
                 increment_refund(device.contributor)
                 msg += _(str(item[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
+            
+
         send_message(device.phone_number, msg)
     return parsed
 
@@ -236,24 +239,27 @@ def parse_contribute_multiple(message_array, device, auto_mode):
 
 def parse_contribute(message_array, device, auto_mode):
     report_data = []
+    parsed = Message.NO
     if message_array[1].lower() in NO_WORDS:
         if auto_mode:
             save_message(message_array, device, Message.YES)
-        report_data.append([0, get_area("other")])
         parsed = Message.YES
+        report_data.append(0)
+        report_data.append(get_area("other"))
     else:
         """
         Message: pc <area> <duration>
         """
         #Contributors want to report a power cut
-        pattern = r"(?P<area>\w+) (?P<duration>\w+)"
+        pattern = r"(?P<area>\w+) (?P<duration>\w+)$"
         result = re.match(pattern, ' '.join(message_array[1:]))
         if result:
-            area = result.group('area')
+            area_name = result.group('area')
             duration = result.group('duration')
-            if area_exists(area) and duration.isdigit():
+            if area_exists(area_name) and duration.isdigit():
                 parsed = Message.YES
                 report_data.append(duration)
+                area = get_area(area_name)
                 report_data.append(area)
                 if auto_mode:
                     save_message(message_array, device)
@@ -294,6 +300,17 @@ def get_area(area_name):
     logger.debug("Saved area name is {0}".format(area.name))
     return area
 
+
+def area_exists(area_name):
+    logger.debug("Given Area name is {0}".format(area_name))
+    corrected_area_name = get_district_name(area_name)
+    try:
+        Area.objects.get(name__iexact=corrected_area_name)
+        bool = True
+    except Area.DoesNotExist:
+        Area.objects.get(name='other')
+        bool = False
+    return bool
 
 def create_unknown_user(mobile_number):
     #TODO: Really not sure about this process and how python handles the erros, what happen if an error occurs?

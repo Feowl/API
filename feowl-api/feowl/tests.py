@@ -714,6 +714,21 @@ class FailedSMSTestCase(unittest.TestCase):
         self.assertEqual(new_total_reports, total_reports)
         return
 
-    def test_invalid_contribute(self):
+    def test_invalid_contribute_1(self):
         self.contibute_message("pc douala2")
 
+    def test_invalid_contribute_2(self):
+        self.contibute_message("'pc ksdasd sadasdq'")
+
+    def test_invalid_contribute_3(self):
+        self.contibute_message('REP douala 1 de 08H30 a 22h15')
+
+    def test_invalid_contribute_4(self):
+        self.contibute_message('REP 5 = 2h')
+
+    #Improvmement
+    def test_invalid_contribute_5(self):
+        self.contibute_message("pc douala2 12m")
+
+    def test_invalid_contribute_6(self):
+        self.contibute_message("pc douala2 2h")

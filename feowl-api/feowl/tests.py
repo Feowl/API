@@ -731,4 +731,50 @@ class FailedSMSTestCase(unittest.TestCase):
         self.contibute_message("pc douala2 12m")
 
     def test_invalid_contribute_6(self):
+        self.contibute_message("Mot inscription REP DLA-30")
+    def test_invalid_contribute_7(self):
+        self.contibute_message("Rep dla 3 / 1 coupure hier matin 10 a 15 mn vers 10h et le soir .1h de tps environ vers 20h")
+    def test_invalid_contribute_8(self):
+        self.contibute_message("rep 80")
+    def test_invalid_contribute_9(self):
+        self.contibute_message("Rep arrondissement dla 3e")
+    def test_invalid_contribute_10(self):
+        self.contibute_message("Rep :douala 1")
+    def test_invalid_contribute_11(self):
+        self.contibute_message("REP 120 min")
+    def test_invalid_contribute_12(self):
+        self.contibute_message("Rep douala3 200, 270")
+    def test_invalid_contribute_13(self):
+        self.contibute_message("REP 3h")
+    def test_invalid_contribute_14(self):
+        self.contibute_message("Rep douala 3. Coupure hier de 18 HeureS a 11heures ce matin")
+    def test_invalid_contribute_15(self):
+        self.contibute_message("REP Douala 1 02h48mn.")
+    def test_invalid_contribute_16(self):
+        self.contibute_message("Samedi REP NON. Dimanche REP DOUALA 3 180.")
+    def test_invalid_contribute_17(self):
+        self.contibute_message("Rep 3 120min")
+    def test_invalid_contribute_18(self):
+        self.contibute_message("REP DOUALA 3 eme")
+    def test_invalid_contribute_19(self):
         self.contibute_message("pc douala2 2h")
+    def test_invalid_contribute_20(self):
+        self.contibute_message("REP DLA 3 eme. Plus d une heure a partir de 17 h")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

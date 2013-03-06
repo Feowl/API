@@ -263,6 +263,11 @@ def parse_contribute(message_array, device, auto_mode):
                 report_data.append(area)
                 if auto_mode:
                     save_message(message_array, device)
+            else:
+                parsed = Message.NO
+                report_data = []
+                if auto_mode:
+                    save_message(message_array, device)
         else:
             if auto_mode:
                 save_message(message_array, device)
@@ -410,6 +415,7 @@ def invalid(message_array, device, auto_mode):
     """
     if auto_mode:
         save_message(message_array, device)
+    #save_message(message_array, device, parsed=Message.NO)
     logger.warning("Something went wrong: Bad keyword")
     return Message.NO
 

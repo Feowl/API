@@ -612,14 +612,11 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(messages), nb_messages + 1)
 
     def test_zcontribute(self):
-        #contribute_msg = (self.contribute_keyword + " " +
-                #self.contribute_area + " " + self.contribute_duration)
-        contribute_msg = "pc douala2 100"
-
         # Missing enquiry - Contribution not accepted
         receive_sms(self.register_test_user_no, self.register_keyword)
         reports = PowerReport.objects.all()
         nb_reports = reports.count()
+        contribute_msg = "pc douala2 100"
         receive_sms(self.register_test_user_no, contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports)
@@ -632,6 +629,7 @@ class MessagingTestCase(unittest.TestCase):
         old_refund = contributor.refunds
         old_total_response = contributor.total_response
 
+        contribute_msg = "pc douala2 100"
         receive_sms(self.register_test_user_no, contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports + 1)
@@ -697,3 +695,25 @@ class MessagingTestCase(unittest.TestCase):
         reports = PowerReport.objects.all()
 
         self.assertEqual(len(reports), nb_reports + 4)
+
+
+class FailedSMSTestCase(unittest.TestCase):
+    def setUp(self):
+        fixtures = ['test_data.json']
+
+    def contibute_message(self, msg):
+        no = "415738710432"
+        receive_sms(no, 'register')
+        contributor = Contributor.objects.get(name=no)
+        contributor.enquiry = datetime.today().date()
+        contributor.save()
+        total_reports = PowerReport.objects.all().count()
+
+        receive_sms(no, msg)
+        new_total_reports = PowerReport.objects.all().count()
+        self.assertEqual(new_total_reports, total_reports)
+        return
+
+    def test_invalid_contribute(self):
+        self.contibute_message("pc douala2")
+

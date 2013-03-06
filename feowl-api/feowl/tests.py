@@ -732,6 +732,7 @@ class FailedSMSTestCase(unittest.TestCase):
 
     def test_invalid_contribute_6(self):
         self.contibute_message("Mot inscription REP DLA-30")
+    #-----------
     def test_invalid_contribute_7(self):
         self.contibute_message("Rep dla 3 / 1 coupure hier matin 10 a 15 mn vers 10h et le soir .1h de tps environ vers 20h")
     def test_invalid_contribute_8(self):

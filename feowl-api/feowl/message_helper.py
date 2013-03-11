@@ -135,7 +135,7 @@ def contribute(message_array, device, auto_mode):
             report = PowerReport(duration=parsed_data[0], contributor=device.contributor, device=device, area=parsed_data[1], happened_at=today)
             report.save()
             increment_refund(device.contributor)
-            msg = _("You had {0} powercuts yesterday. Durations : ").format(1)
+            msg = _("You had {0} powercut yesterday. Duration : ").format(1)
             msg += _(str(parsed_data[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
         send_message(device.phone_number, msg)
@@ -262,12 +262,12 @@ def parse_contribute(message_array, device, auto_mode):
                 area = get_area(area_name)
                 report_data.append(area)
                 if auto_mode:
-                    save_message(message_array, device)
+                    save_message(message_array, device, Message.YES)
             else:
                 parsed = Message.NO
                 report_data = []
                 if auto_mode:
-                    save_message(message_array, device, Message.YES)
+                    save_message(message_array, device)
         else:
             if auto_mode:
                 save_message(message_array, device)

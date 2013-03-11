@@ -267,7 +267,7 @@ def parse_contribute(message_array, device, auto_mode):
                 parsed = Message.NO
                 report_data = []
                 if auto_mode:
-                    save_message(message_array, device)
+                    save_message(message_array, device, Message.YES)
         else:
             if auto_mode:
                 save_message(message_array, device)

@@ -612,14 +612,11 @@ class MessagingTestCase(unittest.TestCase):
         self.assertEqual(len(messages), nb_messages + 1)
 
     def test_zcontribute(self):
-        #contribute_msg = (self.contribute_keyword + " " +
-                #self.contribute_area + " " + self.contribute_duration)
-        contribute_msg = "pc douala2 100"
-
         # Missing enquiry - Contribution not accepted
         receive_sms(self.register_test_user_no, self.register_keyword)
         reports = PowerReport.objects.all()
         nb_reports = reports.count()
+        contribute_msg = "pc douala2 100"
         receive_sms(self.register_test_user_no, contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports)
@@ -632,6 +629,7 @@ class MessagingTestCase(unittest.TestCase):
         old_refund = contributor.refunds
         old_total_response = contributor.total_response
 
+        contribute_msg = "pc douala2 100"
         receive_sms(self.register_test_user_no, contribute_msg)
         reports = PowerReport.objects.all()
         self.assertEqual(len(reports), nb_reports + 1)
@@ -660,7 +658,7 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
 
         # Multiple message
-        multi_contribute_msg = "pc doualaI 29, douala2 400, douala3 10, alger 403"
+        multi_contribute_msg = "pcm doualaI 29, douala2 400, douala3 10, alger 403"
         reports = PowerReport.objects.all()
         nb_reports = len(reports)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
@@ -677,7 +675,7 @@ class MessagingTestCase(unittest.TestCase):
 
         # Test the no method if the reports wrong
         nb_reports1 = PowerReport.objects.all().count()
-        receive_sms(self.register_test_user_no, "PC Non")
+        receive_sms(self.register_test_user_no, "PC no")
         nb_reports2 = PowerReport.objects.all().count()
         self.assertEqual(nb_reports2, nb_reports1 + 1)
         report = reports.latest("happened_at")
@@ -688,7 +686,7 @@ class MessagingTestCase(unittest.TestCase):
         contributor.save()
 
         # Multiple message
-        multi_contribute_msg = "pc douala1 29, akwa 400, Bilongue 10, BONAMOUSSADI 403"
+        multi_contribute_msg = "pcm douala1 29, akwa 400, Bilongue 10, BONAMOUSSADI 403"
         reports = PowerReport.objects.all()
         nb_reports = len(reports)
         contributor = Contributor.objects.get(name=self.register_test_user_no)
@@ -697,3 +695,123 @@ class MessagingTestCase(unittest.TestCase):
         reports = PowerReport.objects.all()
 
         self.assertEqual(len(reports), nb_reports + 4)
+
+
+class FailedSMSTestCase(unittest.TestCase):
+    def setUp(self):
+        fixtures = ['test_data.json']
+
+    def contibute_message(self, msg):
+        no = "415738710432"
+        receive_sms(no, 'register')
+        contributor = Contributor.objects.get(name=no)
+        contributor.enquiry = datetime.today().date()
+        contributor.save()
+        total_reports = PowerReport.objects.all().count()
+
+        receive_sms(no, msg)
+        new_total_reports = PowerReport.objects.all().count()
+        self.assertEqual(new_total_reports, total_reports)
+
+        sms = Message.objects.latest('created')
+        if sms.parsed == 2:
+            parsed = 'NO'
+        elif sms.parsed == 0:
+            parsed = 'YES'
+        else:
+            parsed = 'Maybe'
+        print "--{0}-- Parsed = {1}".format(msg, parsed)
+        return
+        
+    def test_invalid_contribute_0(self):
+        self.contibute_message("Rep dla 3 / 1 coupure hier matin 10 a 15 mn vers 10h et le soir .1h de tps environ vers 20h")
+
+        self.contibute_message("pc douala20")
+
+        self.contibute_message("'pc ksdasd sadasdq'")
+
+        self.contibute_message('REP douala 1 de 08H30 a 22h15')
+        self.contibute_message('REP 5 = 2h')
+        self.contibute_message("pc douala2 12m")
+
+        self.contibute_message("Mot inscription REPm DLA-30")
+
+        self.contibute_message("rep 80")
+        self.contibute_message("Rep arrondissement dla 3e")
+        self.contibute_message("Rep :douala 1")
+        self.contibute_message("REP 120 min")
+
+        self.contibute_message("REP 3h")
+        self.contibute_message("Rep douala 3. Coupure hier de 18 HeureS a 11heures ce matin")
+        self.contibute_message("REP Douala 1 02h48mn.")
+        self.contibute_message("Samedi REP NON. Dimanche REP DOUALA 3 180.")
+        self.contibute_message("Rep 3 120min")
+        self.contibute_message("REP DOUALA 3 eme")
+        self.contibute_message("pc douala2 2h")
+        self.contibute_message("REP DLA 3 eme. Plus d une heure a partir de 17 h")
+        self.contibute_message("Rep douala3 200, 270")
+'''
+    def test_invalid_contribute_7(self):
+        self.contibute_message("Rep dla 3 / 1 coupure hier matin 10 a 15 mn vers 10h et le soir .1h de tps environ vers 20h")
+
+    def test_invalid_contribute_1(self):
+        self.contibute_message("pc douala20")
+
+    def test_invalid_contribute_2(self):
+        self.contibute_message("'pc ksdasd sadasdq'")
+
+    def test_invalid_contribute_3(self):
+        self.contibute_message('REP douala 1 de 08H30 a 22h15')
+    def test_invalid_contribute_4(self):
+        self.contibute_message('REP 5 = 2h')
+    def test_invalid_contribute_5(self):
+        self.contibute_message("pc douala2 12m")
+
+    def test_invalid_contribute_6(self):
+        self.contibute_message("Mot inscription REPm DLA-30")
+
+    def test_invalid_contribute_8(self):
+        self.contibute_message("rep 80")
+    def test_invalid_contribute_9(self):
+        self.contibute_message("Rep arrondissement dla 3e")
+    def test_invalid_contribute_10(self):
+        self.contibute_message("Rep :douala 1")
+    def test_invalid_contribute_11(self):
+        self.contibute_message("REP 120 min")
+
+    def test_invalid_contribute_13(self):
+        self.contibute_message("REP 3h")
+    def test_invalid_contribute_14(self):
+        self.contibute_message("Rep douala 3. Coupure hier de 18 HeureS a 11heures ce matin")
+    def test_invalid_contribute_15(self):
+        self.contibute_message("REP Douala 1 02h48mn.")
+    def test_invalid_contribute_16(self):
+        self.contibute_message("Samedi REP NON. Dimanche REP DOUALA 3 180.")
+    def test_invalid_contribute_17(self):
+        self.contibute_message("Rep 3 120min")
+    def test_invalid_contribute_18(self):
+        self.contibute_message("REP DOUALA 3 eme")
+    def test_invalid_contribute_19(self):
+        self.contibute_message("pc douala2 2h")
+    def test_invalid_contribute_20(self):
+        self.contibute_message("REP DLA 3 eme. Plus d une heure a partir de 17 h")
+    def test_invalid_contribute_12(self):
+        self.contibute_message("Rep douala3 200, 270")
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

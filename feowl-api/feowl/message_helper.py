@@ -8,6 +8,7 @@ from pwgen import pwgen
 import logging
 from feowl.sms_helper import send_sms
 import json
+import re
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -19,6 +20,8 @@ logger = logging.getLogger(__name__)
 # we map the keyword to the corresponding language
 kw2lang = {'pc': 'en',
            'rep': 'fr',
+           'pcm': 'en',
+           'repm': 'fr',
            'help': 'en',
            'aide': 'fr',
            'register': 'en',
@@ -72,6 +75,8 @@ def read_message(mobile_number, message, auto_mode=True):
     #  and a contributor. now, do the processing
     if keyword in ("pc", "rep"):
         return contribute(message_array, device, auto_mode)
+    if keyword in ("pcm", "repm"):
+        return contribute_multiple(message_array, device, auto_mode)
     elif keyword in ("help", "aide"):
         return help(message_array, device, auto_mode)
     elif keyword in ("register", "inscription"):
@@ -95,11 +100,9 @@ def parse(message):
             return index, keyword.lower(), message_array
     return -1, "Bad Keyword", message_array
 
-
 def contribute(message_array, device, auto_mode):
     """
         Message: pc <area> <duration>
-        TODO: Message: pc <area> <duration>, <area> <duration>
     """
     today = datetime.today().date()
 
@@ -111,6 +114,49 @@ def contribute(message_array, device, auto_mode):
     # else try to parse the contribution and save the report
     else:
         (parsed_data, parsed) = parse_contribute(message_array, device, auto_mode)
+        #If we haven't been able to parse the message
+        if not parsed_data:
+            msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC douala1 40"". reply HELP for further information")
+        #If user sent PC No - then no outage has been experienced
+        elif parsed_data[0] == 0:
+            report = PowerReport(
+                has_experienced_outage=False,
+                duration=parsed_data[0],
+                contributor=device.contributor,
+                device=device,
+                area=parsed_data[1],
+                happened_at=today
+            )
+            report.save()
+
+            increment_refund(device.contributor)
+            msg = _("You chose to report no power cut. If this is not what you wanted to say, please send us a new SMS")
+        else:
+            report = PowerReport(duration=parsed_data[0], contributor=device.contributor, device=device, area=parsed_data[1], happened_at=today)
+            report.save()
+            increment_refund(device.contributor)
+            msg = _("You had {0} powercuts yesterday. Durations : ").format(1)
+            msg += _(str(parsed_data[0]) + "min, ")
+            msg += _("If the data have been misunderstood, please send us another SMS.")
+        send_message(device.phone_number, msg)
+        logger.info(msg)
+    return parsed
+
+
+def contribute_multiple(message_array, device, auto_mode):
+    """
+        Message: pc <area> <duration>, <area> <duration>
+    """
+    today = datetime.today().date()
+
+    # If this user hasn't been asked today OR If has already answered today, then save the message and ignore contribution
+    if (device.contributor.enquiry != today) or (device.contributor.response == today):
+        if auto_mode:
+            save_message(message_array, device)
+        return Message.NO
+    # else try to parse the contribution and save the report
+    else:
+        (parsed_data, parsed) = parse_contribute_multiple(message_array, device, auto_mode)
         #If we haven't been able to parse the message
         if not parsed_data:
             msg = _("Hello, your message couldn't be translated - please send us another SMS, e.g. ""PC douala1 40"". reply HELP for further information")
@@ -139,13 +185,13 @@ def contribute(message_array, device, auto_mode):
                     happened_at=today
                 )
                 report.save()
-
                 increment_refund(device.contributor)
                 msg += _(str(item[0]) + "min, ")
             msg += _("If the data have been misunderstood, please send us another SMS.")
+            
+
         send_message(device.phone_number, msg)
     return parsed
-
 
 def increment_refund(c):
     #add +1 to the refund counter for the current user
@@ -159,7 +205,7 @@ def increment_refund(c):
 
 
 #TODO: algorithm to be improved
-def parse_contribute(message_array, device, auto_mode):
+def parse_contribute_multiple(message_array, device, auto_mode):
     #Contributors reports that he hasn't witnessed a power cut
     report_data = []
     if message_array[1].lower() in NO_WORDS:
@@ -179,15 +225,55 @@ def parse_contribute(message_array, device, auto_mode):
                 area = get_area(message_array[index])
 
                 if auto_mode:
-                    save_message(message_array, device, Message.YES)
+                    save_message(message_array, device, Message.NO)
                 report_data.append([duration, area])
-                parsed = Message.YES
+                parsed = Message.NO
         if not report_data:
             #No report could be added
             if auto_mode:
                 save_message(message_array, device)
             report_data = None
             parsed = Message.NO
+    return (report_data, parsed)
+
+
+def parse_contribute(message_array, device, auto_mode):
+    report_data = []
+    parsed = Message.NO
+    if message_array[1].lower() in NO_WORDS:
+        if auto_mode:
+            save_message(message_array, device, Message.YES)
+        parsed = Message.YES
+        report_data.append(0)
+        report_data.append(get_area("other"))
+    else:
+        """
+        Message: pc <area> <duration>
+        """
+        #Contributors want to report a power cut
+        pattern = r"(?P<area>\w+) (?P<duration>\w+)$"
+        result = re.match(pattern, ' '.join(message_array[1:]))
+        if result:
+            area_name = result.group('area')
+            duration = result.group('duration')
+            if area_exists(area_name) and duration.isdigit():
+                parsed = Message.YES
+                report_data.append(duration)
+                area = get_area(area_name)
+                report_data.append(area)
+                if auto_mode:
+                    save_message(message_array, device)
+            else:
+                parsed = Message.NO
+                report_data = []
+                if auto_mode:
+                    save_message(message_array, device)
+        else:
+            if auto_mode:
+                save_message(message_array, device)
+            report_data = []
+            parsed = Message.NO
+
     return (report_data, parsed)
 
 
@@ -219,6 +305,17 @@ def get_area(area_name):
     logger.debug("Saved area name is {0}".format(area.name))
     return area
 
+
+def area_exists(area_name):
+    logger.debug("Given Area name is {0}".format(area_name))
+    corrected_area_name = get_district_name(area_name)
+    try:
+        Area.objects.get(name__iexact=corrected_area_name)
+        bool = True
+    except Area.DoesNotExist:
+        Area.objects.get(name='other')
+        bool = False
+    return bool
 
 def create_unknown_user(mobile_number):
     #TODO: Really not sure about this process and how python handles the erros, what happen if an error occurs?
@@ -318,6 +415,7 @@ def invalid(message_array, device, auto_mode):
     """
     if auto_mode:
         save_message(message_array, device)
+    #save_message(message_array, device, parsed=Message.NO)
     logger.warning("Something went wrong: Bad keyword")
     return Message.NO
 

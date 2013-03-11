@@ -20,7 +20,8 @@ def send_sms(mobile_number, message):
         except Exception, e:
             logger.error("Error: {0} --- Wrong Message: {1}".format(e, message))
     else:
-        logger.error("SMS not sent - Invalid phone number")
+        pass
+        #logger.error("SMS not sent - Invalid phone number")
 
 
 def is_phone_number(num):

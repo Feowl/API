@@ -11,8 +11,7 @@ TEMPLATE_DEBUG = DEBUG
 TASTYPIE_FULL_DEBUG = DEBUG
 
 ADMINS = (
-     ('Alexander Slabiak', 'alex@tesobe.com'),
-     ('Tim Kleinschmidt', 'tim@tesobe.com')
+     ('Pierre Romera', 'hello@pirhoo.com'),
 )
 
 MANAGERS = ADMINS
@@ -50,7 +49,7 @@ TIME_ZONE = 'Europe/Berlin'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 
@@ -62,12 +61,14 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
-LANGUAGE_CODE = "en"
-
 LANGUAGES = (
     ('en', u'English'),
     ('fr', u'Francais'),
     ('de', u'Deutsch'),
+)
+
+LOCALE_PATHS = (
+    here('locale'),
 )
 
 ROSETTA_STORAGE_CLASS = 'rosetta.storage.CacheRosettaStorage'
@@ -96,6 +97,8 @@ STATIC_URL = '/static/'
 
 GRAPPELLI_ADMIN_TITLE = "FEOWL Admin"
 
+GRAPPELLI_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
+
 SOUTH_TESTS_MIGRATE = False
 
 # Additional locations of static files
@@ -121,6 +124,17 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
+TEMPLATE_DIRS = (
+   here('templates'),
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.request",
+    "django.core.context_processors.i18n",
+    'django.contrib.messages.context_processors.messages',
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -131,11 +145,6 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
-TEMPLATE_DIRS = (
-   here('templates'),
-)
-
-TEMPLATESADMIN_TEMPLATE_DIRS = TEMPLATE_DIRS
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -144,6 +153,7 @@ INSTALLED_APPS = (
     #'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'grappelli.dashboard',
     'grappelli',
     'django.contrib.admin',
     'django.contrib.gis',
@@ -152,7 +162,6 @@ INSTALLED_APPS = (
     'django_extensions',
     'south',
     'rosetta',
-    'templatesadmin'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -236,5 +245,5 @@ REGISTRATION_FROM = "Feowl<contact@feowl.com>"
 
 try:
         from local import *
-except:
-        print 'Note: Could not import local settings'
+except ImportError:
+    pass

@@ -1,8 +1,8 @@
 from django.conf.urls import patterns, include, url
-from django.views.generic.base import TemplateView
 from django.contrib import admin
 from tastypie.api import Api
-from feowl.api import PowerReportResource, PowerReportAggregatedResource, DeviceResource, ContributorResource, AreaResource, PowerCutDurations, IncomingSmsResource
+from feowl.api import (PowerReportResource, PowerReportAggregatedResource,
+    DeviceResource, ContributorResource, AreaResource, PowerCutDurations, IncomingSmsResource)
 
 admin.autodiscover()
 
@@ -15,10 +15,11 @@ v1_api.register(ContributorResource())
 v1_api.register(AreaResource())
 v1_api.register(PowerCutDurations())
 v1_api.register(IncomingSmsResource())
+
 urlpatterns = patterns('',
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^api/', include(v1_api.urls)),
-    url(r'^test/', TemplateView.as_view(template_name="test.html")),
     url(r'^admin/translation/', include('rosetta.urls')),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^rosetta/', include('rosetta.urls')),
 )

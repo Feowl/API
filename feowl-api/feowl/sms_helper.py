@@ -1,11 +1,8 @@
 # -*- encoding:utf-8 -*-
-from message_helper import read_message
 import logging
 from urllib import urlencode
 import urllib2
 import settings
-from nexmomessage import NexmoMessage
-from django.utils.encoding import smart_str
 
 logger = logging.getLogger(__name__)
 
@@ -16,29 +13,15 @@ def send_sms(mobile_number, message):
         #Check handling of accents
         try:
             params = {'UserName': settings.SMS_USERNAME, 'Password': settings.SMS_PASSWORD, 'SOA': settings.SMS_SENDER, 'MN': mobile_number, 'SM': message.encode("latin-1")}
+            url = "http://lmtgroup.dyndns.org/sendsms/sendsms.php"
+            req = urllib2.Request(url + "?" + urlencode(params))
+            f = urllib2.urlopen(req)
+            logger.debug(f.read())
         except Exception, e:
             logger.error("Error: {0} --- Wrong Message: {1}".format(e, message))
-
-        url = "http://lmtgroup.dyndns.org/sendsms/sendsms.php"
-        req = urllib2.Request(url + "?" + urlencode(params))
-        f = urllib2.urlopen(req)
-        logger.warning(f.read())
     else:
-        logger.error("SMS not sent - Invalid phone number")
-
-
-def send_sms_nexmo(mobile_number, message):
-    if (is_phone_number(mobile_number)):
-        req = "json"
-        key = SMS_NEXMO_KEY
-        secret = SMS_NEXMO_SECRET
-        sender = settings.SMS_SENDER
-        msg = {'reqtype': req, 'password': secret, 'from': sender, 'to': mobile_number, 'text': smart_str(message), 'username': key}
-        sms = NexmoMessage(msg)
-        sms.send_request()
-        logger.info("SMS Sent. Number = {0}".format(mobile_number))
-    else:
-        logger.error("SMS not sent - Invalid phone number Number = {0}".format(mobile_number))
+        pass
+        #logger.error("SMS not sent - Invalid phone number")
 
 
 def is_phone_number(num):
@@ -64,4 +47,5 @@ def special_batch_sms(mobile_numbers_list, message="template"):
 
 
 def receive_sms(mobile_number, message):
+    from feowl.message_helper import read_message
     read_message(mobile_number, message)

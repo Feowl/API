@@ -17,13 +17,11 @@ from forms import PowerReportForm, DeviceForm, ContributorForm, AreaForm
 from models import PowerReport, Device, Contributor, Area
 from validation import ModelFormValidation
 from serializers import CSVSerializer
-import sms_helper
-import simplejson
+from sms_helper import receive_sms
 import logging
 from django.utils.encoding import smart_str
 
 logger = logging.getLogger(__name__)
-
 
 
 class ContributorResource(ModelResource):
@@ -252,7 +250,7 @@ class PowerReportAggregatedResource(Resource):
         for area in areas:
             #get reports in each area
             area_reports = filtered_objects.filter(area=area.id)
-            actual_powercut_reports = filtered_objects.filter(area=area.id, has_experienced_outage=True)
+            actual_powercut_reports = filtered_objects.filter(area=area.id)
 
             #average power cut duration
             avg_duration = 0
@@ -386,7 +384,7 @@ class IncomingSmsResource(Resource):
             raise ValueError('Mobile Phone or Message are incorrect. Message is: {0}'.format(msg))
         else:
             logger.info('Message Received: {0}'.format(msg))
-            sms_helper.receive_sms(phone, msg)
+            receive_sms(phone, msg)
             response.append(GenericResponseObject({'response': 'message received succesfully'}))
             logger.info('message received successfully')
         return response

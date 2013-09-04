@@ -10,7 +10,7 @@ If you are a developer, a designer, a statistician, an electricity specialist, a
 ## Installation 
 ### Install software dependency 
 ```
-sudo apt-get -y install python-software-properties postgis postgresql-9.1 postgresql-server-dev-9.1 postgresql-contrib-9.1 postgis postgresql-9.1-postgis gdal-bin binutils libgeos-3.2.2 libgeos-c1 libgeos-dev libgdal1-dev libxml2 libxml2-dev libxml2-dev checkinstall proj libpq-dev
+sudo apt-get -y install python-software-properties python-dev postgis postgresql-9.1 postgresql-server-dev-9.1 postgresql-contrib-9.1 postgis postgresql-9.1-postgis gdal-bin binutils libgeos-3.2.2 libgeos-c1 libgeos-dev libgdal1-dev libxml2 libxml2-dev libxml2-dev checkinstall proj libpq-dev
 ```
 
 ### Create a contrib directory for PostGis

@@ -41,7 +41,8 @@ sudo su postgres -c'psql -U postgres -d template_postgis -c "GRANT ALL ON geogra
 
 ### Make a real template
 ```
-sudo su postgres -c'psql -U postgres -d template_postgis -c "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template_postgis';"
+sudo su postgres
+psql -U postgres -d template_postgis -c "UPDATE pg_database SET datistemplate = TRUE WHERE datname = 'template_postgis';"
 ```
 
 ### Create database user for Django

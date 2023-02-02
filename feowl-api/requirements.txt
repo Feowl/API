@@ -1,6 +1,6 @@
 Django==1.4.3
 South==0.7.6
-Werkzeug==0.8.3
+Werkzeug==0.15.5
 argparse==1.2.1
 django-extensions==1.0.3
 django-grappelli==2.4.3
